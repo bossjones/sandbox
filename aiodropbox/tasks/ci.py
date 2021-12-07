@@ -171,6 +171,7 @@ def black(ctx, loc="local", check=False, debug=False, verbose=0, tests=False):
 
     ctx.run(_cmd)
 
+
 @task(
     pre=[
         call(clean, loc="local"),
