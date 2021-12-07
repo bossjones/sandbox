@@ -149,9 +149,7 @@ def autogen(ctx, loc="local", verbose=0, clean=False, dry_run=True, comment=""):
 
         # open alembic.ini and get path to migration
 
-        versions = glob.glob(
-            "aiodropbox/migrations/versions/*.py"
-        )
+        versions = glob.glob("aiodropbox/migrations/versions/*.py")
 
         if len(versions) > 0:
             for i in versions:
@@ -285,9 +283,7 @@ def alembic(
 
         # open alembic.ini and get path to migration
 
-        versions = glob.glob(
-            "aiodropbox/migrations/versions/*.py"
-        )
+        versions = glob.glob("aiodropbox/migrations/versions/*.py")
 
         if len(versions) > 0:
             for i in versions:

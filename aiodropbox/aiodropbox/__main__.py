@@ -11,7 +11,8 @@ handler_logger = logging.getLogger("handler")
 name_logger = logging.getLogger(__name__)
 asyncio_logger = logging.getLogger("asyncio").setLevel(logging.DEBUG)
 
-DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
-DISCORD_ADMIN = os.environ.get("DISCORD_ADMIN_USER_ID")
-DISCORD_GUILD = os.environ.get("DISCORD_SERVER_ID")
-DISCORD_GENERAL_CHANNEL = 908894727779258390
+DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
+DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")
+
+DROPBOX_AIODROPBOX_TOKEN = os.environ.get("DROPBOX_AIODROPBOX_TOKEN")
+DEFAULT_DROPBOX_FOLDER = "/cerebro_downloads"

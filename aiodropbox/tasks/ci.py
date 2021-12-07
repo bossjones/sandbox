@@ -128,9 +128,7 @@ def mypy(ctx, loc="local", verbose=0):
         ctx.config["run"]["env"][k] = v
 
     # ctx.run("mypy --config-file ./lint-configs-python/python/mypy.ini aiodropbox tests")
-    ctx.run(
-        "mypy --config-file ./setup.cfg aiodropbox tests"
-    )
+    ctx.run("mypy --config-file ./setup.cfg aiodropbox tests")
 
 
 @task(

@@ -16,7 +16,6 @@ from rich.console import Console
 from rich.table import Table
 
 import aiodropbox
-from aiodropbox.dbx_logger import get_logger  # noqa: E402
 from aiodropbox.constants import (
     FIFTY_THOUSAND,
     FIVE_HUNDRED_THOUSAND,
@@ -27,6 +26,7 @@ from aiodropbox.constants import (
     THIRTY_THOUSAND,
     TWENTY_THOUSAND,
 )
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
 # # from aiodropbox.fileobject import FileInfo
 # # from aiodropbox.utils.file_functions_mapping import FILE_FUNCTIONS_MAPPING
 # from aiodropbox.shell import ShellConsole, _popen, _popen_stdout

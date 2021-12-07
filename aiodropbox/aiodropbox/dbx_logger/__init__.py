@@ -57,6 +57,7 @@ def format_record(record: Dict[str, Any]) -> str:
     format_string += "{exception}\n"
     return format_string
 
+
 if TYPE_CHECKING:
     from better_exceptions.log import BetExcLogger
     from loguru._logger import Logger as _Logger

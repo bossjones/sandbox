@@ -14,6 +14,7 @@ from aiodropbox.dbx_logger import get_logger  # noqa: E402
 
 LOGGER = get_logger(__name__, provider="Dropbox", level=logging.DEBUG)
 
+
 class DropboxAPIError(Exception):
     """
     Exception for errors thrown by the API. Contains the HTTP status code and the returned error message.

@@ -50,9 +50,7 @@ def pr_sha(ctx, loc="local", quiet=False, verbose=0):
 
     # override CI_IMAGE value
     ctx.config["run"]["env"]["PR_SHA"] = "{}".format(res.stdout)
-    ctx.config["run"]["env"][
-        "REPO_NAME"
-    ] = "bossjones/aiodropbox-ci"
+    ctx.config["run"]["env"]["REPO_NAME"] = "bossjones/aiodropbox-ci"
     ctx.config["run"]["env"]["IMAGE_TAG"] = "{}:{}".format(
         ctx.config["run"]["env"]["REPO_NAME"], ctx.config["run"]["env"]["PR_SHA"]
     )
