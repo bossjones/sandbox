@@ -527,4 +527,4 @@ jupyter-notebook:
 editable-install:
 	pip install -e .[dev,tests,experimental,docs]
 
-dev: pip-compile install-deps-all editable-install
+dev: pip-compile install-deps-all editable-install install-opencv-typing
