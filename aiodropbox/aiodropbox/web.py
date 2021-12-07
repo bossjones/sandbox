@@ -144,7 +144,6 @@ def get_application() -> FastAPI:
     )
 
     # app.add_middleware(starlette_prometheus.PrometheusMiddleware)
-    Instrumentator().instrument(app).expose(app)
 
     # instrumentator = Instrumentator(
     #     should_group_status_codes=False,
@@ -281,6 +280,8 @@ async def predict_api(file: UploadFile = File(...)):
 @app.post("/api/covid-symptom-check")
 def check_risk(symptom: Symptom):
     return symptom_check.get_risk_level(symptom)
+
+# Instrumentator().instrument(app).expose(app)
 
 
 if __name__ == "__main__":
