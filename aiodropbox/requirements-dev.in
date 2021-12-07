@@ -49,7 +49,7 @@ types-dataclasses
 types-requests
 types-setuptools
 types-mock
-# types-aiofiles
+types-aiofiles
 bandit
 setup-cfg-fmt
 flake8-typing-imports

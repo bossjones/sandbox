@@ -211,6 +211,8 @@ tomli==1.2.1
     # via
     #   -c requirements.txt
     #   black
+types-aiofiles==0.7.0
+    # via -r requirements-dev.in
 types-click==7.1.5
     # via -r requirements-dev.in
 types-colorama==0.4.3

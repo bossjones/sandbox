@@ -36,7 +36,16 @@ from . import view
 # from . import db
 # from .git import pr_sha
 
-LOGGER = logging.getLogger()
+
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
+
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke", level=logging.INFO)
+
+LOGGER.disable("invoke")
+
+# LOGGER = logging.getLogger()
 
 ns = Collection()
 # ns.add_collection(core)

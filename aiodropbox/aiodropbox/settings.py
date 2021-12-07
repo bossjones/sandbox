@@ -9,9 +9,8 @@ from pydantic import EmailStr
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret
 
-from aiodropbox.utils.parser import get_domain_from_fqdn
-
 from aiodropbox.dbx_logger import get_logger  # noqa: E402
+from aiodropbox.utils.parser import get_domain_from_fqdn
 
 LOGGER = get_logger(__name__, provider="Settings", level=logging.DEBUG)
 

@@ -4,11 +4,11 @@ from __future__ import annotations
 import asyncio
 from asyncio import Semaphore, as_completed
 from asyncio.futures import isfuture
+from inspect import isawaitable as _isawaitable, signature as _signature
 from itertools import chain
 import json
 import logging
 from pathlib import Path
-from inspect import isawaitable as _isawaitable, signature as _signature
 
 from typing import (
     Any,
@@ -27,11 +27,12 @@ from typing import (
     Union,
 )
 
-# from discord.utils import maybe_coroutine
-
 from aiodropbox import constants
 from aiodropbox.dbx_logger import get_logger  # noqa: E402
 from aiodropbox.utils.config import Config
+
+# from discord.utils import maybe_coroutine
+
 
 # __all__ = (
 #     "bounded_gather",
@@ -50,12 +51,14 @@ LOGGER = get_logger("aiodropbox.utils", provider="Utils", level=logging.DEBUG)
 _T = TypeVar("_T")
 _S = TypeVar("_S")
 
+
 async def maybe_coroutine(f, *args, **kwargs):
     value = f(*args, **kwargs)
     if _isawaitable(value):
         return await value
     else:
         return value
+
 
 # Benchmarked to be the fastest method.
 

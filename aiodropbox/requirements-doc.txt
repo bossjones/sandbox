@@ -95,7 +95,7 @@ sphinx-copybutton==0.4.0
     # via -r requirements-doc.in
 sphinx-jinja==1.1.1
     # via -r requirements-doc.in
-sphinx_rtd_theme==0.5.1
+sphinx-rtd-theme==0.5.1
     # via -r requirements-doc.in
 sphinxcontrib-applehelp==1.0.2
     # via sphinx

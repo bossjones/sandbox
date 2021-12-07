@@ -24,9 +24,11 @@ from .utils import (
 )
 
 # from tasks.core import clean, execute_sql
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
 
-logger = logging.getLogger(__name__)
-logger.setLevel("DEBUG")
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke Db", level=logging.INFO)
 
 
 @task(incrementable=["verbose"])
@@ -336,10 +338,10 @@ def alembic(
             click.secho(_msg, fg=COLOR_DANGER)
     except Failure:
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        logger.debug(
+        LOGGER.debug(
             "Ran {}| exc_type={}".format(sys._getframe().f_code.co_name, exc_type)
         )
-        logger.debug(
+        LOGGER.debug(
             "Ran {}| exc_value={}".format(sys._getframe().f_code.co_name, exc_value)
         )
         traceback.print_tb(exc_traceback)

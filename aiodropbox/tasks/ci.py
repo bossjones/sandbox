@@ -17,8 +17,11 @@ from .utils import (
 )
 import sys
 
-logger = logging.getLogger(__name__)
-logger.setLevel("DEBUG")
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
+
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke CI", level=logging.INFO)
 
 
 @task(incrementable=["verbose"])
@@ -80,7 +83,9 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local", tests=False, everything=False, specific="", error_only=False):
+def pylint(
+    ctx, loc="local", tests=False, everything=False, specific="", error_only=False
+):
     """
     pylint aiodropbox folder
     Usage: inv ci.pylint

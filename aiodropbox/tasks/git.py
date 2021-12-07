@@ -7,9 +7,11 @@ import click
 from tasks.utils import get_compose_env, is_venv
 
 # from tasks.core import clean, execute_sql
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
 
-logger = logging.getLogger(__name__)
-logger.setLevel("DEBUG")
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke git", level=logging.INFO)
 
 
 # git rev-parse HEAD

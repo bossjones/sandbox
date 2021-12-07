@@ -17,8 +17,14 @@ from .utils import (
     COLOR_STABLE,
 )
 
-logger = logging.getLogger(__name__)
-logger.setLevel("DEBUG")
+
+# from tasks.core import clean, execute_sql
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
+
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke local", level=logging.INFO)
+
 
 
 @task(incrementable=["verbose"])
@@ -105,101 +111,100 @@ def detect_os(ctx, loc="local", verbose=0):
         ctx.config["run"]["env"]["CFLAGS"] = "-I/usr/local/opt/openssl/include"
 
 
-# @task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
-# def serve(ctx, loc="local", verbose=0, cleanup=False):
-#     """
-#     start up fastapi application
-#     Usage: inv local.serve
-#     """
-#     env = get_compose_env(ctx, loc=loc)
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def serve(ctx, loc="local", verbose=0, cleanup=False):
+    """
+    start up fastapi application
+    Usage: inv local.serve
+    """
+    env = get_compose_env(ctx, loc=loc)
 
-#     # Override run commands' env variables one key at a time
-#     for k, v in env.items():
-#         ctx.config["run"]["env"][k] = v
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
 
-#     if verbose >= 1:
-#         msg = "[serve] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation"
-#         click.secho(msg, fg=COLOR_SUCCESS)
+    if verbose >= 1:
+        msg = "[serve] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation"
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#     # override CI_IMAGE value
-#     ctx.config["run"]["env"]["SERVER_NAME"] = "localhost:8000"
-#     ctx.config["run"]["env"]["SERVER_HOST"] = "http://localhost:8000"
-#     ctx.config["run"]["env"]["BETTER_EXCEPTIONS"] = "1"
+    # override CI_IMAGE value
+    ctx.config["run"]["env"]["SERVER_NAME"] = "localhost:11267"
+    ctx.config["run"]["env"]["SERVER_HOST"] = "http://localhost:11267"
+    ctx.config["run"]["env"]["BETTER_EXCEPTIONS"] = "1"
 
-#     _cmd = r"""
-# pkill -f "uvicorn app.main:app --reload" || true
-# pgrep -f "uvicorn app.main:app --reload" || true
-#     """
+    _cmd = r"""
+pkill -f "aiodropbox/web.py" || true
+pgrep -f "aiodropbox/web.py" || true
+    """
 
-#     if verbose >= 1:
-#         msg = "[serve] kill running app server: "
-#         click.secho(msg, fg=COLOR_SUCCESS)
+    if verbose >= 1:
+        msg = "[serve] kill running app server: "
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#         msg = "{}".format(_cmd)
-#         click.secho(msg, fg=COLOR_SUCCESS)
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#     ctx.run(_cmd)
+    ctx.run(_cmd)
 
-#     # ctx.run("pip install -e .")
-#     ctx.run("alembic --raiseerr upgrade head")
-#     # ctx.run("python ./aiodropbox/api/backend_pre_start.py")
-#     # ctx.run("python ./aiodropbox/initial_data.py")
-#     # ctx.run("python aiodropbox/dev_serve.py")
-#     ctx.run("uvicorn app.main:app --reload")
+    # ctx.run("pip install -e .")
+    # ctx.run("alembic --raiseerr upgrade head")
+    # ctx.run("python ./ultron8/api/backend_pre_start.py")
+    # ctx.run("python ./ultron8/initial_data.py")
+    ctx.run("python aiodropbox/web.py")
 
 
-# @task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
-# def web(ctx, loc="local", verbose=0, cleanup=False, app_only=False):
-#     """
-#     start up fastapi application
-#     Usage: inv local.web
-#     """
-#     env = get_compose_env(ctx, loc=loc)
+@task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
+def web(ctx, loc="local", verbose=0, cleanup=False, app_only=False):
+    """
+    start up fastapi application
+    Usage: inv local.web
+    """
+    env = get_compose_env(ctx, loc=loc)
 
-#     # Override run commands' env variables one key at a time
-#     for k, v in env.items():
-#         ctx.config["run"]["env"][k] = v
+    # Override run commands' env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
 
-#     if verbose >= 1:
-#         msg = "[serve] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation"
-#         click.secho(msg, fg=COLOR_SUCCESS)
+    if verbose >= 1:
+        msg = "[serve] override env vars 'SERVER_NAME' and 'SERVER_HOST' - We don't want to mess w/ '.env.dist' for this situation"
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#     # override CI_IMAGE value
-#     # ctx.config["run"]["env"]["SERVER_NAME"] = "localhost:8000"
-#     # ctx.config["run"]["env"]["SERVER_HOST"] = "http://localhost:8000"
-#     ctx.config["run"]["env"]["BETTER_EXCEPTIONS"] = "1"
+    # override CI_IMAGE value
+    ctx.config["run"]["env"]["SERVER_NAME"] = "localhost:11267"
+    ctx.config["run"]["env"]["SERVER_HOST"] = "http://localhost:11267"
+    ctx.config["run"]["env"]["BETTER_EXCEPTIONS"] = "1"
 
-#     if verbose >= 3:
-#         click.secho(
-#             "Detected 4 or more verbose flags, enabling TRACE mode", fg=COLOR_WARNING
-#         )
-#         # TODO: recreate web.py as your application runner
-#         ctx.config["run"]["env"]["ULTRON_ENVIRONMENT"] = "development"
+    if verbose >= 3:
+        click.secho(
+            "Detected 4 or more verbose flags, enabling TRACE mode", fg=COLOR_WARNING
+        )
+        ctx.config["run"]["env"]["ULTRON_ENVIRONMENT"] = "development"
 
-#     _cmd = r"""
-# pkill -f "uvicorn app.main:app --reload" || true
-# pgrep -f "uvicorn app.main:app --reload" || true
-#     """
+    _cmd = r"""
+pkill -f "aiodropbox/web.py" || true
+pgrep -f "aiodropbox/web.py" || true
+    """
 
-#     if verbose >= 1:
-#         msg = "[serve] kill running app server: "
-#         click.secho(msg, fg=COLOR_SUCCESS)
+    if verbose >= 1:
+        msg = "[serve] kill running app server: "
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#         msg = "{}".format(_cmd)
-#         click.secho(msg, fg=COLOR_SUCCESS)
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
 
-#     ctx.run(_cmd)
+    ctx.run(_cmd)
 
-#     if not app_only:
-#         # ctx.run("pip install -e .")
-#         ctx.run("alembic --raiseerr upgrade head")
-#         # ctx.run("python ./aiodropbox/api/backend_pre_start.py")
-#         # ctx.run("python ./aiodropbox/initial_data.py")
-#         # ctx.run("python ./aiodropbox/initial_data.py")
-#     else:
-#         click.secho("APP ONLY MODE DETECTED.", fg=COLOR_WARNING)
+    if not app_only:
+        msg = "[serve] app_only: "
+        click.secho(msg, fg=COLOR_SUCCESS)
+        # ctx.run("pip install -e .")
+        # ctx.run("alembic --raiseerr upgrade head")
+        # ctx.run("python ./ultron8/api/backend_pre_start.py")
+        # ctx.run("python ./ultron8/initial_data.py")
+    else:
+        click.secho("APP ONLY MODE DETECTED.", fg=COLOR_WARNING)
 
-#     ctx.run("uvicorn app.main:app --reload")
+    ctx.run("python aiodropbox/web.py")
 
 
 @task(
@@ -246,10 +251,7 @@ pip install -r requirements-doc.txt
 
     ctx.run(_cmd)
 
-    click.secho(
-        "[install] install editable version of aiodropbox",
-        fg=COLOR_SUCCESS,
-    )
+    click.secho("[install] install editable version of ultron8", fg=COLOR_SUCCESS)
     ctx.run("pip install -e .")
 
 
@@ -470,7 +472,7 @@ cp -fv ./contrib/.ptpython_config.py ~/ptpython/config.py
 @task(pre=[call(detect_os, loc="local")], incrementable=["verbose"])
 def rsync(ctx, loc="local", verbose=0, cleanup=False):
     """
-    rsync over files to ~vagrant/aiodropbox folder
+    rsync over files to ~vagrant/ultron8 folder
     Usage: inv local.rsync
     """
     env = get_compose_env(ctx, loc=loc)
@@ -480,7 +482,7 @@ def rsync(ctx, loc="local", verbose=0, cleanup=False):
         ctx.config["run"]["env"][k] = v
 
     _cmd = r"""
-cd && rsync -r --exclude aiodropbox_venv --exclude .vagrant --exclude .git --exclude .env /srv/vagrant_repos/aiodropbox/ ~/aiodropbox/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/aiodropbox && ls -lta
+cd && rsync -r --exclude ultron8_venv --exclude .vagrant --exclude .git --exclude .env /srv/vagrant_repos/ultron8/ ~/ultron8/ && sudo chown vagrant:vagrant -R ~vagrant && cd ~/ultron8 && ls -lta
     """
 
     if verbose >= 1:
@@ -547,7 +549,7 @@ pip install -e .
     msg = "[dev] testing cli works"
     click.secho(msg, fg=COLOR_SUCCESS)
 
-    ctx.run("aiodropboxctl --help")
+    ctx.run("ultronctl --help")
 
 
 @task(
@@ -647,7 +649,7 @@ def list_ports(ctx, loc="local", verbose=0, cleanup=False):
     # SOURCE: https://wilsonmar.github.io/ports-open/
     # lsof -nP +c 15 | grep LISTEN
     _cmd = r"""
-nmap -p 8000,3000,5678,6666 localhost
+nmap -p 11267,3000,5678,6666 localhost
     """
 
     if verbose >= 1:

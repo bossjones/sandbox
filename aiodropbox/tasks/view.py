@@ -16,8 +16,13 @@ from .utils import (
     COLOR_STABLE,
 )
 
-logger = logging.getLogger(__name__)
-logger.setLevel("DEBUG")
+# from tasks.core import clean, execute_sql
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
+
+# from aiodropbox.utils.parser import get_domain_from_fqdn
+
+LOGGER = get_logger(__name__, provider="Invoke view", level=logging.INFO)
+
 
 
 @task(incrementable=["verbose"])

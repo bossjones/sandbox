@@ -27,8 +27,7 @@ from dropbox import (
 from dropbox.dropbox_client import BadInputException
 from dropbox.exceptions import ApiError, AuthError
 from dropbox.files import WriteMode
-from pydantic import BaseSettings, Field, validator
-from pydantic import BaseModel
+from pydantic import BaseModel, BaseSettings, Field, validator
 import rich
 import six
 

@@ -2,14 +2,15 @@ import logging
 import os
 from pathlib import Path
 import subprocess
-import threading
 import time
 
-from typing import Callable
-
-from fastapi import Depends, FastAPI, Header, HTTPException
+from PIL import Image
+from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import UJSONResponse
+import numpy as np
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -20,23 +21,20 @@ from starlette.responses import (
     RedirectResponse,
     Response,
 )
-
-from fastapi.responses import UJSONResponse
-
 from starlette.staticfiles import StaticFiles
-import uvicorn
-from aiodropbox import settings
-
-from prometheus_fastapi_instrumentator import Instrumentator, metrics
-
 import tensorflow as tf
+from tensorflow.keras.applications.imagenet_utils import decode_predictions
+import uvicorn
 
-def load_model():
-    model = tf.keras.applications.MobileNetV2(weights="imagenet")
-    print("Model loaded")
-    return model
+from aiodropbox import settings
+from aiodropbox.components import predict, read_imagefile
+from aiodropbox.components.prediction import symptom_check
+from aiodropbox.schema import Symptom
 
-model = load_model()
+app_desc = """<h2>Try this app by uploading any image with `predict/image`</h2>
+<h2>Try Covid symptom checker api - it is just a learning app demo</h2>
+<br>by Aniket Maurya"""
+
 
 # SOURCE: https://blog.hipolabs.com/remote-debugging-with-vscode-docker-and-pico-fde11f0e5f1c
 def start_debugger():
@@ -75,6 +73,7 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
     )
+
 
 # SOURCE: https://stackoverflow.com/questions/60778279/fastapi-middleware-peeking-into-responses
 class LogRequestMiddleware(BaseHTTPMiddleware):
@@ -116,7 +115,7 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
 
 def get_application() -> FastAPI:
     # SOURCE: https://github.com/nwcell/guid_tracker/blob/aef948336ba268aa06df7cc9e7e6768b08d0f363/src/guid/main.py
-    app = FastAPI(title="aiodropbox Web Server")
+    app = FastAPI(title="aiodropbox Web Server", description=app_desc)
 
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     # app.add_exception_handler(Exception, misc_exception_handler)
@@ -156,7 +155,6 @@ def get_application() -> FastAPI:
     #     inprogress_name="inprogress",
     #     inprogress_labels=True,
     # )
-
 
     # app.add_route(f"{settings.API_V1_STR}/metrics", starlette_prometheus.metrics)
 
@@ -254,13 +252,35 @@ class AddProcessTimeMiddleware(BaseHTTPMiddleware):
         response.headers["X-Process-Time"] = str(process_time)
         return response
 
+
 app = get_application()
 
-@app.get('/index')
+
+@app.get("/index")
 async def hello_world():
     return "hello world"
 
-print(" [app] ran get_application")
+
+@app.get("/", include_in_schema=False)
+async def index():
+    return RedirectResponse(url="/docs")
+
+
+@app.post("/predict/image")
+async def predict_api(file: UploadFile = File(...)):
+    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not extension:
+        return "Image must be jpg or png format!"
+    image = read_imagefile(await file.read())
+    prediction = predict(image)
+
+    return prediction
+
+
+@app.post("/api/covid-symptom-check")
+def check_risk(symptom: Symptom):
+    return symptom_check.get_risk_level(symptom)
+
 
 if __name__ == "__main__":
     # import os
@@ -275,4 +295,5 @@ if __name__ == "__main__":
         port=PORT,
         log_level=settings._USER_LOG_LEVEL.lower(),
         reload=True,
+        debug=True,
     )
