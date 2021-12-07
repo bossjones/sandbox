@@ -61,3 +61,39 @@ memory_profiler
 telnetlib3
 python-dotenv>=0.19.2
 aiodns
+prometheus-fastapi-instrumentator
+# ml stuff from https://github.com/bossjones/fzf-lab/blob/main/ml/requirements.in
+# Fast hierarchical clustering routines for R and Python.
+fastcluster
+# Read and write HDF5 files from Python
+h5py
+# TensorFlow Keras.
+keras
+# seaborn: statistical data visualization
+seaborn
+# Statistical computations and models for Python
+statsmodels
+# TensorFlow is an open source machine learning framework for everyone.
+tensorflow
+# TensorFlow Hub is a repository of trained machine learning models.
+tensorflow_hub
+# Natural Language Toolkit
+nltk
+# An open-source, interactive data visualization library for Python
+plotly
+# Screen-scraping library
+beautifulsoup4
+# DISABLED: # for now # -e git://github.com/GantMan/nsfw_model.git#egg=nsfw-detector
+# Tensors and Dynamic neural networks in Python with strong GPU acceleration
+torch
+# image and video datasets and models for torch deep learning
+torchvision
+# An audio package for PyTorch
+torchaudio
+scikit-image
+backoff
+scenedetect[opencv]
+imutils
+factory-boy
+wrapt==1.13.3
+typing-extensions==3.10.0

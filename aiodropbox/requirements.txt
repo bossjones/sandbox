@@ -4,6 +4,10 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+absl-py==1.0.0
+    # via
+    #   tensorboard
+    #   tensorflow
 aiocache==0.11.1
     # via -r requirements.in
 aioconsole==0.3.3
@@ -44,6 +48,8 @@ asgiref==3.4.1
     # via uvicorn
 astor==0.8.1
     # via streamlit
+astunparse==1.6.3
+    # via tensorflow
 async-timeout==3.0.1
     # via aiohttp
 attrs==21.2.0
@@ -54,12 +60,15 @@ attrs==21.2.0
     #   streamlit
 backcall==0.2.0
     # via ipython
+backoff==1.11.1
+    # via -r requirements.in
 base58==2.1.0
     # via streamlit
 bcrypt==3.2.0
     # via passlib
 beautifulsoup4==4.10.0
     # via
+    #   -r requirements.in
     #   bs4
     #   google
 better-exceptions==0.3.3
@@ -71,7 +80,9 @@ blinker==1.4
 bs4==0.0.1
     # via pyinspect
 cachetools==4.2.2
-    # via streamlit
+    # via
+    #   google-auth
+    #   streamlit
 certifi==2021.5.30
     # via
     #   requests
@@ -87,6 +98,7 @@ charset-normalizer==2.0.4
     # via requests
 click==7.1.2
     # via
+    #   nltk
     #   pip-tools
     #   pyinspect
     #   sacremoses
@@ -153,11 +165,17 @@ factory-boy==3.2.0
 faker==8.12.1
     # via factory-boy
 fastapi[all]==0.70.0
+    # via
+    #   -r requirements.in
+    #   prometheus-fastapi-instrumentator
+fastcluster==1.2.4
     # via -r requirements.in
 filelock==3.0.12
     # via
     #   huggingface-hub
     #   transformers
+flatbuffers==2.0
+    # via tensorflow
 fonttools==4.28.1
     # via matplotlib
 fsspec==2021.8.1
@@ -166,6 +184,8 @@ fsspec==2021.8.1
     #   datasets
 gallery-dl==1.19.2
     # via -r requirements.in
+gast==0.4.0
+    # via tensorflow
 gitdb==4.0.7
     # via gitpython
 gitpython==3.1.18
@@ -174,10 +194,26 @@ gitpython==3.1.18
     #   wandb
 google==3.0.0
     # via pyinspect
+google-auth==2.3.3
+    # via
+    #   google-auth-oauthlib
+    #   tensorboard
+google-auth-oauthlib==0.4.6
+    # via tensorboard
+google-pasta==0.2.0
+    # via tensorflow
+grpcio==1.42.0
+    # via
+    #   tensorboard
+    #   tensorflow
 gutter==0.5.0
     # via -r requirements.in
 h11==0.12.0
     # via uvicorn
+h5py==3.6.0
+    # via
+    #   -r requirements.in
+    #   tensorflow
 httptools==0.2.0
     # via uvicorn
 huggingface-hub==0.0.16
@@ -191,9 +227,13 @@ idna==3.2
     #   requests
     #   yarl
 imageio==2.10.4
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   scikit-image
 importlib-metadata==4.8.2
     # via markdown
+imutils==0.5.4
+    # via -r requirements.in
 ipykernel==6.4.1
     # via
     #   ipywidgets
@@ -224,6 +264,7 @@ jinja2==3.0.1
     #   pydeck
 joblib==1.0.1
     # via
+    #   nltk
     #   sacremoses
     #   scikit-learn
 jsonpickle==2.0.0
@@ -247,8 +288,16 @@ jupyterlab-pygments==0.1.2
     # via nbconvert
 jupyterlab-widgets==1.0.1
     # via ipywidgets
+keras==2.7.0
+    # via
+    #   -r requirements.in
+    #   tensorflow
+keras-preprocessing==1.1.2
+    # via tensorflow
 kiwisolver==1.3.2
     # via matplotlib
+libclang==12.0.0
+    # via tensorflow
 locket==0.2.1
     # via partd
 logging-tree==1.9
@@ -256,11 +305,15 @@ logging-tree==1.9
 loguru==0.5.3
     # via -r requirements.in
 markdown==3.3.6
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   tensorboard
 markupsafe==2.0.1
     # via jinja2
 matplotlib==3.5.0
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   seaborn
 matplotlib-inline==0.1.3
     # via
     #   ipykernel
@@ -289,29 +342,51 @@ nest-asyncio==1.5.1
     # via
     #   jupyter-client
     #   nbclient
+networkx==2.6.3
+    # via scikit-image
+nltk==3.6.5
+    # via -r requirements.in
 notebook==6.4.3
     # via widgetsnbextension
 numpy==1.19.5
     # via
     #   altair
     #   datasets
+    #   fastcluster
+    #   h5py
     #   imageio
+    #   keras-preprocessing
     #   matplotlib
     #   opencv-python
+    #   opt-einsum
     #   pandas
+    #   patsy
     #   pyarrow
     #   pydeck
     #   pyinspect
+    #   pywavelets
     #   scenedetect
+    #   scikit-image
     #   scikit-learn
     #   scipy
+    #   seaborn
     #   seqeval
     #   simpletransformers
+    #   statsmodels
     #   streamlit
+    #   tensorboard
     #   tensorboardx
+    #   tensorflow
+    #   tensorflow-hub
+    #   tifffile
+    #   torchvision
     #   transformers
+oauthlib==3.1.1
+    # via requests-oauthlib
 opencv-python==4.5.4.58
     # via scenedetect
+opt-einsum==3.3.0
+    # via tensorflow
 orjson==3.6.4
     # via fastapi
 packaging==21.0
@@ -321,6 +396,7 @@ packaging==21.0
     #   datasets
     #   huggingface-hub
     #   matplotlib
+    #   scikit-image
     #   setuptools-scm
     #   streamlit
     #   transformers
@@ -328,7 +404,9 @@ pandas==1.3.2
     # via
     #   altair
     #   datasets
+    #   seaborn
     #   simpletransformers
+    #   statsmodels
     #   streamlit
 pandocfilters==1.4.3
     # via nbconvert
@@ -340,6 +418,8 @@ passlib[bcrypt]==1.7.4
     # via -r requirements.in
 pathtools==0.1.2
     # via wandb
+patsy==0.5.2
+    # via statsmodels
 pep517==0.11.0
     # via pip-tools
 pexpect==4.8.0
@@ -351,15 +431,23 @@ pillow==8.3.2
     #   -r requirements.in
     #   imageio
     #   matplotlib
+    #   scikit-image
     #   streamlit
+    #   torchvision
 pip-tools==6.2.0
+    # via -r requirements.in
+plotly==5.4.0
     # via -r requirements.in
 ply==3.11
     # via stone
 pretty-errors==1.2.24
     # via -r requirements.in
 prometheus-client==0.11.0
-    # via notebook
+    # via
+    #   notebook
+    #   prometheus-fastapi-instrumentator
+prometheus-fastapi-instrumentator==5.7.1
+    # via -r requirements.in
 promise==2.3
     # via wandb
 prompt-toolkit==3.0.20
@@ -367,7 +455,10 @@ prompt-toolkit==3.0.20
 protobuf==3.17.3
     # via
     #   streamlit
+    #   tensorboard
     #   tensorboardx
+    #   tensorflow
+    #   tensorflow-hub
     #   wandb
 psutil==5.8.0
     # via
@@ -381,6 +472,12 @@ pyarrow==5.0.0
     # via
     #   datasets
     #   streamlit
+pyasn1==0.4.8
+    # via
+    #   pyasn1-modules
+    #   rsa
+pyasn1-modules==0.2.8
+    # via google-auth
 pycares==4.1.2
     # via aiodns
 pycparser==2.20
@@ -426,6 +523,8 @@ pytz==2021.1
     # via
     #   -r requirements.in
     #   pandas
+pywavelets==1.2.0
+    # via scikit-image
 pyyaml==5.4.1
     # via
     #   dask
@@ -441,6 +540,7 @@ quantile-python==1.1
     # via aioprometheus
 regex==2021.8.28
     # via
+    #   nltk
     #   sacremoses
     #   simpletransformers
     #   transformers
@@ -452,17 +552,25 @@ requests==2.26.0
     #   fastapi
     #   gallery-dl
     #   huggingface-hub
+    #   requests-oauthlib
     #   simpletransformers
     #   streamlit
+    #   tensorboard
     #   transformers
     #   wandb
+requests-oauthlib==1.3.0
+    # via google-auth-oauthlib
 rich==10.9.0
     # via
     #   -r requirements.in
     #   pyinspect
+rsa==4.8
+    # via google-auth
 sacremoses==0.0.45
     # via transformers
 scenedetect[opencv]==0.5.6.1
+    # via -r requirements.in
+scikit-image==0.19.0
     # via -r requirements.in
 scikit-learn==0.24.2
     # via
@@ -470,8 +578,13 @@ scikit-learn==0.24.2
     #   simpletransformers
 scipy==1.7.1
     # via
+    #   scikit-image
     #   scikit-learn
+    #   seaborn
     #   simpletransformers
+    #   statsmodels
+seaborn==0.11.2
+    # via -r requirements.in
 send2trash==1.8.0
     # via notebook
 sentencepiece==0.1.96
@@ -488,17 +601,26 @@ simpletransformers==0.61.13
     # via -r requirements.in
 six==1.15.0
     # via
+    #   absl-py
+    #   astunparse
     #   bcrypt
     #   bleach
     #   docker-pycreds
     #   dropbox
+    #   google-auth
+    #   google-pasta
+    #   grpcio
     #   jsonschema
+    #   keras-preprocessing
+    #   patsy
+    #   plotly
     #   promise
     #   protobuf
     #   python-dateutil
     #   python-multipart
     #   sacremoses
     #   stone
+    #   tensorflow
     #   validators
     #   wandb
 smmap==4.0.0
@@ -511,6 +633,8 @@ starlette==0.16.0
     # via
     #   aioprometheus
     #   fastapi
+statsmodels==0.13.1
+    # via -r requirements.in
 stone==3.2.1
     # via dropbox
 streamlit==0.88.0
@@ -520,9 +644,27 @@ subprocess32==3.5.4
 telnetlib3==1.0.4
     # via -r requirements.in
 tenacity==8.0.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   plotly
+tensorboard==2.7.0
+    # via tensorflow
+tensorboard-data-server==0.6.1
+    # via tensorboard
+tensorboard-plugin-wit==1.8.0
+    # via tensorboard
 tensorboardx==2.4
     # via simpletransformers
+tensorflow==2.7.0
+    # via -r requirements.in
+tensorflow-estimator==2.7.0
+    # via tensorflow
+tensorflow-hub==0.12.0
+    # via -r requirements.in
+tensorflow-io-gcs-filesystem==0.22.0
+    # via tensorflow
+termcolor==1.1.0
+    # via tensorflow
 terminado==0.12.1
     # via notebook
 terminaltables==3.1.0
@@ -535,6 +677,8 @@ text-unidecode==1.3
     #   python-slugify
 threadpoolctl==2.2.0
     # via scikit-learn
+tifffile==2021.11.2
+    # via scikit-image
 tokenizers==0.10.3
     # via
     #   -r requirements.in
@@ -551,6 +695,15 @@ toolz==0.11.1
     #   altair
     #   dask
     #   partd
+torch==1.10.0
+    # via
+    #   -r requirements.in
+    #   torchaudio
+    #   torchvision
+torchaudio==0.10.0
+    # via -r requirements.in
+torchvision==0.11.1
+    # via -r requirements.in
 tornado==6.1
     # via
     #   ipykernel
@@ -563,6 +716,7 @@ tqdm==4.62.2
     #   -r requirements.in
     #   datasets
     #   huggingface-hub
+    #   nltk
     #   sacremoses
     #   scenedetect
     #   simpletransformers
@@ -586,13 +740,16 @@ transformers==4.10.2
     #   simpletransformers
 typer==0.4.0
     # via -r requirements.in
-typing-extensions==3.7.4.3
+typing-extensions==3.10.0.0
     # via
+    #   -r requirements.in
     #   aiohttp
     #   aiosql
     #   aiosqlite
     #   huggingface-hub
     #   pydantic
+    #   tensorflow
+    #   torch
 tzlocal==3.0
     # via streamlit
 ujson==4.3.0
@@ -626,11 +783,21 @@ webencodings==0.5.1
 websockets==10.1
     # via uvicorn
 werkzeug==2.0.1
-    # via gutter
+    # via
+    #   gutter
+    #   tensorboard
 wheel==0.37.0
-    # via pip-tools
+    # via
+    #   astunparse
+    #   pip-tools
+    #   tensorboard
+    #   tensorflow
 widgetsnbextension==3.5.1
     # via ipywidgets
+wrapt==1.13.3
+    # via
+    #   -r requirements.in
+    #   tensorflow
 xxhash==2.0.2
     # via datasets
 yarl==1.6.3

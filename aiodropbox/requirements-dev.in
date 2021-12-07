@@ -10,7 +10,7 @@ mccabe
 lazy-object-proxy
 autopep8
 MonkeyType
-pylint
+pylint==2.12.2
 restructuredtext_lint
 
 # NOTE: autoflake removes unused imports and unused variables from Python code. It makes use of pyflakes to do this.

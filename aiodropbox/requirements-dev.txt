@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via black
-astroid==2.6.6
+astroid==2.9.0
     # via pylint
 atomicwrites==1.4.0
     # via pathlib-mate
@@ -134,7 +134,9 @@ pbr==5.8.0
 pdbpp==0.10.3
     # via -r requirements-dev.in
 platformdirs==2.3.0
-    # via virtualenv
+    # via
+    #   pylint
+    #   virtualenv
 pre-commit==2.15.0
     # via -r requirements-dev.in
 pycodestyle==2.8.0
@@ -154,7 +156,7 @@ pygments==2.7.4
     #   -c requirements.txt
     #   bpython
     #   pdbpp
-pylint==2.9.6
+pylint==2.12.2
     # via -r requirements-dev.in
 pyrepl==0.9.0
     # via fancycompleter
@@ -229,10 +231,12 @@ types-setuptools==57.0.2
     # via -r requirements-dev.in
 types-six==1.16.1
     # via -r requirements-dev.in
-typing-extensions==3.7.4.3
+typing-extensions==3.10.0.0
     # via
     #   -c requirements.txt
+    #   astroid
     #   libcst
+    #   pylint
     #   typing-inspect
 typing-inspect==0.7.1
     # via libcst
@@ -250,8 +254,10 @@ vulture==2.3
     # via -r requirements-dev.in
 wmctrl==0.4
     # via pdbpp
-wrapt==1.12.1
-    # via astroid
+wrapt==1.13.3
+    # via
+    #   -c requirements.txt
+    #   astroid
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

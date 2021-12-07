@@ -208,7 +208,7 @@ types-mock==4.0.4
     # via
     #   -c requirements-dev.txt
     #   -r requirements-test.in
-typing-extensions==3.7.4.3
+typing-extensions==3.10.0.0
     # via
     #   -c requirements-dev.txt
     #   mypy
