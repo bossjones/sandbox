@@ -3,27 +3,12 @@ import os
 
 from aiodropbox import constants
 
-# from dotenv import load_dotenv
+DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
+DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")
 
-
-DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+DROPBOX_AIODROPBOX_TOKEN = os.environ.get("DROPBOX_AIODROPBOX_TOKEN")
+DEFAULT_DROPBOX_FOLDER = "/cerebro_downloads"
 default_config = {"token": "", "prefix": constants.PREFIX}
-
-
-# DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
-# LOG_LEVEL = get_log_level(os.environ.get('LOG_LEVEL'))
-# AUDIT_LOG_SEND_CHANNEL = os.environ.get('AUDIT_LOG_SEND_CHANNEL')
-AUDIT_LOG_SEND_CHANNEL = os.environ.get("AUDIT_LOG_SEND_CHANNEL")
-# IS_HEROKU = if_env(os.environ.get('IS_HEROKU'))
-# SAVE_FILE_MESSAGE = os.environ.get('SAVE_FILE_MESSAGE')
-# FIRST_REACTION_CHECK = if_env(os.environ.get('FIRST_REACTION_CHECK'))
-# SCRAPBOX_SID_AND_PROJECTNAME = os.environ.get('SCRAPBOX_SID_AND_PROJECTNAME')
-# COUNT_RANK_SETTING = num_env(os.environ.get('COUNT_RANK_SETTING'))
-# PURGE_TARGET_IS_ME_AND_BOT = if_env(os.environ.get('PURGE_TARGET_IS_ME_AND_BOT'))
-# OHGIRI_JSON_URL = os.environ.get('OHGIRI_JSON_URL')
-# REACTION_CHANNELER_PERMIT_WEBHOOK_ID = os.environ.get('REACTION_CHANNELER_PERMIT_WEBHOOK_ID')
-# WORDWOLF_JSON_URL = os.environ.get('WORDWOLF_JSON_URL')
-# NGWORD_GAME_JSON_URL = os.environ.get('NGWORD_GAME_JSON_URL')
 
 # SOURCE: discord-bot-heroku
 def if_env(str):
@@ -59,7 +44,7 @@ def num_env(param):
 class Config:
     def __init__(self):
         self.config = {
-            "token": DISCORD_TOKEN,
+            "token": DROPBOX_AIODROPBOX_TOKEN,
             "prefix": constants.PREFIX,
         }
         self.prefix = self.config.get("prefix", default_config.get("prefix"))

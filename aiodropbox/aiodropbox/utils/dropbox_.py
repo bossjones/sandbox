@@ -42,19 +42,18 @@ from aiodropbox.dbx_logger import get_logger  # noqa: E402
 
 LOGGER = get_logger(__name__, provider="Dropbox", level=logging.DEBUG)
 
-DROPBOX_CEREBRO_APP_KEY = os.environ.get("DROPBOX_CEREBRO_APP_KEY")
-DROPBOX_CEREBRO_APP_SECRET = os.environ.get("DROPBOX_CEREBRO_APP_SECRET")
+DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
+DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")
 
-DROPBOX_CEREBRO_TOKEN = os.environ.get("DROPBOX_CEREBRO_TOKEN")
+DROPBOX_AIODROPBOX_TOKEN = os.environ.get("DROPBOX_AIODROPBOX_TOKEN")
 DEFAULT_DROPBOX_FOLDER = "/cerebro_downloads"
-# DEFAULT_DROPBOX_FOLDER = "/test_cerebro_downloads"
 # LOCALFILE = 'data/croc.jpeg'
 # BACKUPPATH = '/croc.jpeg'
 
 # Establish connection
 
 
-def get_dropbox_client(token=DROPBOX_CEREBRO_TOKEN) -> Union[dropbox.Dropbox, None]:
+def get_dropbox_client(token=DROPBOX_AIODROPBOX_TOKEN) -> Union[dropbox.Dropbox, None]:
     dbx = None
     try:
         dbx = dropbox.Dropbox(token)
@@ -468,7 +467,7 @@ def cli_oauth():
     """
 
     auth_flow = DropboxOAuth2FlowNoRedirect(
-        DROPBOX_CEREBRO_APP_KEY, DROPBOX_CEREBRO_APP_SECRET
+        DROPBOX_AIODROPBOX_APP_KEY, DROPBOX_AIODROPBOX_APP_SECRET
     )
 
     authorize_url = auth_flow.start()
@@ -507,9 +506,9 @@ def cli_oauth():
 # SOURCE: https://github.com/MadeByMads/fastapi-cloud-drives/blob/a245bb62c1c41f592549e2cfb7121a667003b41b/docs/dropbox.md
 class DropBoxConfig(BaseSettings):
 
-    DROPBOX_ACCESS_TOKEN: str = Field(None, env="DROPBOX_CEREBRO_TOKEN")
-    APP_KEY: str = Field(..., env="DROPBOX_CEREBRO_APP_KEY")
-    APP_SECRET: str = Field(..., env="DROPBOX_CEREBRO_APP_SECRET")
+    DROPBOX_ACCESS_TOKEN: str = Field(None, env="DROPBOX_AIODROPBOX_TOKEN")
+    APP_KEY: str = Field(..., env="DROPBOX_AIODROPBOX_APP_KEY")
+    APP_SECRET: str = Field(..., env="DROPBOX_AIODROPBOX_APP_SECRET")
     DROPBOX_REFRESH_TOKEN: str = Field(None, env="DROPBOX_REFRESH_TOKEN")
 
     class Config:

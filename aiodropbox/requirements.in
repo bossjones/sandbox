@@ -31,7 +31,7 @@ pyinspect
 aiohttp
 aiosql
 pytz
-discord.py==1.7.3
+# discord.py==1.7.3
 youtube_dl
 gallery-dl
 # https://github.com/dbrattli/aioreactive

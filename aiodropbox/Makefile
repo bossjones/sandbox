@@ -523,3 +523,6 @@ install-opencv-typing:
 
 jupyter-notebook:
 	jupyter notebook --port=2375 --ip=0.0.0.0
+
+editable-install:
+	pip install -e .[dev,tests,experimental,docs]

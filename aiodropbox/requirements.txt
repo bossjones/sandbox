@@ -10,13 +10,14 @@ aioconsole==0.3.3
     # via aiomonitor
 aiodebug==1.1.2
     # via -r requirements.in
+aiodns==3.0.0
+    # via -r requirements.in
 aiofiles==0.8.0
     # via -r requirements.in
 aiohttp==3.7.4.post0
     # via
     #   -r requirements.in
     #   aiohttp-json-rpc
-    #   discord.py
 aiohttp-json-rpc==0.13.3
     # via -r requirements.in
 aiomonitor==0.4.5
@@ -79,6 +80,7 @@ cffi==1.14.6
     # via
     #   argon2-cffi
     #   bcrypt
+    #   pycares
 chardet==4.0.0
     # via aiohttp
 charset-normalizer==2.0.4
@@ -127,8 +129,6 @@ dill==0.3.4
     # via
     #   datasets
     #   multiprocess
-discord.py==1.7.3
-    # via -r requirements.in
 dnspython==2.1.0
     # via email-validator
 docker-pycreds==0.4.0
@@ -381,6 +381,8 @@ pyarrow==5.0.0
     # via
     #   datasets
     #   streamlit
+pycares==4.1.2
+    # via aiodns
 pycparser==2.20
     # via cffi
 pydantic[email]==1.8.2
