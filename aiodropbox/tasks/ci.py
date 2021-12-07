@@ -80,7 +80,7 @@ rm -f cov.xml
 
 
 @task
-def pylint(ctx, loc="local", tests=False, everything=False, specific=""):
+def pylint(ctx, loc="local", tests=False, everything=False, specific="", error_only=False):
     """
     pylint aiodropbox folder
     Usage: inv ci.pylint
@@ -105,6 +105,10 @@ def pylint(ctx, loc="local", tests=False, everything=False, specific=""):
     elif specific:
         ctx.run(
             f"pylint --output-format=colorized --disable=all --enable={specific} --rcfile ./lint-configs-python/python/pylintrc tests aiodropbox"
+        )
+    elif error_only:
+        ctx.run(
+            f"pylint --output-format=colorized --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc tests aiodropbox"
         )
     else:
         ctx.run(

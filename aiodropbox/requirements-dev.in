@@ -49,8 +49,14 @@ types-dataclasses
 types-requests
 types-setuptools
 types-mock
+# types-aiofiles
 bandit
 setup-cfg-fmt
 flake8-typing-imports
 # dead simple python dead code detection
 dead
+
+# As the Python team, we are helping to ensure that packages have high-quality type annotations. In cases where this must be done through type stubs, we are contributing stubs to typeshed. This repository contains our "work in progress". Once the stubs for a package meet the requirements of typeshed, we will contribute them to typeshed and delete them from this repository.
+
+
+# https://github.com/microsoft/python-type-stubs

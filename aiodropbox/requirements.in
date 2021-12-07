@@ -97,3 +97,4 @@ imutils
 factory-boy
 wrapt==1.13.3
 typing-extensions==3.10.0
+email-validator

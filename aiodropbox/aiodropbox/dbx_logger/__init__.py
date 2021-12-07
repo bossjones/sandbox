@@ -337,6 +337,7 @@ def get_lm_from_tree(loggertree: LoggerModel, find_me: str) -> LoggerModel:
 
 
 def generate_tree() -> LoggerModel:
+    # pylint: disable=no-member
     # adapted from logging_tree package https://github.com/brandon-rhodes/logging_tree
     rootm = LoggerModel(
         name="root", level=logging.getLogger().getEffectiveLevel(), children=[]

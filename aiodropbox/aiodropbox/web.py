@@ -19,8 +19,10 @@ from starlette.responses import (
     PlainTextResponse,
     RedirectResponse,
     Response,
-    UJSONResponse,
 )
+
+from fastapi.responses import UJSONResponse
+
 from starlette.staticfiles import StaticFiles
 import uvicorn
 from aiodropbox import settings

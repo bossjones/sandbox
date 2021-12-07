@@ -8,6 +8,7 @@ from itertools import chain
 import json
 import logging
 from pathlib import Path
+from inspect import isawaitable as _isawaitable, signature as _signature
 
 from typing import (
     Any,
@@ -26,7 +27,7 @@ from typing import (
     Union,
 )
 
-from discord.utils import maybe_coroutine
+# from discord.utils import maybe_coroutine
 
 from aiodropbox import constants
 from aiodropbox.dbx_logger import get_logger  # noqa: E402
@@ -45,8 +46,16 @@ from aiodropbox.utils.config import Config
 
 LOGGER = get_logger("aiodropbox.utils", provider="Utils", level=logging.DEBUG)
 
+
 _T = TypeVar("_T")
 _S = TypeVar("_S")
+
+async def maybe_coroutine(f, *args, **kwargs):
+    value = f(*args, **kwargs)
+    if _isawaitable(value):
+        return await value
+    else:
+        return value
 
 # Benchmarked to be the fastest method.
 
@@ -115,7 +124,7 @@ class AsyncFilter(
         # Simply return the generator filled into a list
         return self.__flatten().__await__()
 
-    def __anext__(self) -> Awaitable[_T]:
+    async def __anext__(self) -> Awaitable[_T]:
         # This will use the generator strategy set in __init__
         return self.__generator_instance.__anext__()
 
