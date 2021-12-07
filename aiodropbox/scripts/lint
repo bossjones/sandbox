@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+# pylint -E --rcfile=./lint-configs-python/python/.pylintrc
+pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc aiodropbox
+# TODO: Re enable these guys 2/17/2021
+# flake8 aiodropbox --exclude=aiodropbox/db/migrations
+# mypy aiodropbox
+
+# black --check aiodropbox --diff
+# isort --recursive --check-only aiodropbox

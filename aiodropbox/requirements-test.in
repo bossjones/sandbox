@@ -1,0 +1,27 @@
+# dependencies for test
+# -c requirements.txt
+-c requirements-dev.txt
+pytest
+pytest-cov
+coveralls
+pytest-sugar
+pytest-mock
+pytest-leaks
+pytest-mypy
+pytest-flake8
+tox-pyenv
+pytest-black
+pytest-watch
+pytest-dotenv
+pytest-env
+pytest-asyncio
+pytest-timeout
+pytest-clarity
+# hypothesis
+
+# SOURCE: https://github.com/kvas-it/pytest-console-scripts
+# SOURCE: https://dev.to/bowmanjd/build-and-test-a-command-line-interface-with-poetry-python-s-argparse-and-pytest-4gab
+pytest-console-scripts
+types-mock
+pytest-rerunfailures
+python-dotenv>=0.19.2

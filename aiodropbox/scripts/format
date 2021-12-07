@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importsaiodropboxp tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place aiodropbox tests
+black aiodropbox tests
+isort --recursive aiodropbox tests
