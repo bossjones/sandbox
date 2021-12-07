@@ -171,6 +171,35 @@ def black(ctx, loc="local", check=False, debug=False, verbose=0, tests=False):
 
     ctx.run(_cmd)
 
+@task(
+    pre=[
+        call(clean, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def setup_cfg_fmt(ctx, loc="local", check=False, debug=False, verbose=0, tests=False):
+    """
+    Run black code formatter
+    Usage: inv ci.setup_cfg_fmt
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = "setup-cfg-fmt --min-py3-version 3.9 ./setup.cfg "
+
+    if verbose >= 1:
+        msg = "[setup-cfg-fmt] bout to run command: \n"
+        click.secho(msg, fg="green")
+        click.secho(_cmd, fg="green")
+
+    ctx.run(_cmd)
+
 
 @task(
     pre=[
@@ -764,6 +793,7 @@ pytest
         call(isort, loc="local"),
         call(black, loc="local", check=False, tests=True),
         call(mypy, loc="local"),
+        call(setup_cfg_fmt, loc="local"),
         call(pylint, loc="local", everything=True),
         call(pytest, loc="local"),
     ],
