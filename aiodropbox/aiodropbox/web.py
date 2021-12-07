@@ -1,3 +1,4 @@
+import sys
 import logging
 import os
 from pathlib import Path
@@ -287,10 +288,14 @@ if __name__ == "__main__":
     HOST = "localhost"
     PORT = int(os.environ.get("PORT", 11267))
 
-    APP_MODULE_STR = os.environ.get("APP_MODULE")
+    # LOGGER.level("uvicorn")
+    LOGGER.add(sys.stderr, filter="uvicorn", level="DEBUG")
+
+    # APP_MODULE_STR = os.environ.get("APP_MODULE")
+    APP_MODULE_STR = "aiodropbox.web:app"
     app_import_str = f"{APP_MODULE_STR}"
     uvicorn.run(
-        app_import_str,
+        "web:app",
         host=HOST,
         port=PORT,
         log_level=settings._USER_LOG_LEVEL.lower(),
