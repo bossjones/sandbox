@@ -59,8 +59,10 @@ filelock==3.0.12
     #   pytest-mypy
     #   tox
     #   virtualenv
-flake8==3.9.2
-    # via pytest-flake8
+flake8==4.0.1
+    # via
+    #   -c requirements-dev.txt
+    #   pytest-flake8
 idna==3.2
     # via
     #   -c requirements-dev.txt
@@ -103,11 +105,11 @@ py==1.10.0
     # via
     #   pytest
     #   tox
-pycodestyle==2.7.0
+pycodestyle==2.8.0
     # via
     #   -c requirements-dev.txt
     #   flake8
-pyflakes==2.3.1
+pyflakes==2.4.0
     # via
     #   -c requirements-dev.txt
     #   flake8

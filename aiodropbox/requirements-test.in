@@ -25,3 +25,4 @@ pytest-console-scripts
 types-mock
 pytest-rerunfailures
 python-dotenv>=0.19.2
+# requires pycodestyle<2.9.0,>=2.8.0

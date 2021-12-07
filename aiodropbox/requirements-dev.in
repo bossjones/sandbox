@@ -50,3 +50,7 @@ types-requests
 types-setuptools
 types-mock
 bandit
+setup-cfg-fmt
+flake8-typing-imports
+# dead simple python dead code detection
+dead
