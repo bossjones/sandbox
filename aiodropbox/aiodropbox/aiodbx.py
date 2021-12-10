@@ -31,9 +31,11 @@ import typing
 
 import aiofiles
 import aiohttp
+import rich
 
 
 from aiodropbox.dbx_logger import get_logger  # noqa: E402
+from aiodropbox import settings
 
 LOGGER = get_logger(__name__, provider="AIODBX", level=logging.DEBUG)
 
@@ -190,12 +192,19 @@ class AsyncDropboxAPI:
 
         LOGGER.debug("Validating token")
 
+
+
+        # resp_data = await self.files_list_folder(settings.DEFAULT_DROPBOX_FOLDER)
+
+        # LOGGER.debug(resp_data)
+
         nonce = base64.b64encode(os.urandom(8), altchars=b"-_").decode("utf-8")
         url = "https://api.dropboxapi.com/2/check/user"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
         }
+        rich.print(headers)
         data = json.dumps({"query": nonce})
 
         async with Request(
@@ -597,6 +606,119 @@ class AsyncDropboxAPI:
             "Content-Type": "application/json",
         }
         data = json.dumps({"url": shared_link})
+
+        async with Request(
+            self.client_session.post, url, LOGGER, headers=headers, data=data
+        ) as resp:
+            resp_data = await resp.json()
+            return resp_data
+
+    async def files_list_folder(self, path: str,
+    recursive=False,
+    include_media_info=False,
+    include_deleted=False,
+    include_has_explicit_shared_members=False,
+    include_mounted_folders=True,
+    limit=None,
+    shared_link=None,
+    include_property_groups=None,
+    include_non_downloadable_files=True) -> dict:
+        """
+        Starts returning the contents of a folder. If the result's
+        ``ListFolderResult.has_more`` field is ``True``, call
+        :meth:`files_list_folder_continue` with the returned
+        ``ListFolderResult.cursor`` to retrieve more entries. If you're using
+        ``ListFolderArg.recursive`` set to ``True`` to keep a local cache of the
+        contents of a Dropbox account, iterate through each entry in order and
+        process them as follows to keep your local state in sync: For each
+        :class:`dropbox.files.FileMetadata`, store the new entry at the given
+        path in your local state. If the required parent folders don't exist
+        yet, create them. If there's already something else at the given path,
+        replace it and remove all its children. For each
+        :class:`dropbox.files.FolderMetadata`, store the new entry at the given
+        path in your local state. If the required parent folders don't exist
+        yet, create them. If there's already something else at the given path,
+        replace it but leave the children as they are. Check the new entry's
+        ``FolderSharingInfo.read_only`` and set all its children's read-only
+        statuses to match. For each :class:`dropbox.files.DeletedMetadata`, if
+        your local state has something at the given path, remove it and all its
+        children. If there's nothing at the given path, ignore this entry. Note:
+        :class:`dropbox.auth.RateLimitError` may be returned if multiple
+        :meth:`files_list_folder` or :meth:`files_list_folder_continue` calls
+        with same parameters are made simultaneously by same API app for same
+        user. If your app implements retry logic, please hold off the retry
+        until the previous request finishes.
+
+        :param str path: A unique identifier for the file.
+        :param bool recursive: If true, the list folder operation will be
+            applied recursively to all subfolders and the response will contain
+            contents of all subfolders.
+        :param bool include_media_info: If true, ``FileMetadata.media_info`` is
+            set for photo and video. This parameter will no longer have an
+            effect starting December 2, 2019.
+        :param bool include_deleted: If true, the results will include entries
+            for files and folders that used to exist but were deleted.
+        :param bool include_has_explicit_shared_members: If true, the results
+            will include a flag for each file indicating whether or not  that
+            file has any explicit members.
+        :param bool include_mounted_folders: If true, the results will include
+            entries under mounted folders which includes app folder, shared
+            folder and team folder.
+        :param Nullable[int] limit: The maximum number of results to return per
+            request. Note: This is an approximate number and there can be
+            slightly more entries returned in some cases.
+        :param Nullable[:class:`dropbox.files.SharedLink`] shared_link: A shared
+            link to list the contents of. If the link is password-protected, the
+            password must be provided. If this field is present,
+            ``ListFolderArg.path`` will be relative to root of the shared link.
+            Only non-recursive mode is supported for shared link.
+        :param Nullable[:class:`dropbox.files.TemplateFilterBase`]
+            include_property_groups: If set to a valid list of template IDs,
+            ``FileMetadata.property_groups`` is set if there exists property
+            data associated with the file and each of the listed templates.
+        :param bool include_non_downloadable_files: If true, include files that
+            are not downloadable, i.e. Google Docs.
+        :rtype: :class:`dropbox.files.ListFolderResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.ListFolderError`
+        https://www.dropbox.com/developers/documentation/http/documentation
+
+        Args:
+            shared_link:
+                A shared link which points to the file or folder to get metadata from.
+        Returns:
+            dict:
+                FileMetadata or FolderMetadata for the file/folder behind the shared link
+        """
+
+        # curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+        # --header "Authorization: Bearer " \
+        # --header "Content-Type: application/json" \
+        # --data "{\"path\": \"/Homework/math\",\"recursive\": false,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false,\"include_mounted_folders\": true,\"include_non_downloadable_files\": true}"
+
+        LOGGER.info(f"Getting contents of folder {path}")
+
+        url = "https://api.dropboxapi.com/2/files/list_folder"
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json",
+        }
+        args = {
+            "path": path,
+            "recursive": recursive,
+            "include_media_info": include_media_info,
+            "include_deleted": include_deleted,
+            "include_has_explicit_shared_members": include_has_explicit_shared_members,
+            "include_mounted_folders": include_mounted_folders,
+            "include_non_downloadable_files": include_non_downloadable_files,
+            # "limit": limit,
+            # "shared_link": shared_link,
+            # "include_property_groups": include_property_groups,
+        }
+
+        data = json.dumps(args)
 
         async with Request(
             self.client_session.post, url, LOGGER, headers=headers, data=data
