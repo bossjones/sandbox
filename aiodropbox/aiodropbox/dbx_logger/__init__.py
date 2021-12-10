@@ -62,10 +62,6 @@ if TYPE_CHECKING:
     from better_exceptions.log import BetExcLogger
     from loguru._logger import Logger as _Logger
 
-# Root logger
-# loggers: logging.Logger
-# loggers = logging.getLogger(LOGGERS)
-
 LOGLEVEL_MAPPING = {
     50: "CRITICAL",
     40: "ERROR",
@@ -83,25 +79,35 @@ class InterceptHandler(logging.Handler):
     """
 
     loglevel_mapping = {
-        50: "CRITICAL",
-        40: "ERROR",
-        30: "WARNING",
-        20: "INFO",
-        10: "DEBUG",
+        logging.CRITICAL: "CRITICAL",
+        logging.ERROR: "ERROR",
+        logging.FATAL: "FATAL",
+        logging.WARNING: "WARNING",
+        logging.INFO: "INFO",
+        logging.DEBUG: "DEBUG",
+        1: "DUMMY",
         0: "NOTSET",
     }
 
+    # from logging import DEBUG
+    # from logging import ERROR
+    # from logging import FATAL
+    # from logging import INFO
+    # from logging import WARN
+    # https://issueexplorer.com/issue/tiangolo/fastapi/4026
     def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover
         # Get corresponding Loguru level if it exists
         try:
             level = logger.level(record.levelname).name
         except ValueError:
-            level = str(record.levelno)
+            # DISABLED 12/10/2021 # level = str(record.levelno)
+            level = record.levelno
 
         # Find caller from where originated the logged message
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:  # noqa: WPS609
-            frame = cast(FrameType, frame.f_back)
+            frame = frame.f_back
+            # DISABLED 12/10/2021 # frame = cast(FrameType, frame.f_back)
             depth += 1
 
         logger.opt(depth=depth, exception=record.exc_info).log(
@@ -110,7 +116,7 @@ class InterceptHandler(logging.Handler):
         )
 
 
-logging.basicConfig(handlers=[InterceptHandler()], level=0)
+# logging.basicConfig(handlers=[InterceptHandler()], level=0)
 
 
 # """ Logging handler intercepting existing handlers to redirect them to loguru """
@@ -228,56 +234,41 @@ def get_logger(
         enqueue=True,
         diagnose=True,
     )
-    # logger.add(sys.stdout, format=fmt, filter=LoopDetector())
 
-    log_file_path = Path("./audit/bot.log")
-    # Automatically rotate too big file
-    logger.add(f"{log_file_path}", rotation="500 MB")
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="handler",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="asyncio",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="tensorflow",
+        level="DEBUG",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="keras",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
 
-    # # if loggers.get(name):
-    # #     return loggers.get(name)
-    # # else:
-    # loggers = logging.getLogger(name)
-    # # Add stdout handler
-    # stdout_handler = logging.StreamHandler(sys.stdout)
-    # formatter = logging.Formatter(fmt)
-    # stdout_handler.setFormatter(formatter)
-    # loggers.addHandler(stdout_handler)
-    # intercept_handler = InterceptHandler()
-    # loggers.addHandler(intercept_handler)
-
-    # # For now, run log all the time
-    # # if enable_file_logger:
-    # file_handler = logging.FileHandler("tui.log")
-    # file_formatter = logging.Formatter(
-    #     "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
-    # )
-    # file_handler.setFormatter(file_formatter)
-    # logger.addHandler(file_handler)
-
-    # # Set logging level
-    # loggers.setLevel(level)
-    # logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(
-    #     logging.ERROR
-    # )
-
-    # for logger_name in LOGGERS:
-    #     logging_logger = logging.getLogger(logger_name)
-    #     logging_logger.handlers = [InterceptHandler(level=level)]
-    #     logging_logger.propagate = False
-    #     logging_logger.enqueue = True
-    #     logging_logger.diagnose = True
-
-    # # Disable propagation to avoid conflict with Artifactory
-    # loggers.propagate = False
-
-    # # set to true for async or multiprocessing logging
-    # loggers.enqueue = True
-
-    # # Caution, may leak sensitive data in prod
-    # loggers.diagnose = True
-
-    # loggers.addFilter(LoopDetector())
+    logging.basicConfig(handlers=[InterceptHandler()], level=0)
 
     return logger
 

@@ -5,11 +5,23 @@ import logging
 import os
 import os.path
 
-rootlogger = logging.getLogger()
-handler_logger = logging.getLogger("handler")
 
-name_logger = logging.getLogger(__name__)
-asyncio_logger = logging.getLogger("asyncio").setLevel(logging.DEBUG)
+from aiodropbox.dbx_logger import get_logger, intercept_all_loggers  # noqa: E402
+
+LOGGER = get_logger(__name__, provider="aiodropbox", level=logging.DEBUG)
+# intercept_all_loggers()
+
+# handler_logger = LOGGER.add("handler")
+# name_logger = LOGGER.add("asyncio")
+# name_logger = LOGGER.add("tensorflow")
+# name_logger = LOGGER.add("keras")
+# name_logger = LOGGER.add(__name__)
+
+# # rootlogger = logging.getLogger()
+# handler_logger = logging.getLogger("handler")
+
+# name_logger = logging.getLogger(__name__)
+# asyncio_logger = logging.getLogger("asyncio").setLevel(logging.DEBUG)
 
 DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
 DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")

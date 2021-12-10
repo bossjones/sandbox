@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import pathlib
 
 from PIL import Image
 from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
@@ -24,13 +25,38 @@ from starlette.responses import (
 )
 from starlette.staticfiles import StaticFiles
 import tensorflow as tf
-from tensorflow.keras.applications.imagenet_utils import decode_predictions
+from tensorflow.keras.applications.imagenet_utils import decode_predictions  # pylint: disable=no-name-in-module
 import uvicorn
 
 from aiodropbox import settings
 from aiodropbox.components import predict, read_imagefile
 from aiodropbox.components.prediction import symptom_check
 from aiodropbox.schema import Symptom
+
+from aiodropbox.dbx_logger import get_logger, intercept_all_loggers, generate_tree, get_lm_from_tree  # noqa: E402
+from aiodropbox.models.loggers import LoggerModel, LoggerPatch
+
+import sys
+
+from IPython.core import ultratb
+from IPython.core.debugger import Tracer  # noqa
+
+sys.excepthook = ultratb.FormattedTB(
+    mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+)
+
+# tenserflow logging
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+
+
+LOG_LEVELS = {
+    "critical": logging.CRITICAL,
+    "error": logging.ERROR,
+    "warning": logging.WARNING,
+    "info": logging.INFO,
+    "debug": logging.DEBUG,
+}
+
 
 app_desc = """<h2>Try this app by uploading any image with `predict/image`</h2>
 <h2>Try Covid symptom checker api - it is just a learning app demo</h2>
@@ -58,9 +84,9 @@ def start_debugger():
     return parent_pid, pids
 
 
-from aiodropbox.dbx_logger import get_logger  # noqa: E402
-
+# LOGGER = get_logger(__name__, provider="Web")
 LOGGER = get_logger(__name__, provider="Web", level=logging.DEBUG)
+intercept_all_loggers()
 
 FASTAPI_LOGGER = logging.getLogger("fastapi")
 FASTAPI_LOGGER.setLevel(logging.DEBUG)
@@ -260,6 +286,44 @@ app = get_application()
 async def hello_world():
     return "hello world"
 
+# app.include_router(
+#     log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
+# )
+# @app.get("/index")
+# async def hello_world():
+#     return "hello world"
+
+# Multiple RecursionErrors with self-referencing models
+# https://github.com/samuelcolvin/pydantic/issues/524
+# https://github.com/samuelcolvin/pydantic/issues/531
+
+
+@app.get("/{settings.API_V1_STR}/logs/{logger_name}", response_model=LoggerModel, tags=["log"])
+async def logger_get(logger_name: str):
+    LOGGER.debug(f"getting logger {logger_name}")
+    rootm = generate_tree()
+    lm = get_lm_from_tree(rootm, logger_name)
+    if lm is None:
+        raise HTTPException(status_code=404, detail=f"Logger {logger_name} not found")
+    return lm
+
+
+@app.patch("/{settings.API_V1_STR}/logs", tags=["log"])
+async def logger_patch(loggerpatch: LoggerPatch):
+    rootm = generate_tree()
+    lm = get_lm_from_tree(rootm, loggerpatch.name)
+    LOGGER.debug(f"Actual level of {lm.name} is {lm.level}")
+    LOGGER.debug(f"Setting {loggerpatch.name} to {loggerpatch.level}")
+    logging.getLogger(loggerpatch.name).setLevel(LOG_LEVELS[loggerpatch.level])
+    return loggerpatch
+
+
+@app.get("/{settings.API_V1_STR}/logs", response_model=LoggerModel, tags=["log"])
+async def loggers_list():
+    rootm = generate_tree()
+    LOGGER.debug(rootm)
+    return rootm
+
 
 @app.get("/", include_in_schema=False)
 async def index():
@@ -268,6 +332,9 @@ async def index():
 
 @app.post("/predict/image")
 async def predict_api(file: UploadFile = File(...)):
+    # LOGGER.debug(f"file.filename -> {file.filename}")
+    # extension = f"{pathlib.Path(file.filename).suffix}" in ("jpg", "jpeg", "png")
+    # LOGGER.debug(f"extension -> {extension}")
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -291,6 +358,9 @@ if __name__ == "__main__":
 
     # LOGGER.level("uvicorn")
     LOGGER.add(sys.stderr, filter="uvicorn", level="DEBUG")
+
+    # print(tf.logging._level_names)
+    # print(tf.logging.get_verbosity())
 
     # APP_MODULE_STR = os.environ.get("APP_MODULE")
     APP_MODULE_STR = "aiodropbox.web:app"
