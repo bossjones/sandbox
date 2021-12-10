@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module
 import logging
 import os
 from pathlib import Path
@@ -12,6 +13,7 @@ import os
 import pathlib
 import tempfile
 import aiofiles
+import traceback
 
 from codetiming import Timer
 
@@ -53,6 +55,15 @@ from aiodropbox.dbx_logger import (  # noqa: E402
 from aiodropbox.models.loggers import LoggerModel, LoggerPatch
 from aiodropbox.schema import Symptom
 from aiodropbox.utils import writer
+from aiodropbox import aiodbx
+
+# aiodropbox.utils.config
+
+# DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
+# DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")
+
+# DROPBOX_AIODROPBOX_TOKEN = os.environ.get("DROPBOX_AIODROPBOX_TOKEN")
+# DEFAULT_DROPBOX_FOLDER = "/cerebro_downloads"
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
@@ -103,6 +114,16 @@ intercept_all_loggers()
 
 FASTAPI_LOGGER = logging.getLogger("fastapi")
 FASTAPI_LOGGER.setLevel(logging.DEBUG)
+
+
+# async def _co_dropbox_upload(dbx: aiodbx.AsyncDropboxAPI, path_to_file: pathlib.PosixPath):
+
+async def run_upload_to_dropbox(dbx: aiodbx.AsyncDropboxAPI, path_to_file: pathlib.PosixPath):
+    # upload the new file to an upload session
+    # this returns a "commit" dict, which will be passed to upload_finish later
+    # the commit is saved in the AsyncDropboxAPI object already, so unless you need
+    # information from it you can discard the return value
+    await dbx.upload_start(path_to_file, settings.DEFAULT_DROPBOX_FOLDER)
 
 # @app.exception_handler(RequestValidationError)
 # SOURCE: https://fastapi.tiangolo.com/tutorial/handling-errors/#use-the-requestvalidationerror-body
@@ -360,51 +381,68 @@ async def predict_api(file: UploadFile = File(...)):
 
 @app.post("/dropbox/upload")
 async def dropbox_upload(file: UploadFile = File(...)):
-    LOGGER.info("simulating cerebro download then upload to dropbox ...")
-    data = await file.read()
-    p = pathlib.Path(file.filename)
-    extension = p.suffix.split(".")[-1]
-    fname = p.stem
-    directory = "/Users/malcolm/dev/bossjones/sandbox/aiodropbox/audit"
-    async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
-        LOGGER.info(f"writing to {f.name}")
-        await f.write(data)
-        await f.flush()
-        await f.seek(0)
+    async with aiodbx.AsyncDropboxAPI(settings.DROPBOX_AIODROPBOX_TOKEN) as dbx:
+        await dbx.validate()
 
-        filename = f.name
-        LOGGER.info(f"os.path.exists(filename) -> {os.path.exists(filename)}")
-        LOGGER.info(f"os.path.isfile(filename) -> {os.path.isfile(filename)}")
+        LOGGER.info("simulating cerebro download then upload to dropbox ...")
+        data = await file.read()
+        p = pathlib.Path(file.filename)
+        extension = p.suffix.split(".")[-1]
+        fname = p.stem
+        directory = "/Users/malcolm/dev/bossjones/sandbox/aiodropbox/audit"
+        async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
+            LOGGER.info(f"writing to {f.name}")
+            await f.write(data)
+            await f.flush()
+            await f.seek(0)
+
+            filename = f.name
+            LOGGER.info(f"os.path.exists(filename) -> {os.path.exists(filename)}")
+            LOGGER.info(f"os.path.isfile(filename) -> {os.path.isfile(filename)}")
+
+        path_to_file = await writer.write_file(fname, data, extension, directory)
+        path_to_file_api = pathlib.Path(path_to_file).absolute()
+        assert path_to_file_api.exists()
+
+        list_of_files_to_upload = [path_to_file]
+
+        # create a coroutine for each link in shared_links
+        # run them and print a simple confirmation message when we have a result
+        coroutines = [run_upload_to_dropbox(dbx, _file) for _file in list_of_files_to_upload]
+        for coro in asyncio.as_completed(coroutines):
+            try:
+                res = await coro
+            # except aiodbx.DropboxAPIError as e:
+            #     # this exception is raised when the API returns an error
+            #     LOGGER.error('Encountered an error')
+            #     LOGGER.error(e)
+            # else:
+            #     LOGGER.info(f'Processed {res}')
+            except Exception as ex:
+                print(str(ex))
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                LOGGER.error("Error Class: {}".format(str(ex.__class__)))
+                output = "[{}] {}: {}".format("UNEXPECTED", type(ex).__name__, ex)
+                LOGGER.warning(output)
+                LOGGER.error("exc_type: {}".format(exc_type))
+                LOGGER.error("exc_value: {}".format(exc_value))
+                traceback.print_tb(exc_traceback)
+                raise
+            else:
+                LOGGER.info(f'Processed {res}')
+
+        # once everything is uploaded, finish the upload batch
+        # this returns the metadata of all of the uploaded files
+        uploaded_files = await dbx.upload_finish()
+
+        # print out some info
+        LOGGER.info('\nThe files we just uploaded are:')
+        for file in uploaded_files:
+            LOGGER.info(file['name'])
 
 
-    # LOGGER.info(f"os.path.isfile(filename) -> {os.path.isfile(filename)}")
 
-    await writer.write_file(fname, data, extension, directory)
-    # with tempfile.TemporaryDirectory() as tmpdirname:
-    #         print("created temporary directory", tmpdirname)
-    #         with Timer(text="\nTotal elapsed time: {:.1f}"):
-    #             await asyncio.gather(
-    #                 asyncio.create_task(
-    #                     shell.run_coroutine_subprocess(
-    #                         cmd=cmd_metadata.cmd,
-    #                         uri=cmd_metadata.uri,
-    #                         working_dir=f"{tmpdirname}",
-    #                     )
-    #                 ),
-    #             )
-
-    #             file_to_upload_list = glob_file_by_extension(
-    #                 f"{tmpdirname}", extension="*.mp4"
-    #             )
-
-    #             file_to_upload = f"{file_to_upload_list[0]}"
-    # # extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
-    # # if not extension:
-    # #     return "Image must be jpg or png format!"
-    # # image = read_imagefile(await file.read())
-    # # prediction = predict(image)
-
-    # asyncio.get_event_loop().run_until_complete(main(token, shared_links, log))
+        # asyncio.get_event_loop().run_until_complete(main(token, shared_links, log))
 
     return "data written"
 

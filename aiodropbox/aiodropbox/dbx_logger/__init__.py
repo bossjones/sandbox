@@ -267,6 +267,14 @@ def get_logger(
         enqueue=True,
         diagnose=True,
     )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="aiohttp",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
 
     logging.basicConfig(handlers=[InterceptHandler()], level=0)
 

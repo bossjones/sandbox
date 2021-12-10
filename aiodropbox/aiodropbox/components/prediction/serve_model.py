@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module
 from io import BytesIO
 import itertools
 # import matplotlib.pyplot as plt

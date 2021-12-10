@@ -5,7 +5,7 @@ import os
 import platform
 import uuid
 
-from pydantic import EmailStr
+from pydantic import EmailStr  # pylint: disable=no-name-in-module
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret
 
@@ -40,6 +40,12 @@ def getenv_boolean(var_name: str, default_value: bool = False) -> bool:
         result = env_value.upper() in ("TRUE", "1")
     return result
 
+
+DROPBOX_AIODROPBOX_APP_KEY = os.environ.get("DROPBOX_AIODROPBOX_APP_KEY")
+DROPBOX_AIODROPBOX_APP_SECRET = os.environ.get("DROPBOX_AIODROPBOX_APP_SECRET")
+
+DROPBOX_AIODROPBOX_TOKEN = os.environ.get("DROPBOX_AIODROPBOX_TOKEN")
+DEFAULT_DROPBOX_FOLDER = "/cerebro_downloads"
 
 API_V1_STR = "/v1"
 

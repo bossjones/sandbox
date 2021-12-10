@@ -33,6 +33,10 @@ import aiofiles
 import aiohttp
 
 
+from aiodropbox.dbx_logger import get_logger  # noqa: E402
+
+LOGGER = get_logger(__name__, provider="AIODBX", level=logging.DEBUG)
+
 class DropboxAPIError(Exception):
     """
     Exception for errors thrown by the API. Contains the HTTP status code and the returned error message.
@@ -62,8 +66,6 @@ class Request:
         session method to call that returns a ClientResponse (e.g. session.post)
     url:
         url to request
-    log:
-        logger to use for log messages (default is a null logger)
     ok_statuses:
         list of statuses that will return without an error (default is [200])
     retry_count:
@@ -78,7 +80,6 @@ class Request:
         self,
         request: typing.Callable[..., typing.Any],
         url: str,
-        log: logging.Logger = logging.getLogger("null"),
         ok_statuses: list[int] = [200],
         retry_count: int = 5,
         retry_statuses: list[int] = [429],
@@ -86,7 +87,6 @@ class Request:
     ):
         self.request = request
         self.url = url
-        self.log = log
         self.ok_statuses = ok_statuses
         self.retry_count = retry_count
         self.retry_statuses = retry_statuses
@@ -110,7 +110,7 @@ class Request:
 
         self.current_attempt += 1
         if self.current_attempt > 1:
-            self.log.debug(f"Attempt {self.current_attempt} out of {self.retry_count}")
+            LOGGER.debug(f"Attempt {self.current_attempt} out of {self.retry_count}")
 
         resp: aiohttp.ClientResponse = await self.request(
             self.url,
@@ -123,7 +123,7 @@ class Request:
 
         if resp.status in self.ok_statuses or resp.status < 400:
             endpoint_name = self.url[self.url.index("2") + 1 :]
-            self.log.debug(f"Request OK: {endpoint_name} returned {resp.status}")
+            LOGGER.debug(f"Request OK: {endpoint_name} returned {resp.status}")
         else:
             raise DropboxAPIError(resp.status, await resp.text())
 
@@ -162,12 +162,10 @@ class AsyncDropboxAPI:
             a Dropbox API access token
         retry_statuses:
             list of statuses that will automatically be retried (default is [429])
-        log:
-            logger to use for log messages (default is a null logger)
     """
 
     def __init__(
-        self, token: str, retry_statuses: list[int] = [429], log: logging.Logger = None
+        self, token: str, retry_statuses: list[int] = [429]
     ):
         self.token = token
         self.retry_statuses = retry_statuses
@@ -176,7 +174,6 @@ class AsyncDropboxAPI:
         )
         self.upload_session: list[dict] = []
 
-        self.log = log or logging.getLogger("null")
 
     async def validate(self):
         """
@@ -191,7 +188,7 @@ class AsyncDropboxAPI:
                 If the token is invalid
         """
 
-        self.log.debug("Validating token")
+        LOGGER.debug("Validating token")
 
         nonce = base64.b64encode(os.urandom(8), altchars=b"-_").decode("utf-8")
         url = "https://api.dropboxapi.com/2/check/user"
@@ -202,11 +199,11 @@ class AsyncDropboxAPI:
         data = json.dumps({"query": nonce})
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers, data=data
+            self.client_session.post, url, LOGGER, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             if resp_data["result"] == nonce:
-                self.log.debug("Token is valid")
+                LOGGER.debug("Token is valid")
                 return True
             else:
                 raise DropboxAPIError(resp.status, "Token is invalid")
@@ -230,8 +227,8 @@ class AsyncDropboxAPI:
         if local_path == None:
             local_path = os.path.basename(dropbox_path)
 
-        self.log.info(f"Downloading {os.path.basename(local_path)}")
-        self.log.debug(f"from {dropbox_path}")
+        LOGGER.info(f"Downloading {os.path.basename(local_path)}")
+        LOGGER.debug(f"from {dropbox_path}")
 
         url = "https://content.dropboxapi.com/2/files/download"
         headers = {
@@ -240,7 +237,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers
+            self.client_session.post, url, LOGGER, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -266,8 +263,8 @@ class AsyncDropboxAPI:
         if local_path == None:
             local_path = os.path.basename(dropbox_path)
 
-        self.log.info(f"Downloading {os.path.basename(local_path)}")
-        self.log.debug(f"from {dropbox_path}")
+        LOGGER.info(f"Downloading {os.path.basename(local_path)}")
+        LOGGER.debug(f"from {dropbox_path}")
 
         url = "https://content.dropboxapi.com/2/files/download_zip"
         headers = {
@@ -276,7 +273,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers
+            self.client_session.post, url, LOGGER, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -304,8 +301,8 @@ class AsyncDropboxAPI:
         if local_path == None:
             local_path = os.path.basename(shared_link[: shared_link.index("?")])
 
-        self.log.info(f"Downloading {os.path.basename(local_path)}")
-        self.log.debug(f"from {shared_link}")
+        LOGGER.info(f"Downloading {os.path.basename(local_path)}")
+        LOGGER.debug(f"from {shared_link}")
 
         url = "https://content.dropboxapi.com/2/sharing/get_shared_link_file"
         headers = {
@@ -314,7 +311,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers
+            self.client_session.post, url, LOGGER, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -351,8 +348,8 @@ class AsyncDropboxAPI:
                 "upload_session is too large, you must call upload_finish to commit the batch"
             )
 
-        self.log.info(f"Uploading {os.path.basename(local_path)}")
-        self.log.debug(f"to {dropbox_path}")
+        LOGGER.info(f"Uploading {os.path.basename(local_path)}")
+        LOGGER.debug(f"to {dropbox_path}")
 
         url = "https://content.dropboxapi.com/2/files/upload_session/start"
         headers = {
@@ -364,7 +361,7 @@ class AsyncDropboxAPI:
         async with aiofiles.open(local_path, "rb") as f:
             data = await f.read()
             async with Request(
-                self.client_session.post, url, self.log, headers=headers, data=data
+                self.client_session.post, url, LOGGER, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
 
@@ -405,8 +402,8 @@ class AsyncDropboxAPI:
                 "upload_session is empty, have you uploaded any files yet?"
             )
 
-        self.log.info("Finishing upload batch")
-        self.log.debug(f"Batch size is {len(self.upload_session)}")
+        LOGGER.info("Finishing upload batch")
+        LOGGER.debug(f"Batch size is {len(self.upload_session)}")
 
         url = "https://api.dropboxapi.com/2/files/upload_session/finish_batch"
         headers = {
@@ -416,7 +413,7 @@ class AsyncDropboxAPI:
         data = json.dumps({"entries": self.upload_session})
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers, data=data
+            self.client_session.post, url, LOGGER, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             self.upload_session = []  # empty the local upload session
@@ -427,7 +424,7 @@ class AsyncDropboxAPI:
                     resp_data["async_job_id"], check_interval=check_interval
                 )
             elif resp_data[".tag"] == "complete":
-                self.log.info("Upload batch finished")
+                LOGGER.info("Upload batch finished")
                 return resp_data["entries"]
             else:
                 err = await resp.text()
@@ -453,7 +450,7 @@ class AsyncDropboxAPI:
                 List of FileMetadata dicts containing metadata on each uploaded file
         """
 
-        self.log.debug(f"Batch not finished, checking every {check_interval} seconds")
+        LOGGER.debug(f"Batch not finished, checking every {check_interval} seconds")
 
         url = "https://api.dropboxapi.com/2/files/upload_session/finish_batch/check"
         headers = {
@@ -465,15 +462,15 @@ class AsyncDropboxAPI:
         while True:
             await asyncio.sleep(check_interval)
             async with Request(
-                self.client_session.post, url, self.log, headers=headers, data=data
+                self.client_session.post, url, LOGGER, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
 
                 if resp_data[".tag"] == "complete":
-                    self.log.info("Upload batch finished")
+                    LOGGER.info("Upload batch finished")
                     return resp_data["entries"]
                 elif resp_data[".tag"] == "in_progress":
-                    self.log.debug(f"Checking again in {check_interval} seconds")
+                    LOGGER.debug(f"Checking again in {check_interval} seconds")
                     continue
 
     async def upload_single(
@@ -505,8 +502,8 @@ class AsyncDropboxAPI:
             raise ValueError(f"local_path {local_path} does not exist")
         args["path"] = dropbox_path
 
-        self.log.info(f"Uploading {os.path.basename(local_path)}")
-        self.log.debug(f"to {dropbox_path}")
+        LOGGER.info(f"Uploading {os.path.basename(local_path)}")
+        LOGGER.debug(f"to {dropbox_path}")
 
         url = "https://content.dropboxapi.com/2/files/upload"
         headers = {
@@ -518,7 +515,7 @@ class AsyncDropboxAPI:
         async with aiofiles.open(local_path, "rb") as f:
             data = await f.read()
             async with Request(
-                self.client_session.post, url, self.log, headers=headers, data=data
+                self.client_session.post, url, LOGGER, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
                 return resp_data
@@ -540,8 +537,8 @@ class AsyncDropboxAPI:
                 If `dropbox_path` does not exist on Dropbox, or if an otherwise unknown status is returned.
         """
 
-        self.log.info(f"Creating shared link for file {os.path.basename(dropbox_path)}")
-        self.log.debug(f"Full path is {dropbox_path}")
+        LOGGER.info(f"Creating shared link for file {os.path.basename(dropbox_path)}")
+        LOGGER.debug(f"Full path is {dropbox_path}")
 
         url = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
         headers = {
@@ -554,7 +551,7 @@ class AsyncDropboxAPI:
         async with Request(
             self.client_session.post,
             url,
-            self.log,
+            LOGGER,
             headers=headers,
             data=data,
             ok_statuses=[200, 409],
@@ -565,7 +562,7 @@ class AsyncDropboxAPI:
                 return resp_data["url"]
             else:
                 if "shared_link_already_exists" in resp_data["error_summary"]:
-                    self.log.warning(
+                    LOGGER.warning(
                         f"Shared link already exists for {os.path.basename(dropbox_path)}, using existing link"
                     )
                     return resp_data["error"]["shared_link_already_exists"]["metadata"][
@@ -592,7 +589,7 @@ class AsyncDropboxAPI:
                 FileMetadata or FolderMetadata for the file/folder behind the shared link
         """
 
-        self.log.info(f"Getting metadata from shared link {shared_link}")
+        LOGGER.info(f"Getting metadata from shared link {shared_link}")
 
         url = "https://api.dropboxapi.com/2/sharing/get_shared_link_metadata"
         headers = {
@@ -602,7 +599,7 @@ class AsyncDropboxAPI:
         data = json.dumps({"url": shared_link})
 
         async with Request(
-            self.client_session.post, url, self.log, headers=headers, data=data
+            self.client_session.post, url, LOGGER, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             return resp_data
