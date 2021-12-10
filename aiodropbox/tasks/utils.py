@@ -50,7 +50,6 @@ from aiodropbox.dbx_logger import get_logger  # noqa: E402
 LOGGER = get_logger(__name__, provider="Invoke utils", level=logging.INFO)
 
 
-
 def _check_exe(exe):
     """Look for executable"""
     exe_path = which(exe)

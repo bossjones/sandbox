@@ -1,11 +1,12 @@
-import sys
 import logging
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
-import pathlib
 
+from IPython.core import ultratb
+from IPython.core.debugger import Tracer  # noqa
 from PIL import Image
 from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.encoders import jsonable_encoder
@@ -25,28 +26,29 @@ from starlette.responses import (
 )
 from starlette.staticfiles import StaticFiles
 import tensorflow as tf
-from tensorflow.keras.applications.imagenet_utils import decode_predictions  # pylint: disable=no-name-in-module
+from tensorflow.keras.applications.imagenet_utils import (  # pylint: disable=no-name-in-module
+    decode_predictions,
+)
 import uvicorn
 
 from aiodropbox import settings
 from aiodropbox.components import predict, read_imagefile
 from aiodropbox.components.prediction import symptom_check
-from aiodropbox.schema import Symptom
-
-from aiodropbox.dbx_logger import get_logger, intercept_all_loggers, generate_tree, get_lm_from_tree  # noqa: E402
+from aiodropbox.dbx_logger import (  # noqa: E402
+    generate_tree,
+    get_lm_from_tree,
+    get_logger,
+    intercept_all_loggers,
+)
 from aiodropbox.models.loggers import LoggerModel, LoggerPatch
-
-import sys
-
-from IPython.core import ultratb
-from IPython.core.debugger import Tracer  # noqa
+from aiodropbox.schema import Symptom
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
 )
 
 # tenserflow logging
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "0"
 
 
 LOG_LEVELS = {
@@ -286,6 +288,7 @@ app = get_application()
 async def hello_world():
     return "hello world"
 
+
 # app.include_router(
 #     log_endpoint.router, tags=["log"], prefix=f"{settings.API_V1_STR}/logs"
 # )
@@ -298,7 +301,11 @@ async def hello_world():
 # https://github.com/samuelcolvin/pydantic/issues/531
 
 
-@app.get("/{settings.API_V1_STR}/logs/{logger_name}", response_model=LoggerModel, tags=["log"])
+@app.get(
+    "/{settings.API_V1_STR}/logs/{logger_name}",
+    response_model=LoggerModel,
+    tags=["log"],
+)
 async def logger_get(logger_name: str):
     LOGGER.debug(f"getting logger {logger_name}")
     rootm = generate_tree()
@@ -332,9 +339,6 @@ async def index():
 
 @app.post("/predict/image")
 async def predict_api(file: UploadFile = File(...)):
-    # LOGGER.debug(f"file.filename -> {file.filename}")
-    # extension = f"{pathlib.Path(file.filename).suffix}" in ("jpg", "jpeg", "png")
-    # LOGGER.debug(f"extension -> {extension}")
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -347,6 +351,7 @@ async def predict_api(file: UploadFile = File(...)):
 @app.post("/api/covid-symptom-check")
 def check_risk(symptom: Symptom):
     return symptom_check.get_risk_level(symptom)
+
 
 # Instrumentator().instrument(app).expose(app)
 

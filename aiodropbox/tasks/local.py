@@ -26,7 +26,6 @@ from aiodropbox.dbx_logger import get_logger  # noqa: E402
 LOGGER = get_logger(__name__, provider="Invoke local", level=logging.INFO)
 
 
-
 @task(incrementable=["verbose"])
 def get_env(ctx, loc="local", verbose=0):
     """

@@ -5,7 +5,6 @@ import logging
 import os
 import os.path
 
-
 from aiodropbox.dbx_logger import get_logger, intercept_all_loggers  # noqa: E402
 
 LOGGER = get_logger(__name__, provider="aiodropbox", level=logging.DEBUG)
