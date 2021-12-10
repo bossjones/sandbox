@@ -4,6 +4,16 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import asyncio
+import tempfile
+import asyncio
+import logging
+import os
+import pathlib
+import tempfile
+import aiofiles
+
+from codetiming import Timer
 
 from IPython.core import ultratb
 from IPython.core.debugger import Tracer  # noqa
@@ -42,6 +52,7 @@ from aiodropbox.dbx_logger import (  # noqa: E402
 )
 from aiodropbox.models.loggers import LoggerModel, LoggerPatch
 from aiodropbox.schema import Symptom
+from aiodropbox.utils import writer
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
@@ -346,6 +357,56 @@ async def predict_api(file: UploadFile = File(...)):
     prediction = predict(image)
 
     return prediction
+
+@app.post("/dropbox/upload")
+async def dropbox_upload(file: UploadFile = File(...)):
+    LOGGER.info("simulating cerebro download then upload to dropbox ...")
+    data = await file.read()
+    p = pathlib.Path(file.filename)
+    extension = p.suffix.split(".")[-1]
+    fname = p.stem
+    directory = "/Users/malcolm/dev/bossjones/sandbox/aiodropbox/audit"
+    async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
+        LOGGER.info(f"writing to {f.name}")
+        await f.write(data)
+        await f.flush()
+        await f.seek(0)
+
+        filename = f.name
+        LOGGER.info(f"os.path.exists(filename) -> {os.path.exists(filename)}")
+        LOGGER.info(f"os.path.isfile(filename) -> {os.path.isfile(filename)}")
+
+
+    # LOGGER.info(f"os.path.isfile(filename) -> {os.path.isfile(filename)}")
+
+    await writer.write_file(fname, data, extension, directory)
+    # with tempfile.TemporaryDirectory() as tmpdirname:
+    #         print("created temporary directory", tmpdirname)
+    #         with Timer(text="\nTotal elapsed time: {:.1f}"):
+    #             await asyncio.gather(
+    #                 asyncio.create_task(
+    #                     shell.run_coroutine_subprocess(
+    #                         cmd=cmd_metadata.cmd,
+    #                         uri=cmd_metadata.uri,
+    #                         working_dir=f"{tmpdirname}",
+    #                     )
+    #                 ),
+    #             )
+
+    #             file_to_upload_list = glob_file_by_extension(
+    #                 f"{tmpdirname}", extension="*.mp4"
+    #             )
+
+    #             file_to_upload = f"{file_to_upload_list[0]}"
+    # # extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    # # if not extension:
+    # #     return "Image must be jpg or png format!"
+    # # image = read_imagefile(await file.read())
+    # # prediction = predict(image)
+
+    # asyncio.get_event_loop().run_until_complete(main(token, shared_links, log))
+
+    return "data written"
 
 
 @app.post("/api/covid-symptom-check")

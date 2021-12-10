@@ -537,3 +537,12 @@ predict_smoke_test:
 	-H "Content-Type: multipart/form-data" \
 	-F "filecomment=This is an image file" \
 	-F "file=@$(PWD)/images/beach.png;type=image/png"
+
+dropbox_smoke_test:
+	curl \
+	-X POST \
+	"http://localhost:11267/dropbox/upload" \
+	-H "accept: application/json" \
+	-H "Content-Type: multipart/form-data" \
+	-F "filecomment=This is an image file" \
+	-F "file=@$(PWD)/images/beach.png;type=image/png"
