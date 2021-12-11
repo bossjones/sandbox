@@ -204,11 +204,11 @@ class AsyncDropboxAPI:
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
         }
-        rich.print(headers)
+        # rich.print(headers)
         data = json.dumps({"query": nonce})
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers, data=data
+            self.client_session.post, url, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             if resp_data["result"] == nonce:
@@ -246,7 +246,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers
+            self.client_session.post, url, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -282,7 +282,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers
+            self.client_session.post, url, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -320,7 +320,7 @@ class AsyncDropboxAPI:
         }
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers
+            self.client_session.post, url, headers=headers
         ) as resp:
             async with aiofiles.open(local_path, "wb") as f:
                 async for chunk, _ in resp.content.iter_chunks():
@@ -370,7 +370,7 @@ class AsyncDropboxAPI:
         async with aiofiles.open(local_path, "rb") as f:
             data = await f.read()
             async with Request(
-                self.client_session.post, url, LOGGER, headers=headers, data=data
+                self.client_session.post, url, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
 
@@ -422,7 +422,7 @@ class AsyncDropboxAPI:
         data = json.dumps({"entries": self.upload_session})
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers, data=data
+            self.client_session.post, url, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             self.upload_session = []  # empty the local upload session
@@ -471,7 +471,7 @@ class AsyncDropboxAPI:
         while True:
             await asyncio.sleep(check_interval)
             async with Request(
-                self.client_session.post, url, LOGGER, headers=headers, data=data
+                self.client_session.post, url, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
 
@@ -524,7 +524,7 @@ class AsyncDropboxAPI:
         async with aiofiles.open(local_path, "rb") as f:
             data = await f.read()
             async with Request(
-                self.client_session.post, url, LOGGER, headers=headers, data=data
+                self.client_session.post, url, headers=headers, data=data
             ) as resp:
                 resp_data = await resp.json()
                 return resp_data
@@ -608,7 +608,7 @@ class AsyncDropboxAPI:
         data = json.dumps({"url": shared_link})
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers, data=data
+            self.client_session.post, url, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             return resp_data
@@ -721,7 +721,7 @@ class AsyncDropboxAPI:
         data = json.dumps(args)
 
         async with Request(
-            self.client_session.post, url, LOGGER, headers=headers, data=data
+            self.client_session.post, url, headers=headers, data=data
         ) as resp:
             resp_data = await resp.json()
             return resp_data
