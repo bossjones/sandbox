@@ -123,7 +123,7 @@ async def run_upload_to_dropbox(dbx: aiodbx.AsyncDropboxAPI, path_to_file: pathl
     # this returns a "commit" dict, which will be passed to upload_finish later
     # the commit is saved in the AsyncDropboxAPI object already, so unless you need
     # information from it you can discard the return value
-    await dbx.upload_start(path_to_file, settings.DEFAULT_DROPBOX_FOLDER)
+    await dbx.upload_start(path_to_file, f"/{pathlib.Path(path_to_file).name}")
 
 # @app.exception_handler(RequestValidationError)
 # SOURCE: https://fastapi.tiangolo.com/tutorial/handling-errors/#use-the-requestvalidationerror-body
