@@ -1,0 +1,62 @@
+-c requirements.txt
+pathlib_mate
+isort
+pdbpp
+black
+pre-commit
+mccabe
+# SOURCE: https://github.com/ionelmc/python-lazy-object-proxy
+# NOTE: from yelp/Tron originally
+lazy-object-proxy
+autopep8
+MonkeyType
+pylint==2.12.2
+restructuredtext_lint
+
+# NOTE: autoflake removes unused imports and unused variables from Python code. It makes use of pyflakes to do this.
+# SOURCE: https://pypi.org/project/autoflake/
+autoflake
+
+
+# SOURCE: https://github.com/jendrikseipp/vulture
+# NOTE: Vulture finds unused code in Python programs. This is useful for cleaning up and finding errors in large code bases. If you run Vulture on both your library and test suite you can find untested code.
+vulture
+
+# FreezeGun is a library that allows your Python tests to travel through time by mocking the datetime module.
+freezegun
+
+# Hunter is a flexible code tracing toolkit, not for measuring coverage, but for debugging, logging, inspection and other nefarious purposes. It has a simple Python API, a convenient terminal API and a CLI tool to attach to processes.
+# SOURCE: https://pypi.org/project/hunter/
+hunter
+
+# https://www.pyinvoke.org/
+invoke
+rope
+unittest2pytest
+# sqlalchemy-stubs
+bpython
+# vscode debugger
+debugpy
+codecov
+types-freezegun
+types-six
+types-pytz
+# types-Pillow
+types-PyYAML
+types-click
+types-colorama
+types-dataclasses
+types-requests
+types-setuptools
+types-mock
+types-aiofiles
+bandit
+setup-cfg-fmt
+flake8-typing-imports
+# dead simple python dead code detection
+dead
+
+# As the Python team, we are helping to ensure that packages have high-quality type annotations. In cases where this must be done through type stubs, we are contributing stubs to typeshed. This repository contains our "work in progress". Once the stubs for a package meet the requirements of typeshed, we will contribute them to typeshed and delete them from this repository.
+
+
+# https://github.com/microsoft/python-type-stubs
