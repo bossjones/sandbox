@@ -488,10 +488,13 @@ example-repos:
 	git clone https://github.com/wdog/mini-radio-player-pycui ~/dev/python-gui-examples/mini-radio-player-pycui || true
 
 install-editable:
-	pip install -e .
+	pip install -e .[dev,tests,experimental,docs]
 
-pip-sync: pip-compile install-deps-all install-editable
+# pip-sync: pip-compile install-deps-all install-editable
+pip-sync:
 	pip-sync requirements.txt requirements-dev.txt requirements-doc.txt requirements-experimental.txt requirements-test.txt
+
+resync-env: pip-sync install-deps-all install-editable
 
 
 .PHONY: setup-feature-flags
@@ -510,39 +513,34 @@ log:
 folders:
 	scripts/folders.sh
 
-# SOURCE: https://queirozf.com/entries/jupyter-kernels-how-to-add-change-remove
-.PHONY: setup-jupyter-kernel
-setup-jupyter-kernel:
-	ipython kernel install --name="${VENV_NAME}" --user
-# Installed kernelspec tweetpik_cli3 in /Users/malcolm/Library/Jupyter/kernels/tweetpik_cli3
-# python -m ipykernel install --user --name=tweetpik_cli3
+.PHONY: start-full-text-search
+start-full-text-search:
+	scripts/start_meilisearch.sh
+
+.PHONY: start-full-text-search
+start-test-full-text-search:
+	scripts/start_test_meilisearch.sh
+
 .PHONY: install-opencv-typing
 install-opencv-typing:
 # curl -sSL https://raw.githubusercontent.com/bossjones/python-type-stubs/add-opencv/cv2/__init__.pyi -o $(python -c 'import cv2, os; print(os.path.dirname(cv2.__file__))')/cv2.pyi
 	./contrib/install_opencv_typing.sh
 
-jupyter-notebook:
-	jupyter notebook --port=2375 --ip=0.0.0.0
+jupyter-better-exceptions-install:
+	cp -a ./contrib/00-better_exceptions.py ~/.ipython/profile_default/startup/00-better_exceptions.py
 
-editable-install:
-	pip install -e .[dev,tests,experimental,docs]
+jupyter-traceback-install:
+	cp -a ./contrib/00-set-traceback-mode.py ~/.ipython/profile_default/startup/00-set-traceback-mode.py
 
-dev: pip-compile install-deps-all editable-install install-opencv-typing
+jupyter-better-exceptions-uninstall:
+	rm -fv ~/.ipython/profile_default/startup/00-better_exceptions.py
 
-predict_smoke_test:
-	curl \
-	-X POST \
-	"http://localhost:11267/predict/image" \
-	-H "accept: application/json" \
-	-H "Content-Type: multipart/form-data" \
-	-F "filecomment=This is an image file" \
-	-F "file=@$(PWD)/images/beach.png;type=image/png"
+jupyter-traceback-uninstall:
+	rm -fv ~/.ipython/profile_default/startup/00-set-traceback-mode.py
+download-deepspeech:
+# Download pre-trained English model files
+	curl -LO https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm
+	curl -LO https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer
 
-dropbox_smoke_test:
-	curl \
-	-X POST \
-	"http://localhost:11267/dropbox/upload" \
-	-H "accept: application/json" \
-	-H "Content-Type: multipart/form-data" \
-	-F "filecomment=This is an image file" \
-	-F "file=@$(PWD)/images/beach.png;type=image/png"
+is_gpu_enabled:
+	python ./contrib/is-gpu-available.py

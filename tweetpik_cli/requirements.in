@@ -8,9 +8,9 @@ loguru
 validators
 tqdm
 requests
-transformers
-tokenizers
-simpletransformers
+# transformers
+# tokenizers
+# simpletransformers
 pydantic[email]
 passlib[bcrypt]
 Unidecode
@@ -37,7 +37,7 @@ gallery-dl
 # https://github.com/dbrattli/aioreactive
 # Aioreactive is RxPY for asyncio. It's an asynchronous and reactive Python library for asyncio using async and await. Aioreactive is built on the Expression functional library and, integrates naturally with the Python language.
 aioreactive
-dropbox
+# dropbox
 # A flexible, customizable timer for your Python code
 codetiming
 markdown
@@ -64,42 +64,43 @@ aiodns
 prometheus-fastapi-instrumentator
 # ml stuff from https://github.com/bossjones/fzf-lab/blob/main/ml/requirements.in
 # Fast hierarchical clustering routines for R and Python.
-fastcluster
+# fastcluster
 # Read and write HDF5 files from Python
-h5py
+# h5py
 # TensorFlow Keras.
-keras
+# keras
 # seaborn: statistical data visualization
-seaborn
+# seaborn
 # Statistical computations and models for Python
-statsmodels
+# statsmodels
 # TensorFlow is an open source machine learning framework for everyone.
-tensorflow
+# tensorflow
 # TensorFlow Hub is a repository of trained machine learning models.
-tensorflow_hub
+# tensorflow_hub
 # Natural Language Toolkit
-nltk
+# nltk
 # An open-source, interactive data visualization library for Python
-plotly
+# plotly
 # Screen-scraping library
 beautifulsoup4
 # DISABLED: # for now # -e git://github.com/GantMan/nsfw_model.git#egg=nsfw-detector
 # Tensors and Dynamic neural networks in Python with strong GPU acceleration
-torch
+# torch
 # image and video datasets and models for torch deep learning
-torchvision
+# torchvision
 # An audio package for PyTorch
-torchaudio
-scikit-image
+# torchaudio
+# scikit-image
 backoff
-scenedetect[opencv]
 imutils
 factory-boy
 wrapt==1.13.3
-typing-extensions==3.10.0
+typing-extensions
 email-validator
 python-multipart
 typer
 typer-cli
 asyncer
 snoop
+tomli<2.0.0
+docutils<0.17

@@ -2,7 +2,7 @@
 pathlib_mate
 isort
 pdbpp
-black
+black==21.12b0
 pre-commit
 mccabe
 # SOURCE: https://github.com/ionelmc/python-lazy-object-proxy
@@ -60,3 +60,4 @@ dead
 
 
 # https://github.com/microsoft/python-type-stubs
+docutils<0.17
