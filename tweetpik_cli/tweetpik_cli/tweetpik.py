@@ -57,7 +57,7 @@ from tweetpik_cli.dbx_logger import get_logger  # noqa: E402
 LOGGER = get_logger(__name__, provider="Tweetpik", level=logging.DEBUG)
 
 TWEETPIK_AUTHORIZATION = os.environ.get("TWEETPIK_AUTHORIZATION")
-TWEETPIK_BUCKET_ID = "323251495115948625"
+TWEETPIK_BUCKET_ID = os.environ.get("TWEETPIK_BUCKET_ID")
 
 TWEETPIK_DIMENSION_IG_FEED = "1:1"
 TWEETPIK_DIMENSION_IG_STORY = "9:16"
@@ -337,6 +337,13 @@ class TweetpikRoute:
                 }
             )
         self.url: str = url
+        self.bucket_id: str = TWEETPIK_BUCKET_ID
+
+
+    @property
+    def bucket(self) -> str:
+        # the bucket is just method + path w/ major parameters
+        return f'{self.bucket_id}'
 
 
 # SOURCE: discord.py
@@ -417,10 +424,11 @@ class TweetpikHTTPClient:
         # header creation
         headers: Dict[str, str] = {
             "User-Agent": self.user_agent,
+            "Authorization": TWEETPIK_AUTHORIZATION
         }
 
-        if self.token is not None:
-            headers["Authorization"] = TWEETPIK_AUTHORIZATION
+        # if self.token is not None:
+        #     headers["Authorization"] = TWEETPIK_AUTHORIZATION
 
         # some checking if it's a JSON request
         # if 'json' in kwargs:
@@ -636,6 +644,77 @@ class TweetpikHTTPClient:
         LOGGER.debug(payload)
 
         return self.request(r, json=payload)
+
+    async def aimages(
+        self,
+        tweet_url: Optional[str],
+        *,
+        dimension_ig_feed: Optional[str] = TWEETPIK_DIMENSION_IG_FEED,
+        dimension_ig_story: Optional[str] = TWEETPIK_DIMENSION_IG_STORY,
+        timezone: Optional[str] = TWEETPIK_TIMEZONE,
+        display_likes: Optional[str] = TWEETPIK_DISPLAY_LIKES,
+        display_replies: Optional[str] = TWEETPIK_DISPLAY_REPLIES,
+        display_retweets: Optional[str] = TWEETPIK_DISPLAY_RETWEETS,
+        display_verified: Optional[str] = TWEETPIK_DISPLAY_VERIFIED,
+        display_source: Optional[str] = TWEETPIK_DISPLAY_SOURCE,
+        display_time: Optional[str] = TWEETPIK_DISPLAY_TIME,
+        display_media_images: Optional[str] = TWEETPIK_DISPLAY_MEDIA_IMAGES,
+        display_link_preview: Optional[str] = TWEETPIK_DISPLAY_LINK_PREVIEW,
+        text_width: Optional[str] = TWEETPIK_TEXT_WIDTH,
+        canvas_width: Optional[str] = TWEETPIK_CANVAS_WIDTH,
+        background_color: Optional[str] = TWEETPIK_BACKGROUND_COLOR,
+        text_primary_color: Optional[str] = TWEETPIK_TEXT_PRIMARY_COLOR,
+        text_secondary_color: Optional[str] = TWEETPIK_TEXT_SECONDARY_COLOR,
+        link_color: Optional[str] = TWEETPIK_LINK_COLOR,
+        verified_icon: Optional[str] = TWEETPIK_VERIFIED_ICON,
+    ) -> Any:
+        r = TweetpikRoute("POST", "/images", tweet_url=tweet_url)
+        payload = {}
+
+        if tweet_url:
+            payload["tweet_url"] = tweet_url
+
+        if dimension_ig_feed:
+            payload["dimension_ig_feed"] = dimension_ig_feed
+        if dimension_ig_story:
+            payload["dimension_ig_story"] = dimension_ig_story
+        if timezone:
+            payload["timezone"] = timezone
+        if display_likes:
+            payload["display_likes"] = display_likes
+        if display_replies:
+            payload["display_replies"] = display_replies
+        if display_retweets:
+            payload["display_retweets"] = display_retweets
+        if display_verified:
+            payload["display_verified"] = display_verified
+        if display_source:
+            payload["display_source"] = display_source
+        if display_time:
+            payload["display_time"] = display_time
+        if display_media_images:
+            payload["display_media_images"] = display_media_images
+        if display_link_preview:
+            payload["display_link_preview"] = display_link_preview
+        if text_width:
+            payload["text_width"] = text_width
+        if canvas_width:
+            payload["canvas_width"] = canvas_width
+        if background_color:
+            payload["background_color"] = background_color
+        if text_primary_color:
+            payload["text_primary_color"] = text_primary_color
+        if text_secondary_color:
+            payload["text_secondary_color"] = text_secondary_color
+        if link_color:
+            payload["link_color"] = link_color
+        if verified_icon:
+            payload["verified_icon"] = verified_icon
+
+        LOGGER.debug("payload debuggggggggggggggggggggggggggg")
+        LOGGER.debug(payload)
+
+        return await self.request(r, json=payload)
 
 
 # SOURCE: https://github.com/powerfist01/hawk-eyed/blob/f340c6ff814dd3e2a3cac7a30d03b7c07d95d1e4/services/tweet_to_image/tweetpik.py

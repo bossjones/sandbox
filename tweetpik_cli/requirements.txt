@@ -36,6 +36,8 @@ anyio==3.5.0
     # via
     #   asyncer
     #   starlette
+appnope==0.1.2
+    # via ipython
 asgiref==3.5.0
     # via uvicorn
 asttokens==2.0.5
@@ -48,6 +50,8 @@ attrs==21.4.0
     # via
     #   -r requirements.in
     #   aiohttp
+backcall==0.2.0
+    # via ipython
 backoff==1.11.1
     # via -r requirements.in
 bcrypt==3.2.0
@@ -100,7 +104,9 @@ cycler==0.11.0
 dask==2022.2.0
     # via -r requirements.in
 decorator==5.1.1
-    # via validators
+    # via
+    #   ipython
+    #   validators
 dnspython==2.2.0
     # via email-validator
 docutils==0.16
@@ -154,8 +160,12 @@ importlib-metadata==4.11.1
     # via markdown
 imutils==0.5.4
     # via -r requirements.in
+ipython==7.1
+    # via -r requirements.in
 itsdangerous==2.0.1
     # via fastapi
+jedi==0.18.1
+    # via ipython
 jinja2==3.0.3
     # via fastapi
 jsonpickle==2.1.0
@@ -195,12 +205,18 @@ packaging==21.3
     # via
     #   dask
     #   matplotlib
+parso==0.8.3
+    # via jedi
 partd==1.2.0
     # via dask
 passlib[bcrypt]==1.7.4
     # via -r requirements.in
 pep517==0.12.0
     # via pip-tools
+pexpect==4.8.0
+    # via ipython
+pickleshare==0.7.5
+    # via ipython
 pillow==9.0.1
     # via
     #   -r requirements.in
@@ -214,8 +230,12 @@ prometheus-client==0.13.1
     # via prometheus-fastapi-instrumentator
 prometheus-fastapi-instrumentator==5.7.1
     # via -r requirements.in
+prompt-toolkit==2.0.10
+    # via ipython
 psutil==5.9.0
     # via memory-profiler
+ptyprocess==0.7.0
+    # via pexpect
 pycares==4.1.2
     # via aiodns
 pycparser==2.21
@@ -227,6 +247,7 @@ pydantic[email]==1.9.0
 pygments==2.7.4
     # via
     #   -r requirements.in
+    #   ipython
     #   rich
     #   snoop
 pyinspect==0.1.0
@@ -276,6 +297,7 @@ six==1.16.0
     # via
     #   asttokens
     #   bcrypt
+    #   prompt-toolkit
     #   python-dateutil
     #   python-multipart
     #   snoop
@@ -310,6 +332,8 @@ tqdm==4.62.3
     # via
     #   -r requirements.in
     #   scenedetect
+traitlets==5.1.1
+    # via ipython
 typer==0.3.2
     # via
     #   -r requirements.in
@@ -341,6 +365,8 @@ validators==0.18.2
     # via -r requirements.in
 watchgod==0.7
     # via uvicorn
+wcwidth==0.2.5
+    # via prompt-toolkit
 websockets==10.1
     # via uvicorn
 werkzeug==2.0.3
