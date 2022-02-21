@@ -124,6 +124,12 @@ class _MissingSentinel:
 
 MISSING: Any = _MissingSentinel()
 
+def get_tweet_id(tweet_url: str) -> str:
+    tweet_id = re.findall(
+        r"[http?s//]?twitter\.com\/.*\/status\/(\d+)", tweet_url
+    )[0]
+    return tweet_id
+
 
 def build_tweetpik_download_url(tweetId: str) -> str:
     """Building the URL
@@ -493,7 +499,7 @@ class TweetpikHTTPClient:
 
                         # the request was successful so just return the text/json
                         if 300 > response.status >= 200:
-                            LOGGER.debug("%s %s has received %s", method, url, data)
+                            LOGGER.debug(f"{method} {url} has received {data}")
                             return data
 
                         # we are being rate limited
@@ -600,8 +606,10 @@ class TweetpikHTTPClient:
         r = TweetpikRoute("POST", "/images", tweet_url=tweet_url)
         payload = {}
 
+        # if tweet_url:
+        #     payload["tweet_url"] = tweet_url
         if tweet_url:
-            payload["tweet_url"] = tweet_url
+            payload["tweetId"] = get_tweet_id(tweet_url)
 
         if dimension_ig_feed:
             payload["dimension_ig_feed"] = dimension_ig_feed
@@ -672,7 +680,7 @@ class TweetpikHTTPClient:
         payload = {}
 
         if tweet_url:
-            payload["tweet_url"] = tweet_url
+            payload["tweetId"] = get_tweet_id(tweet_url)
 
         if dimension_ig_feed:
             payload["dimension_ig_feed"] = dimension_ig_feed

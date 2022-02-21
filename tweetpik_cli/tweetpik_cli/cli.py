@@ -75,22 +75,23 @@ def images(tweet_url: str):
     # res = asyncio.run(client.aimages(tweet_url))
     # # res = client.images(tweet_url)
     # rich.print_json(res)
-    try:
-        asyncio.run(_aimages(tweet_url))
-    except HTTPException as ex:
+    # try:
+    res = asyncio.run(_aimages(tweet_url))
+    rich.print(res)
+    # except HTTPException as ex:
 
 
-        print(str(ex))
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        tb_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
+    #     print(str(ex))
+    #     exc_type, exc_value, exc_traceback = sys.exc_info()
+    #     tb_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
 
-        LOGGER.error("Error Class: {}".format(str(ex.__class__)))
-        output = "[{}] {}: {}".format("UNEXPECTED", type(ex).__name__, ex)
+    #     LOGGER.error("Error Class: {}".format(str(ex.__class__)))
+    #     output = "[{}] {}: {}".format("UNEXPECTED", type(ex).__name__, ex)
 
-        LOGGER.warning(output)
-        LOGGER.error("exc_type: {}".format(exc_type))
-        LOGGER.error("exc_value: {}".format(exc_value))
-        traceback.print_tb(exc_traceback)
+    #     LOGGER.warning(output)
+    #     LOGGER.error("exc_type: {}".format(exc_type))
+    #     LOGGER.error("exc_value: {}".format(exc_value))
+    #     traceback.print_tb(exc_traceback)
 
 
 @app.command()
