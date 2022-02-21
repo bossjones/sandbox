@@ -42,6 +42,7 @@ from pydantic import BaseSettings, Field, validator
 import requests
 import rich
 import six
+import pathlib
 
 
 def _to_json(obj: Any) -> str:
@@ -726,6 +727,19 @@ class TweetpikHTTPClient:
 
         return data
 
+async def async_download_file(data: dict, dl_dir="./"):
+    async with aiohttp.ClientSession() as session:
+        url: str = data["url"]
+        username: str = data["tweet"]["username"]
+        p = pathlib.Path(url)
+        p_dl_dir = pathlib.Path(dl_dir)
+        full_path_dl_dir = f"{p_dl_dir.absolute()}"
+        LOGGER.debug(f"Downloading {url} to {full_path_dl_dir}/{p.name}")
+        async with session.get(url) as resp:
+            if resp.status == 200:
+                f = await aiofiles.open(f"{full_path_dl_dir}/{p.name}", mode='wb')
+                await f.write(await resp.read())
+                await f.close()
 
 # SOURCE: https://github.com/powerfist01/hawk-eyed/blob/f340c6ff814dd3e2a3cac7a30d03b7c07d95d1e4/services/tweet_to_image/tweetpik.py
 class TweetPik:

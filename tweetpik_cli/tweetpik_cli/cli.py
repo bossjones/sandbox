@@ -1,7 +1,7 @@
 # SOURCE: https://github.com/tiangolo/typer-cli#user-content-awesome-cli
 import typer
 import asyncio
-from tweetpik_cli.tweetpik import TweetpikHTTPClient, HTTPException
+from tweetpik_cli.tweetpik import TweetpikHTTPClient, HTTPException, async_download_file
 import sys
 import rich
 import snoop
@@ -10,6 +10,7 @@ import multiprocessing as mp
 # from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
 import traceback
+import json
 
 
 from IPython.core import ultratb
@@ -65,6 +66,9 @@ async def _aimages(tweet_url: str):
     res = await client.aimages(tweet_url)
     return res
 
+async def _write_files_to_disk(data: dict) -> None:
+    await async_download_file(data)
+
 @app.command()
 def images(tweet_url: str):
     """
@@ -78,6 +82,8 @@ def images(tweet_url: str):
     # try:
     res = asyncio.run(_aimages(tweet_url))
     rich.print(res)
+    data = json.loads(res)
+    asyncio.run(_write_files_to_disk(data))
     # except HTTPException as ex:
 
 
