@@ -721,8 +721,10 @@ class TweetpikHTTPClient:
 
         LOGGER.debug("payload debuggggggggggggggggggggggggggg")
         LOGGER.debug(payload)
+        data = await self.request(r, json=payload)
+        await self.close()
 
-        return await self.request(r, json=payload)
+        return data
 
 
 # SOURCE: https://github.com/powerfist01/hawk-eyed/blob/f340c6ff814dd3e2a3cac7a30d03b7c07d95d1e4/services/tweet_to_image/tweetpik.py
