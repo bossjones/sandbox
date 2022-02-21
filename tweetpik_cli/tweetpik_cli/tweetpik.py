@@ -474,11 +474,7 @@ class TweetpikHTTPClient:
                         method, url, **kwargs
                     ) as response:
                         LOGGER.debug(
-                            "%s %s with %s has returned %s",
-                            method,
-                            url,
-                            kwargs.get("data"),
-                            response.status,
+                            f"{method} {url} with {kwargs.get('data')} has returned {response.status}"
                         )
 
                         # even errors have text involved in them so this is safe to call
@@ -727,6 +723,7 @@ class TweetpikHTTPClient:
 
         return data
 
+# TODO: implement multi download https://stackoverflow.com/questions/64282309/aiohttp-download-large-list-of-pdf-files
 async def async_download_file(data: dict, dl_dir="./"):
     async with aiohttp.ClientSession() as session:
         url: str = data["url"]
@@ -736,10 +733,20 @@ async def async_download_file(data: dict, dl_dir="./"):
         full_path_dl_dir = f"{p_dl_dir.absolute()}"
         LOGGER.debug(f"Downloading {url} to {full_path_dl_dir}/{p.name}")
         async with session.get(url) as resp:
+            content = await resp.read()
+
+            # Check everything went well
+            if resp.status != 200:
+                LOGGER.error(f"Download failed: {resp.status}")
+                return
+
             if resp.status == 200:
-                f = await aiofiles.open(f"{full_path_dl_dir}/{p.name}", mode='wb')
-                await f.write(await resp.read())
-                await f.close()
+                async with aiofiles.open(f"{full_path_dl_dir}/{p.name}", mode="+wb") as f:
+                    await f.write(content)
+                    # No need to use close(f) when using with statement
+                # f = await aiofiles.open(f"{full_path_dl_dir}/{p.name}", mode='wb')
+                # await f.write(await resp.read())
+                # await f.close()
 
 # SOURCE: https://github.com/powerfist01/hawk-eyed/blob/f340c6ff814dd3e2a3cac7a30d03b7c07d95d1e4/services/tweet_to_image/tweetpik.py
 class TweetPik:
