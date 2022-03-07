@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importstweetpik_clip tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place tweetpik_cli tests
+black tweetpik_cli tests
+isort --recursive tweetpik_cli tests
