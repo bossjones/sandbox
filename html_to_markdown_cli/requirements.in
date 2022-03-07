@@ -1,0 +1,109 @@
+imageio
+scenedetect[opencv]
+dask
+matplotlib
+Pillow
+pip-tools
+loguru
+validators
+tqdm
+requests
+# transformers
+# tokenizers
+# simpletransformers
+pydantic[email]
+passlib[bcrypt]
+Unidecode
+python-slugify
+pretty_errors
+pygments<2.8
+rich
+# https://github.com/disqus/gutter
+# Gutter is feature switch management library. It allows users to create feature switches and setup conditions those switches will be enabled for. Once configured, switches can then be checked against inputs (requests, user objects, etc) to see if the switches are active.
+gutter
+logging_tree
+better_exceptions
+uritools
+uritemplate
+factory-boy
+tenacity
+pyinspect
+aiohttp
+aiosql
+pytz
+# discord.py==1.7.3
+youtube_dl
+gallery-dl
+# https://github.com/dbrattli/aioreactive
+# Aioreactive is RxPY for asyncio. It's an asynchronous and reactive Python library for asyncio using async and await. Aioreactive is built on the Expression functional library and, integrates naturally with the Python language.
+aioreactive
+# dropbox
+# A flexible, customizable timer for your Python code
+codetiming
+markdown
+aiosqlite
+aiohttp-json-rpc
+# https://github.com/aio-libs/aiomonitor
+aiomonitor
+aiodebug
+# https://github.com/checkr/flagr (golang)
+# https://github.com/checkr/pyflagr (flagr client)
+typer
+aiofiles
+aiocache
+click-spinner
+# tabulate
+aioprometheus[starlette]
+fastapi[all]
+# attrs is the Python package that will bring back the joy of writing classes by relieving you from the drudgery of implementing object protocols (aka dunder methods). Trusted by NASA for Mars missions since 2020!
+attrs
+memory_profiler
+telnetlib3
+python-dotenv>=0.19.2
+aiodns
+prometheus-fastapi-instrumentator
+# ml stuff from https://github.com/bossjones/fzf-lab/blob/main/ml/requirements.in
+# Fast hierarchical clustering routines for R and Python.
+# fastcluster
+# Read and write HDF5 files from Python
+# h5py
+# TensorFlow Keras.
+# keras
+# seaborn: statistical data visualization
+# seaborn
+# Statistical computations and models for Python
+# statsmodels
+# TensorFlow is an open source machine learning framework for everyone.
+# tensorflow
+# TensorFlow Hub is a repository of trained machine learning models.
+# tensorflow_hub
+# Natural Language Toolkit
+# nltk
+# An open-source, interactive data visualization library for Python
+# plotly
+# Screen-scraping library
+beautifulsoup4
+# DISABLED: # for now # -e git://github.com/GantMan/nsfw_model.git#egg=nsfw-detector
+# Tensors and Dynamic neural networks in Python with strong GPU acceleration
+# torch
+# image and video datasets and models for torch deep learning
+# torchvision
+# An audio package for PyTorch
+# torchaudio
+# scikit-image
+backoff
+imutils
+factory-boy
+wrapt==1.13.3
+typing-extensions
+email-validator
+python-multipart
+typer
+typer-cli
+asyncer
+snoop
+tomli<2.0.0
+docutils<0.17
+ipython==7.1
+markdownify
+html5lib
