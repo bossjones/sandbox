@@ -107,3 +107,6 @@ docutils<0.17
 ipython==7.1
 markdownify
 html5lib
+lxml
+soupsieve
+fuzzywuzzy[speedup]
