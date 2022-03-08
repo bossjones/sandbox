@@ -110,3 +110,4 @@ html5lib
 lxml
 soupsieve
 fuzzywuzzy[speedup]
+pytablewriter

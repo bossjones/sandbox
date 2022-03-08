@@ -1,3 +1,4 @@
+from markdownify import MarkdownConverter
 import bpdb
 import asyncio
 import aiohttp
@@ -8,12 +9,28 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from bs4 import BeautifulSoup
 from html.parser import HTMLParser
-from markdownify import markdownify as md
+# from markdownify import markdownify as md
+from lxml import html
+import pytablewriter
+from pytablewriter import TableWriterFactory
+from pytablewriter.style import Cell, Style
+from pytablewriter.writer import AbstractTableWriter
+import sys
+import rich
+import snoop
+from IPython.core import ultratb
+from IPython.core.debugger import set_trace  # noqa
 
 import html5lib
 # from urllib import urlopen
 
 import typing
+
+sys.excepthook = ultratb.FormattedTB(
+    mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+)
+
+VALID_TABLE_HEADERS = ["Model Name", "author", "Scale", "Purpose (short)", "sample"]
 
 MODEL_TABLE_LOOKUP = {
     "Universal Models": 8,
@@ -113,7 +130,8 @@ def get_tables_by_name(sites_soup: BeautifulSoup, table_name: str) -> bs4.elemen
     Returns:
         bs4.element.ResultSet: result set html
     """
-    n = MODEL_TABLE_LOOKUP[table_name]
+    fuzzy_table_name = fuzzy_match_model_string(table_name)
+    n = MODEL_TABLE_LOOKUP[fuzzy_table_name]
     js_path = f"#mw-content-text > div > table:nth-child({n})"
     table = sites_soup.select(js_path)
 
@@ -156,6 +174,8 @@ def list_all_model_types():
 
     return model_list
 
+
+
 def fuzzy_match_model_string(lookup: str) -> str:
     """Get the Levenshtein Distance of a string and return the correct value.
 
@@ -168,6 +188,82 @@ def fuzzy_match_model_string(lookup: str) -> str:
     model_list = list_all_model_types()
     res = process.extractOne(lookup, model_list)
     return res[0]
+
+@snoop
+def get_result_set_sublist(records: bs4.element.ResultSet) -> typing.List[str]:
+    # VALID_TABLE_HEADERS = ["Model Name", "author", "Scale", "Purpose (short)", "sample"]
+    rows = []
+    for count, row in enumerate(records):
+        # bpdb.set_trace()
+        row_parser = row.find_all("td")
+        # print(f" count = {count}, row = {row}")
+        rows.append([md_from_beautifulsoup(row_parser[0]), row_parser[1].get_text(strip=True), row_parser[2].get_text(
+            strip=True), row_parser[5].get_text(strip=True), md_from_beautifulsoup(row_parser[9])])
+
+    # print(rows)
+    return rows
+
+# SOURCE: https://stackoverflow.com/questions/35755153/extract-only-specific-rows-and-columns-from-a-table-td-in-beautifulsoup-pytho
+def get_html_table_headers(res_table: bs4.element.ResultSet):
+    """Parse a result set and return only the values we care about
+
+    Args:
+        res_table (bs4.element.ResultSet): _description_
+    """
+    headers = [c.get_text(strip=True) for c in res_table[0].find("tr").find_all("th")]
+
+    # only include the ones we care about
+    final_headers = [f"{h}" for h in headers if h in VALID_TABLE_HEADERS]
+
+    # get all table records and nuke the headers only
+    all_table_records = res_table[0].find_all('tr')
+    del all_table_records[0]
+
+    table_rows_list = get_result_set_sublist(all_table_records)
+    # # now we should only the models and their descriptions
+    # for count, row in enumerate(all_table_records):
+    #     print(f" count = {count}, row = {row}")
+
+    # print(all_table_records)
+
+    # data = [[cell.get_text(strip=True) for cell in row.find_all('td')] for row in res_table.find_all("tr", class_=True)]
+    # data = [[cell.get_text(strip=True) for cell in row.find_all('td')] for row in anime_table.find_all("tr", class_=True)]
+    # for h in headers:
+    #     if h in VALID_TABLE_HEADERS:
+    #         final_headers.append[h]
+
+    # headers = [c.get_text(strip=True) for c in anime_table[0].find("tr").find_all("th")]
+    # res_table[0].find("tr").find_all("th")[0].tex
+    # headers = [c.get_text() for c in res_table[0].find("tr").find_all("th")[0]]
+    return final_headers, table_rows_list
+
+# Create shorthand method for conversion
+
+
+def md_from_beautifulsoup(sites_soup: BeautifulSoup, **options):
+    """Converting BeautifulSoup objects"""
+    return MarkdownConverter(**options).convert_soup(sites_soup)
+
+
+def generate_markdown_table(table_name, final_table_headers, table_table_rows_list, margin):
+    # SOURCE: https://github.com/thombashi/pytest-md-report/blob/aeff356c0b0831ad594cf5af45fca9e08dd1f92d/pytest_md_report/plugin.py
+    writer = TableWriterFactory.create_from_format_name("md")
+    writer.table_name = fuzzy_match_model_string(table_name)
+    writer.margin = margin
+    writer.value_matrix = table_table_rows_list
+    # writer = MarkdownTableWriter(
+    #     table_name="example_table",
+    #     headers=["int", "float", "str", "bool", "mix", "time"],
+    #     value_matrix=[
+    #         [0,   0.1,      "hoge", True,   0,      "2017-01-01 03:04:05+0900"],
+    #         [2,   "-2.23",  "foo",  False,  None,   "2017-12-23 45:01:23+0900"],
+    #         [3,   0,        "bar",  "true",  "inf", "2017-03-03 33:44:55+0900"],
+    #         [-10, -9.9,     "",     "FALSE", "nan", "2017-01-01 00:00:00+0900"],
+    #     ],
+    #     margin=1  # add a whitespace for both sides of each cell
+    # )
+    # writer.write_table()
+    return writer.dumps()
 
 loop = asyncio.get_event_loop()
 sites_soup = loop.run_until_complete(get_site_content())
@@ -184,13 +280,19 @@ all_tables = sites_soup.find_all('table')
 
 # all_model_headlines = sites_soup.find_all(class="mw-headline")
 
+fuzzy_search_str = "anime"
+
 
 model_sections_list = get_sections(sites_soup)
 all_th_list = sites_soup.find_all('th')
+anime_table = get_tables_by_name(sites_soup, fuzzy_search_str)
+anime_markdown = md_from_beautifulsoup(anime_table[0])
+final_table_headers, table_table_rows_list = get_html_table_headers(anime_table)
+markdown_str_final = generate_markdown_table(fuzzy_search_str, final_table_headers, table_table_rows_list, 1)
 
-bpdb.set_trace()
+# bpdb.set_trace()
 
-print(all_th_list)
+print(markdown_str_final)
 
 # //*[@id="mw-content-text"]/div/table[3]
 # soup.select_one('p:is(.a, .b, .c)')
