@@ -1,0 +1,72 @@
+imageio
+scenedetect[opencv]
+dask
+matplotlib
+Pillow
+pip-tools
+loguru
+validators
+tqdm
+requests
+pydantic[email]
+passlib[bcrypt]
+Unidecode
+python-slugify
+pretty_errors
+pygments<2.8
+rich
+gutter
+logging_tree
+better_exceptions
+uritools
+uritemplate
+factory-boy
+tenacity
+pyinspect
+aiohttp
+aiosql
+pytz
+youtube_dl
+gallery-dl
+# https://github.com/dbrattli/aioreactive
+# Aioreactive is RxPY for asyncio. It's an asynchronous and reactive Python library for asyncio using async and await. Aioreactive is built on the Expression functional library and, integrates naturally with the Python language.
+aioreactive
+# A flexible, customizable timer for your Python code
+codetiming
+markdown
+aiosqlite
+aiohttp-json-rpc
+# https://github.com/aio-libs/aiomonitor
+aiomonitor
+aiodebug
+# https://github.com/checkr/flagr (golang)
+# https://github.com/checkr/pyflagr (flagr client)
+typer
+aiofiles
+aiocache
+click-spinner
+
+# aioprometheus[starlette]
+# fastapi[all]
+# attrs is the Python package that will bring back the joy of writing classes by relieving you from the drudgery of implementing object protocols (aka dunder methods). Trusted by NASA for Mars missions since 2020!
+attrs
+memory_profiler
+telnetlib3
+python-dotenv>=0.19.2
+# aiodns
+prometheus-fastapi-instrumentator
+beautifulsoup4
+backoff
+imutils
+factory-boy
+wrapt==1.13.3
+typing-extensions
+email-validator
+python-multipart
+typer
+typer-cli
+asyncer
+snoop
+tomli<2.0.0
+docutils<0.17
+ipython==7.1

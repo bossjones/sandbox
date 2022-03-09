@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importsaiopillowp tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place aiopillow tests
+black aiopillow tests
+isort --recursive aiopillow tests

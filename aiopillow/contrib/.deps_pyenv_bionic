@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+#!/bin/bash
+if [[ "${EUID}" == "0" ]]; then
+   echo "This script must NOT be run as root"
+   exit 1
+fi
+
+sudo apt-get update && \
+    sudo apt-get install -y locales ca-certificates && \
+    sudo apt-get clean && \
+    sudo localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+set +e
+
+set -x;
+sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends \
+        make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+        libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev \
+        libxml2-dev libxmlsec1-dev libffi-dev \
+        ca-certificates && \
+    sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git && \
+    sudo apt-get clean
+set +e
+
+# install stuff for vim
+# https://github.com/bossjones/python-vimrc
+
+sudo apt-get install -y build-essential cmake python3-dev
+set +x;
+
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ets-labs/python-vimrc/master/setup.sh)"
