@@ -26,9 +26,9 @@ import html5lib
 
 import typing
 
-sys.excepthook = ultratb.FormattedTB(
-    mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-)
+# sys.excepthook = ultratb.FormattedTB(
+#     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
+# )
 
 VALID_TABLE_HEADERS = ["Model Name", "author", "Scale", "Purpose (short)", "sample"]
 
@@ -189,7 +189,7 @@ def fuzzy_match_model_string(lookup: str) -> str:
     res = process.extractOne(lookup, model_list)
     return res[0]
 
-@snoop
+# @snoop
 def get_result_set_sublist(records: bs4.element.ResultSet) -> typing.List[str]:
     # VALID_TABLE_HEADERS = ["Model Name", "author", "Scale", "Purpose (short)", "sample"]
     rows = []
@@ -249,6 +249,7 @@ def generate_markdown_table(table_name, final_table_headers, table_table_rows_li
     # SOURCE: https://github.com/thombashi/pytest-md-report/blob/aeff356c0b0831ad594cf5af45fca9e08dd1f92d/pytest_md_report/plugin.py
     writer = TableWriterFactory.create_from_format_name("md")
     writer.table_name = fuzzy_match_model_string(table_name)
+    writer.headers = final_table_headers
     writer.margin = margin
     writer.value_matrix = table_table_rows_list
     # writer = MarkdownTableWriter(
@@ -265,12 +266,37 @@ def generate_markdown_table(table_name, final_table_headers, table_table_rows_li
     # writer.write_table()
     return writer.dumps()
 
+def generate_html_table(table_name, final_table_headers, table_table_rows_list, margin):
+    # SOURCE: https://github.com/thombashi/pytest-md-report/blob/aeff356c0b0831ad594cf5af45fca9e08dd1f92d/pytest_md_report/plugin.py
+    writer = TableWriterFactory.create_from_format_name("html")
+    writer.table_name = fuzzy_match_model_string(table_name)
+    writer.headers = final_table_headers
+    writer.margin = margin
+    writer.value_matrix = table_table_rows_list
+    # writer = MarkdownTableWriter(
+    #     table_name="example_table",
+    #     headers=["int", "float", "str", "bool", "mix", "time"],
+    #     value_matrix=[
+    #         [0,   0.1,      "hoge", True,   0,      "2017-01-01 03:04:05+0900"],
+    #         [2,   "-2.23",  "foo",  False,  None,   "2017-12-23 45:01:23+0900"],
+    #         [3,   0,        "bar",  "true",  "inf", "2017-03-03 33:44:55+0900"],
+    #         [-10, -9.9,     "",     "FALSE", "nan", "2017-01-01 00:00:00+0900"],
+    #     ],
+    #     margin=1  # add a whitespace for both sides of each cell
+    # )
+    # writer.write_table()
+    return writer.dumps()
+
+
+def chunk_md_output(table_table_rows_list):
+    pass
+
 loop = asyncio.get_event_loop()
 sites_soup = loop.run_until_complete(get_site_content())
 loop.close()
 
 
-print(sites_soup)
+# print(sites_soup)
 
 # section_universal_model = sites_soup.find(id="Universal_Models")
 
@@ -289,10 +315,14 @@ anime_table = get_tables_by_name(sites_soup, fuzzy_search_str)
 anime_markdown = md_from_beautifulsoup(anime_table[0])
 final_table_headers, table_table_rows_list = get_html_table_headers(anime_table)
 markdown_str_final = generate_markdown_table(fuzzy_search_str, final_table_headers, table_table_rows_list, 1)
+html_str_final = generate_html_table(fuzzy_search_str, final_table_headers, table_table_rows_list, 1)
 
 # bpdb.set_trace()
 
 print(markdown_str_final)
+
+with open('toc.md', 'w') as f:
+    f.write(markdown_str_final)
 
 # //*[@id="mw-content-text"]/div/table[3]
 # soup.select_one('p:is(.a, .b, .c)')

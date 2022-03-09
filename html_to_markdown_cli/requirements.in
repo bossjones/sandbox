@@ -110,4 +110,5 @@ html5lib
 lxml
 soupsieve
 fuzzywuzzy[speedup]
-pytablewriter
+pytablewriter[html]
+md2pdf
