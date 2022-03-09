@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>KeepAlive</key>
+        <false/>
+        <key>Label</key>
+        <string>homebrew.mxcl.html_to_markdown_cli</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/opt/html_to_markdown_cli/bin/html_to_markdown_cli</string>
+            <string>--db-path</string>
+            <string>/usr/local/var/html_to_markdown_cli/data.ms</string>
+            <string>--http-addr</string>
+            <string>127.0.0.1:7701</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>WorkingDirectory</key>
+        <string>/usr/local/var</string>
+        <key>StandardErrorPath</key>
+        <string>/usr/local/var/log/html_to_markdown_cli.log</string>
+        <key>StandardOutPath</key>
+        <string>/usr/local/var/log/html_to_markdown_cli.log</string>
+    </dict>
+</plist>

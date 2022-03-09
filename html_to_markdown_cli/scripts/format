@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importshtml_to_markdown_clip tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place html_to_markdown_cli tests
+black html_to_markdown_cli tests
+isort --recursive html_to_markdown_cli tests
