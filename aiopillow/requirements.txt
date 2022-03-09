@@ -10,6 +10,8 @@ aioconsole==0.4.1
     # via aiomonitor
 aiodebug==2.3.0
     # via -r requirements.in
+aiofile==3.7.4
+    # via aiopath
 aiofiles==0.8.0
     # via -r requirements.in
 aiohttp==3.8.1
@@ -19,6 +21,8 @@ aiohttp==3.8.1
 aiohttp-json-rpc==0.13.3
     # via -r requirements.in
 aiomonitor==0.4.5
+    # via -r requirements.in
+aiopath==0.5.12
     # via -r requirements.in
 aioreactive==0.15.0
     # via -r requirements.in
@@ -30,6 +34,7 @@ aiosqlite==0.17.0
     # via -r requirements.in
 anyio==3.5.0
     # via
+    #   aiopath
     #   asyncer
     #   starlette
 appnope==0.1.2
@@ -59,6 +64,8 @@ better-exceptions==0.3.3
     # via -r requirements.in
 bs4==0.0.1
     # via pyinspect
+caio==0.9.5
+    # via aiofile
 certifi==2021.10.8
     # via requests
 cffi==1.15.0
@@ -306,6 +313,7 @@ typing-extensions==4.1.1
     # via
     #   -r requirements.in
     #   aiodebug
+    #   aiopath
     #   aiosql
     #   aiosqlite
     #   pydantic
