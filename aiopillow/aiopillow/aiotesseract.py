@@ -45,6 +45,8 @@ from scenedetect import SceneManager
 from scenedetect.scene_manager import save_images
 from aiopillow.utils import file_functions
 
+# SOURCE: https://github.com/Tynukua/getManga/blob/8cc5b090ec3dfcc6cfa7db3ce9e5220e7ef54d2b/getmanga/format/converter.py
+
 # For content-aware scene detection:
 from scenedetect.detectors import ContentDetector
 
@@ -168,7 +170,7 @@ def execute_with_shutdown_check(f, *args, **kwargs):
 
     return f(*args, **kwargs)
 
-async def main_gather():
+async def async_tesseract():
     loop = asyncio.get_running_loop()
     global _SHUTDOWN
 
@@ -202,4 +204,4 @@ async def main_gather():
 
 # asyncio.run(main_wait())
 if __name__ == "__main__":
-    asyncio.run(main_gather())
+    asyncio.run(async_tesseract())

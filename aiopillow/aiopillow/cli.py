@@ -23,6 +23,8 @@ from aiopillow.dbx_logger import (  # noqa: E402
     intercept_all_loggers,
 )
 
+from aiopillow import aiotesseract, aiopil
+
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
 )
@@ -70,7 +72,7 @@ async def _write_files_to_disk(data: dict) -> None:
     await async_download_file(data)
 
 @app.command()
-def images(tweet_url: str):
+def classify(tweet_url: str):
     """
     Creating screenshot with tweet_url.
     """

@@ -263,7 +263,7 @@ async def main_wait():
     print(f"Finished processing, got results: {results}")
 
 
-async def main_gather(tasks=20):
+async def async_pyscenedetect(tasks=20):
     loop = asyncio.get_running_loop()
     global _SHUTDOWN
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
@@ -282,4 +282,4 @@ async def main_gather(tasks=20):
 
 # asyncio.run(main_wait())
 if __name__ == "__main__":
-    asyncio.run(main_gather(tasks=10))
+    asyncio.run(async_pyscenedetect(tasks=10))
