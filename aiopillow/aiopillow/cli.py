@@ -1,7 +1,7 @@
 # SOURCE: https://github.com/tiangolo/typer-cli#user-content-awesome-cli
 import typer
 import asyncio
-from aiopillow.tweetpik import TweetpikHTTPClient, HTTPException, async_download_file
+# from aiopillow.tweetpik import TweetpikHTTPClient, HTTPException, async_download_file
 import sys
 import rich
 import snoop
@@ -11,7 +11,6 @@ import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
 import traceback
 import json
-
 
 from IPython.core import ultratb
 from IPython.core.debugger import set_trace  # noqa
@@ -53,8 +52,6 @@ async def shutdown(loop, signal=None):
     LOGGER.info(f"Flushing metrics")
     loop.stop()
 
-
-
 @app.command()
 def create(username: str):
     """
@@ -62,91 +59,26 @@ def create(username: str):
     """
     typer.echo(f"Creating user: {username}")
 
-# @snoop
-async def _aimages(tweet_url: str):
-    client = TweetpikHTTPClient()
-    res = await client.aimages(tweet_url)
-    return res
+# # @snoop
+# async def _aimages(tweet_url: str):
+#     client = TweetpikHTTPClient()
+#     res = await client.aimages(tweet_url)
+#     return res
 
-async def _write_files_to_disk(data: dict) -> None:
-    await async_download_file(data)
-
-@app.command()
-def classify(tweet_url: str):
-    """
-    Creating screenshot with tweet_url.
-    """
-    typer.echo(f"Screenshotting tweet: {tweet_url}")
-    # client = TweetpikHTTPClient()
-    # res = asyncio.run(client.aimages(tweet_url))
-    # # res = client.images(tweet_url)
-    # rich.print_json(res)
-    # try:
-    res = asyncio.run(_aimages(tweet_url))
-    rich.print(res)
-    data = json.loads(res)
-    asyncio.run(_write_files_to_disk(data))
-    # except HTTPException as ex:
-
-
-    #     print(str(ex))
-    #     exc_type, exc_value, exc_traceback = sys.exc_info()
-    #     tb_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
-
-    #     LOGGER.error("Error Class: {}".format(str(ex.__class__)))
-    #     output = "[{}] {}: {}".format("UNEXPECTED", type(ex).__name__, ex)
-
-    #     LOGGER.warning(output)
-    #     LOGGER.error("exc_type: {}".format(exc_type))
-    #     LOGGER.error("exc_value: {}".format(exc_value))
-    #     traceback.print_tb(exc_traceback)
-
+# async def _write_files_to_disk(data: dict) -> None:
+#     await async_download_file(data)
 
 @app.command()
-def delete(
-    username: str,
-    force: bool = typer.Option(
-        ...,
-        prompt="Are you sure you want to delete the user?",
-        help="Force deletion without confirmation.",
-    ),
-):
+def classify(media: str):
     """
-    Delete a user with USERNAME.
-
-    If --force is not used, will ask for confirmation.
+    Creating screenshot with media.
     """
-    if force:
-        typer.echo(f"Deleting user: {username}")
-    else:
-        typer.echo("Operation cancelled")
-
-
-@app.command()
-def delete_all(
-    force: bool = typer.Option(
-        ...,
-        prompt="Are you sure you want to delete ALL users?",
-        help="Force deletion without confirmation.",
-    )
-):
-    """
-    Delete ALL users in the database.
-
-    If --force is not used, will ask for confirmation.
-    """
-    if force:
-        typer.echo("Deleting all users")
-    else:
-        typer.echo("Operation cancelled")
-
-
-@app.command()
-def init():
-    """
-    Initialize the users database.
-    """
-    typer.echo("Initializing user database")
+    typer.echo(f"Screenshotting tweet: {media}")
+    # TODO: Enable this, and chain it up
+    # res = asyncio.run(_aimages(tweet_url))
+    # rich.print(res)
+    # data = json.loads(res)
+    # asyncio.run(_write_files_to_disk(data))
 
 
 if __name__ == "__main__":

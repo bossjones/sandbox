@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module
 # SOURCE: https://github.com/aniketmaurya/tensorflow-fastapi-starter-pack/tree/master/application
 from pydantic import BaseModel
 

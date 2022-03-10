@@ -11,12 +11,12 @@ from _pytest import nodes as pytest_nodes
 from _pytest.config import Config as pytest_Config
 from _pytest.config.argparsing import Parser as pytest_Parser
 from _pytest.fixtures import (
+    FixtureFunction,
     FixtureRequest,
+    FixtureValue,
     SubRequest,
     _FixtureCachedResult,
     _FixtureFunc,
-    _FixtureFunction,
-    _FixtureValue,
 )
 from _pytest.monkeypatch import MonkeyPatch
 import pytest

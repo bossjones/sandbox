@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# pylint: disable=no-value-for-parameter
+
 from dataclasses import dataclass
 
 from typing import Dict, Optional
