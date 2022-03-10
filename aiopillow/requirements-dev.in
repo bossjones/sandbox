@@ -61,3 +61,4 @@ dead
 
 # https://github.com/microsoft/python-type-stubs
 docutils<0.17
+# A formatter for finding and removing unused import statements.

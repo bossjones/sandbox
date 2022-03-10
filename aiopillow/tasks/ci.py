@@ -260,6 +260,49 @@ def isort(ctx, loc="local", check=False, dry_run=False, verbose=0, diff=False):
     else:
         ctx.run(_cmd)
 
+@task(
+    pre=[
+        call(clean, loc="local"),
+    ],
+    incrementable=["verbose"],
+)
+def pycln(ctx, loc="local", all=True, dry_run=False, verbose=0, diff=False):
+    """
+    pycln aiopillow module. Some of the arguments were taken from the starlette contrib scripts. Tries to align w/ black to prevent having to reformat multiple times.
+
+    To check mode only(does not make changes permenantly):
+        Usage: inv ci.pycln --check -vvv
+    Simply display command we would run:
+        Usage: inv ci.pycln --check --dry-run -vvv
+    """
+    env = get_compose_env(ctx, loc=loc)
+
+    # Only display result
+    ctx.config["run"]["echo"] = True
+
+    # Override run commands env variables one key at a time
+    for k, v in env.items():
+        ctx.config["run"]["env"][k] = v
+
+    _cmd = "pycln "
+
+    if all:
+        _cmd += " --all"
+
+    _cmd += " aiopillow tests"
+
+    if verbose >= 1:
+        msg = "{}".format(_cmd)
+        click.secho(msg, fg=COLOR_SUCCESS)
+
+    if dry_run:
+        click.secho(
+            "[pycln] DRY RUN mode enabled, not executing command: {}".format(_cmd),
+            fg=COLOR_CAUTION,
+        )
+    else:
+        ctx.run(_cmd)
+
 
 @task
 def verify_python_version(ctx, loc="local", check=True, debug=False):
