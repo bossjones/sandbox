@@ -71,3 +71,4 @@ tomli<2.0.0
 docutils<0.17
 ipython==7.1
 aiopath
+pytesseract
