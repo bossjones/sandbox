@@ -4,3 +4,5 @@
 #
 #    pip-compile --output-file=requirements-experimental.txt requirements-experimental.in
 #
+py-spy==0.3.11
+    # via -r requirements-experimental.in

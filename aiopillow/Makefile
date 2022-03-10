@@ -544,3 +544,6 @@ download-deepspeech:
 
 is_gpu_enabled:
 	python ./contrib/is-gpu-available.py
+
+spy:
+	py-spy top -- python aiopillow/aiopil.py

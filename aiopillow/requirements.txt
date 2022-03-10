@@ -180,6 +180,7 @@ numpy==1.22.2
     #   imageio
     #   matplotlib
     #   opencv-python
+    #   pandas
     #   pyinspect
     #   scenedetect
 opencv-python==4.5.5.62
@@ -189,6 +190,8 @@ packaging==21.3
     #   dask
     #   matplotlib
     #   pytesseract
+pandas==1.4.1
+    # via -r requirements.in
 parso==0.8.3
     # via jedi
 partd==1.2.0
@@ -245,6 +248,7 @@ python-dateutil==2.8.2
     # via
     #   faker
     #   matplotlib
+    #   pandas
 python-dotenv==0.19.2
     # via -r requirements.in
 python-multipart==0.0.5
@@ -252,7 +256,9 @@ python-multipart==0.0.5
 python-slugify==6.0.1
     # via -r requirements.in
 pytz==2021.3
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   pandas
 pyyaml==5.4.1
     # via dask
 requests==2.27.1
