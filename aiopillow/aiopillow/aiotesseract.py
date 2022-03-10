@@ -170,11 +170,11 @@ def execute_with_shutdown_check(f, *args, **kwargs):
 
     return f(*args, **kwargs)
 
-async def async_tesseract():
+async def async_tesseract(dest_dir: str = "./processed"):
     loop = asyncio.get_running_loop()
     global _SHUTDOWN
 
-    tree_list = file_functions.tree(Path(VIDEO_TEST_DIR))
+    tree_list = file_functions.tree(Path(dest_dir))
     rich.print(tree_list)
 
     file_to_inspect = []
@@ -204,4 +204,4 @@ async def async_tesseract():
 
 # asyncio.run(main_wait())
 if __name__ == "__main__":
-    asyncio.run(async_tesseract())
+    asyncio.run(async_tesseract(dest_dir = "./processed"))

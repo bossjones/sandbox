@@ -43,6 +43,7 @@ import aiopath
 from scenedetect import VideoManager
 from scenedetect import SceneManager
 from scenedetect.scene_manager import save_images
+from aiopillow.utils import file_functions
 
 # For content-aware scene detection:
 from scenedetect.detectors import ContentDetector
@@ -227,14 +228,17 @@ def execute_find_scenes(ind: int, video_path: str, threshold=30.0):
 
     scenes = scene_manager.get_scene_list()
 
-    res = save_images(scenes, video_manager, num_images=3, output_dir="./processed")
+    uuid_prefix = file_functions.generate_uuid(basedata=f"{video_path}")
+    rich.print(f"[uuid_prefix]: {uuid_prefix}")
+
+    res = save_images(scenes, video_manager, num_images=3, output_dir=f"./processed/{uuid_prefix}")
 
     rich.print("===res===")
     rich.print(res)
 
     # Each returned scene is a tuple of the (start, end) timecode.
     print(f"Thread {threading.current_thread().name}: Finished task {ind}!")
-    return res
+    return res, f"./processed/{uuid_prefix}"
 
 def execute_with_shutdown_check(f, *args, **kwargs):
     if _SHUTDOWN:
@@ -263,13 +267,13 @@ async def main_wait():
     print(f"Finished processing, got results: {results}")
 
 
-async def async_pyscenedetect(tasks=20):
+async def async_pyscenedetect(tasks=20, src_list: typing.List =[]):
     loop = asyncio.get_running_loop()
     global _SHUTDOWN
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         futures = [
-            loop.run_in_executor(pool, execute_with_shutdown_check, execute_find_scenes, task, VIDEO_TEST)
-            for task in range(tasks)
+            loop.run_in_executor(pool, execute_with_shutdown_check, execute_find_scenes, task, path_to_src)
+            for task, path_to_src in enumerate(src_list)
         ]
         try:
             results = await asyncio.gather(*futures, return_exceptions=False)
@@ -282,4 +286,4 @@ async def async_pyscenedetect(tasks=20):
 
 # asyncio.run(main_wait())
 if __name__ == "__main__":
-    asyncio.run(async_pyscenedetect(tasks=10))
+    asyncio.run(async_pyscenedetect(tasks=10, src_list=src_list))

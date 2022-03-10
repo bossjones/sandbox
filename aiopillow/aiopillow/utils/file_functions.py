@@ -12,6 +12,8 @@ import unicodedata
 from typing import List, Tuple, Union
 
 import pandas as pd
+import uuid
+import hashlib
 from rich.console import Console
 from rich.table import Table
 
@@ -367,6 +369,17 @@ def format_size(a_file: str):
         return "{:.0f} KB".format(a_file / float(2 ** 10))
     else:
         return "{:.0f} B".format(a_file)
+
+# SOURCE: https://github.com/Tautulli/Tautulli/blob/master/lib/UniversalAnalytics/Tracker.py#L14-L21
+def generate_uuid(basedata=None):
+    """ Provides a _random_ UUID with no input, or a UUID4-format MD5 checksum of any input data provided """
+    if basedata is None:
+        return str(uuid.uuid4())
+    elif isinstance(basedata, str):
+        checksum = hashlib.md5(str(basedata).encode('utf-8')).hexdigest()
+        return '%8s-%4s-%4s-%4s-%12s' % (
+        checksum[0:8], checksum[8:12], checksum[12:16], checksum[16:20], checksum[20:32])
+
 
 
 # smoke tests
