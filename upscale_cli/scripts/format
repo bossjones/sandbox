@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importsupscale_clip tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place upscale_cli tests
+black upscale_cli tests
+isort --recursive upscale_cli tests

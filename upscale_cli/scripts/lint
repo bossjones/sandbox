@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+# pylint -E --rcfile=./lint-configs-python/python/.pylintrc
+pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc upscale_cli
+# TODO: Re enable these guys 2/17/2021
+# flake8 upscale_cli --exclude=upscale_cli/db/migrations
+# mypy upscale_cli
+
+# black --check upscale_cli --diff
+# isort --recursive --check-only upscale_cli
