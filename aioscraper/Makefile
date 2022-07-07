@@ -573,5 +573,8 @@ pip-sync: pip-compile install-editable
 .PHONY: reset-dev-env
 reset-dev-env: pip-compile pip-sync install-editable
 
+.PHONY: upgrade-reset-dev-env
+upgrade-reset-dev-env: pip-tools-upgrade pip-sync install-editable
+
 .PHONY: pip-compile-upgrade-downloaders-and-install
 pip-compile-upgrade-downloaders-and-install: pip-compile-upgrade-downloaders dev

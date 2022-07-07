@@ -74,3 +74,6 @@ html5lib
 lxml
 soupsieve
 docutils<0.17
+pandas
+dask
+imageio
