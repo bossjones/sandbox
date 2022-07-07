@@ -1,0 +1,13 @@
+# SOURCE: https://github.com/byss/bashrc
+
+# Drop annoying bell if <TAB> is ambiguous
+set show-all-if-ambiguous on
+
+# Show files' types
+set visible-stats on
+
+# Drop autocompletion paging
+set page-completions off
+
+# Always show all completion variants
+set completion-query-items 0
