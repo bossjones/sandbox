@@ -10,6 +10,7 @@ import itertools
 import logging
 ## Required packages
 import os
+import pathlib
 import platform
 import re
 from time import sleep
@@ -29,8 +30,6 @@ from aioscraper.dbx_logger import (  # noqa: E402
     intercept_all_loggers,
 )
 
-import pathlib
-
 # Importing the constants defined in config.py
 # from ffmpeg_tools.scraper.utils.config import DOWNLOAD_DIRECTORY, GOOGLE, TEAM_STAMA
 
@@ -40,9 +39,7 @@ GOOGLE = "https://www.google.com/"
 HERE = os.path.abspath(os.path.dirname(__file__))
 _DIR = pathlib.Path(HERE).resolve()
 
-DOWNLOAD_DIRECTORY = (
-    f"{_DIR.parent}/downloads"  # getting the path leading to the current working directory
-)
+DOWNLOAD_DIRECTORY = f"{_DIR.parent}/downloads"  # getting the path leading to the current working directory
 
 
 LOGGER = get_logger(__name__, provider="Utils", level=logging.DEBUG)
@@ -114,7 +111,7 @@ def sanitize_filename(s, restricted=True, is_id=False) -> str:
         if restricted and result.startswith("-_"):
             result = result[2:]
         if result.startswith("-"):
-            result = "_" + result[len("-"):]
+            result = "_" + result[len("-") :]
         result = result.lstrip(".")
         if not result:
             result = "_"
@@ -286,10 +283,9 @@ def retrieve_url(lines, number_of_lines, iter):
 
     return url
 
-
-## Writing comment in metadata "Comments" part of file
-# (in case the operating system on which the program is running is macOS)
-# def write_metadata_comment(file_path, comment):
+    ## Writing comment in metadata "Comments" part of file
+    # (in case the operating system on which the program is running is macOS)
+    # def write_metadata_comment(file_path, comment):
     if platform.system() == "Darwin":
         applescript.tell.app(
             "Finder",
@@ -373,6 +369,7 @@ def add_date_and_metadata(
             # Writing comment in metadata "Comments" part of file
             # write_metadata_comment(new_video_name, url)
 
+
 def setup_chrome_options():
     options = get_web_driver_options()
     # LOGGER.debug(f"options = {options}")
@@ -381,15 +378,15 @@ def setup_chrome_options():
     set_browser_as_incognito(options)
     return options
 
+
 def default_chrome_options():
     options = setup_chrome_options()
-    chromeOptions={
-        'args': options.arguments
-    }
+    chromeOptions = {"args": options.arguments}
     # chromeOptions = {"goog:chromeOptions": {"args": options.arguments}}
 
     # LOGGER.debug(f"chromeOptions = {chromeOptions}")
     return options, chromeOptions
+
 
 ## Webdriver setting functions
 def get_latest_webdriver():
@@ -425,8 +422,10 @@ def get_latest_webdriver():
 
     return driver
 
+
 def get_latest_chrome_driver():
     return ChromeDriverManager().install()
+
 
 def get_chrome_web_driver(options):
     # Using automatically the correct chromedriver by using the webdrive-manager (cf.: https://stackoverflow.com/questions/60296873/sessionnotcreatedexception-message-session-not-created-this-version-of-chrome)

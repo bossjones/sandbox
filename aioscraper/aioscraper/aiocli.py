@@ -7,7 +7,6 @@ def main(name: str = typer.Argument("Wade Wilson")):
     async def _main():
         typer.echo(f"Hello {name}")
 
-
     aiorun(_main())
 
 
