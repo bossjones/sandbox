@@ -567,11 +567,11 @@ is_gpu_enabled:
 dev: pip-compile install-deps-all install-editable install-opencv-typing
 
 # pip-sync: pip-compile install-deps-all install-editable
-pip-sync: pip-compile install-deps-all install-editable
+pip-sync: pip-compile install-editable
 	pip-sync requirements.txt requirements-dev.txt requirements-doc.txt requirements-experimental.txt requirements-test.txt
 
 .PHONY: reset-dev-env
-reset-dev-env: pip-compile pip-sync install-deps-all install-editable
+reset-dev-env: pip-compile pip-sync install-editable
 
 .PHONY: pip-compile-upgrade-downloaders-and-install
 pip-compile-upgrade-downloaders-and-install: pip-compile-upgrade-downloaders dev

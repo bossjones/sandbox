@@ -54,6 +54,7 @@ distlib==0.3.4
     # via virtualenv
 docutils==0.16
     # via
+    #   -c requirements.txt
     #   -r requirements-dev.in
     #   restructuredtext-lint
 fancycompleter==0.9.1

@@ -51,4 +51,4 @@ types-mock
 bandit
 types-aiofiles
 tomli==1.2.2
-docutils==0.16
+docutils<0.17
