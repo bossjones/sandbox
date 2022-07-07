@@ -23,10 +23,20 @@ certifi==2022.6.15
     # via
     #   -c requirements.txt
     #   requests
+    #   urllib3
+cffi==1.15.1
+    # via
+    #   -c requirements.txt
+    #   cryptography
 charset-normalizer==2.1.0
     # via
     #   -c requirements.txt
     #   requests
+cryptography==37.0.4
+    # via
+    #   -c requirements.txt
+    #   pyopenssl
+    #   urllib3
 docfly==1.0.2
     # via -r requirements-doc.in
 docutils==0.16
@@ -38,6 +48,7 @@ idna==3.3
     # via
     #   -c requirements.txt
     #   requests
+    #   urllib3
 imagesize==1.4.1
     # via sphinx
 importlib-metadata==4.12.0
@@ -58,14 +69,26 @@ pathlib-mate==1.0.3
     # via docfly
 pycodestyle==2.8.0
     # via autopep8
+pycparser==2.21
+    # via
+    #   -c requirements.txt
+    #   cffi
 pygments==2.7.4
     # via
     #   -c requirements.txt
     #   sphinx
+pyopenssl==22.0.0
+    # via
+    #   -c requirements.txt
+    #   urllib3
 pyparsing==3.0.9
     # via
     #   -c requirements.txt
     #   packaging
+pysocks==1.7.1
+    # via
+    #   -c requirements.txt
+    #   urllib3
 pytz==2022.1
     # via
     #   -c requirements.txt
@@ -110,7 +133,7 @@ sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
 toml==0.10.2
     # via autopep8
-urllib3==1.26.10
+urllib3[secure,socks]==1.26.10
     # via
     #   -c requirements.txt
     #   requests

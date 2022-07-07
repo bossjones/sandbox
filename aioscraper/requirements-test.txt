@@ -16,6 +16,11 @@ certifi==2022.6.15
     # via
     #   -c requirements-dev.txt
     #   requests
+    #   urllib3
+cffi==1.15.1
+    # via
+    #   -c requirements-dev.txt
+    #   cryptography
 charset-normalizer==2.1.0
     # via
     #   -c requirements-dev.txt
@@ -35,6 +40,11 @@ coverage[toml]==6.4.1
     #   pytest-cov
 coveralls==3.3.1
     # via -r requirements-test.in
+cryptography==37.0.4
+    # via
+    #   -c requirements-dev.txt
+    #   pyopenssl
+    #   urllib3
 distlib==0.3.4
     # via
     #   -c requirements-dev.txt
@@ -55,6 +65,7 @@ idna==3.3
     # via
     #   -c requirements-dev.txt
     #   requests
+    #   urllib3
 iniconfig==1.1.1
     # via pytest
 mccabe==0.6.1
@@ -96,6 +107,10 @@ pycodestyle==2.8.0
     # via
     #   -c requirements-dev.txt
     #   flake8
+pycparser==2.21
+    # via
+    #   -c requirements-dev.txt
+    #   cffi
 pyflakes==2.4.0
     # via
     #   -c requirements-dev.txt
@@ -104,8 +119,16 @@ pygments==2.7.4
     # via
     #   -c requirements-dev.txt
     #   rich
+pyopenssl==22.0.0
+    # via
+    #   -c requirements-dev.txt
+    #   urllib3
 pyparsing==3.0.9
     # via packaging
+pysocks==1.7.1
+    # via
+    #   -c requirements-dev.txt
+    #   urllib3
 pytest==7.1.2
     # via
     #   -r requirements-test.in
@@ -197,7 +220,7 @@ typing-extensions==4.3.0
     #   -c requirements-dev.txt
     #   black
     #   mypy
-urllib3==1.26.10
+urllib3[secure,socks]==1.26.10
     # via
     #   -c requirements-dev.txt
     #   requests

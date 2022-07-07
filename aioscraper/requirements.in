@@ -77,3 +77,7 @@ docutils<0.17
 pandas
 dask
 imageio
+webdriver-manager
+selenium
+PyObjC
+Pillow

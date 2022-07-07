@@ -26,6 +26,11 @@ certifi==2022.6.15
     # via
     #   -c requirements.txt
     #   requests
+    #   urllib3
+cffi==1.15.1
+    # via
+    #   -c requirements.txt
+    #   cryptography
 cfgv==3.3.1
     # via pre-commit
 charset-normalizer==2.1.0
@@ -40,6 +45,11 @@ codecov==2.1.12
     # via -r requirements-dev.in
 coverage==6.4.1
     # via codecov
+cryptography==37.0.4
+    # via
+    #   -c requirements.txt
+    #   pyopenssl
+    #   urllib3
 curtsies==0.3.10
     # via bpython
 cwcwidth==0.1.6
@@ -77,6 +87,7 @@ idna==3.3
     # via
     #   -c requirements.txt
     #   requests
+    #   urllib3
 invoke==1.7.1
     # via -r requirements-dev.in
 isort==5.10.1
@@ -121,6 +132,10 @@ pre-commit==2.19.0
     # via -r requirements-dev.in
 pycodestyle==2.8.0
     # via autopep8
+pycparser==2.21
+    # via
+    #   -c requirements.txt
+    #   cffi
 pyflakes==2.4.0
     # via autoflake
 pygments==2.7.4
@@ -130,8 +145,16 @@ pygments==2.7.4
     #   pdbpp
 pylint==2.14.4
     # via -r requirements-dev.in
+pyopenssl==22.0.0
+    # via
+    #   -c requirements.txt
+    #   urllib3
 pyrepl==0.9.0
     # via fancycompleter
+pysocks==1.7.1
+    # via
+    #   -c requirements.txt
+    #   urllib3
 python-dateutil==2.8.2
     # via
     #   -c requirements.txt
@@ -212,7 +235,7 @@ typing-inspect==0.7.1
     # via libcst
 unittest2pytest==0.4
     # via -r requirements-dev.in
-urllib3==1.26.10
+urllib3[secure,socks]==1.26.10
     # via
     #   -c requirements.txt
     #   requests

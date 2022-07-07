@@ -11,6 +11,12 @@ import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
 import traceback
 import json
+from arsenic import get_session
+from arsenic.browsers import Firefox, Chrome
+from arsenic.services import Geckodriver, Chromedriver
+# from webdriver_manager.chrome import ChromeDriverManager
+# from selenium import webdriver
+from aioscraper.utils import utils
 
 
 from IPython.core import ultratb
@@ -32,6 +38,14 @@ sys.excepthook = ultratb.FormattedTB(
 LOGGER = get_logger(__name__, provider="CLI", level=logging.DEBUG)
 intercept_all_loggers()
 
+# Enable connection pool logging
+# SOURCE: https://docs.sqlalchemy.org/en/13/core/engines.html#dbengine-logging
+SELENIUM_LOGGER = logging.getLogger("selenium")
+SELENIUM_LOGGER.setLevel(logging.DEBUG)
+
+WEBDRIVER_MANAGER_LOGGER = logging.getLogger("webdriver_manager")
+WEBDRIVER_MANAGER_LOGGER.setLevel(logging.DEBUG)
+
 app = typer.Typer(help="Awesome CLI user manager.")
 signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT, signal.SIGQUIT)
 
@@ -52,6 +66,28 @@ async def shutdown(loop, signal=None):
     loop.stop()
 
 
+async def example_get_page(uri: str = "https://snaptik.app/en"):
+    options, chromeOptions = utils.default_chrome_options()
+    # Runs geckodriver and starts a firefox session
+    # LOGGER.info(f"binary_location = {driver_options.binary_location}")
+    # driver_manager = utils.get_chrome_web_driver(options)
+    driver_path = utils.get_latest_chrome_driver()
+    scaper_service = Chromedriver(binary=f"{driver_path}")
+    print("chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions")
+    print(chromeOptions)
+    # source: https://github.com/cobypress/TrailblazerCommunityWebScraper/blob/59113f05a9c1d977b2bd059d9b9b31c9b0e04946/SalesforceWebScraper/cogs/scraper.py
+    scraper_browser = Chrome(**{"goog:chromeOptions": {"args": ['--ignore-certificate-errors', '--incognito', "--ignore-certificate-errors"]}})
+    async with get_session(scaper_service, scraper_browser) as session:
+        # go to example.com
+        await session.get(f"{uri}")
+        # wait up to 5 seconds to get the h1 element from the page
+        h1 = await session.wait_for_element(5, 'h1')
+        # print the text of the h1 element
+        print(await h1.get_text())
+
+async def aio_get_latest_webdriver():
+    driver = utils.get_latest_webdriver()
+
 
 @app.command()
 def create(username: str):
@@ -61,30 +97,38 @@ def create(username: str):
     typer.echo(f"Creating user: {username}")
 
 # # @snoop
-# async def _aimages(tweet_url: str):
+# async def _aimages(tiktok_uri: str):
 #     client = TweetpikHTTPClient()
-#     res = await client.aimages(tweet_url)
+#     res = await client.aimages(tiktok_uri)
 #     return res
 
 # async def _write_files_to_disk(data: dict) -> None:
 #     await async_download_file(data)
 
 # @app.command()
-# def images(tweet_url: str):
+# def images(tiktok_uri: str):
 #     """
-#     Creating screenshot with tweet_url.
+#     Creating screenshot with tiktok_uri.
 #     """
-#     typer.echo(f"Screenshotting tweet: {tweet_url}")
+#     typer.echo(f"Screenshotting tweet: {tiktok_uri}")
 #     # client = TweetpikHTTPClient()
-#     # res = asyncio.run(client.aimages(tweet_url))
-#     # # res = client.images(tweet_url)
+#     # res = asyncio.run(client.aimages(tiktok_uri))
+#     # # res = client.images(tiktok_uri)
 #     # rich.print_json(res)
 #     # try:
-#     res = asyncio.run(_aimages(tweet_url))
+#     res = asyncio.run(_aimages(tiktok_uri))
 #     rich.print(res)
 #     data = json.loads(res)
 #     asyncio.run(_write_files_to_disk(data))
 
+@app.command()
+def example(tiktok_uri: str):
+    """
+    Creating screenshot with tiktok_uri.
+    """
+    typer.echo(f"Running example: {tiktok_uri}")
+    res = asyncio.run(example_get_page(uri=tiktok_uri))
+    rich.print(res)
 
 @app.command()
 def delete(
