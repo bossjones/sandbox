@@ -106,7 +106,7 @@ async def example_get_page(uri: str = "https://snaptik.app/"):
         print(await h1.get_text())
 
 
-async def aio_scrape(uri: str = "https://snaptik.app/"):
+async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/7094713503696702766\?is_from_webapp\=1\&sender_device\=p"):
     options, chromeOptions = utils.default_chrome_options()
     # Runs geckodriver and starts a firefox session
     # LOGGER.info(f"binary_location = {driver_options.binary_location}")
@@ -133,9 +133,12 @@ async def aio_scrape(uri: str = "https://snaptik.app/"):
     dest_api = pathlib.Path("./").resolve()
     dest = f"{dest_api}"
 
-    await downloader.tiktok_downloader(
-        uri, scraper_service, scraper_browser, dest, dl_link_num=1
-    )
+    if "tiktok" in uri.lower():
+        await downloader.tiktok_downloader(
+            uri, scraper_service, scraper_browser, dest, dl_link_num=1
+        )
+    else:
+        print("looks like the url you used currently isn't supported")
 
     return dest
 
