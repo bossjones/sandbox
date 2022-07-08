@@ -11,7 +11,6 @@ import logging
 ## Required packages
 import os
 import pathlib
-import platform
 import re
 from time import sleep
 from urllib.request import Request, urlopen
@@ -282,6 +281,7 @@ def retrieve_url(lines, number_of_lines, iter):
         url = lines[-1]
 
     return url
+
 
 ## Getting path of lastly downloaded video
 def get_last_vid_path(DOWNLOAD_DIRECTORY):
