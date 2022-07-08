@@ -60,8 +60,10 @@ LOGGER = get_logger(__name__, provider="Downloader", level=logging.DEBUG)
 VERIFY_SSL = False
 
 SNAP_TIK = "https://snaptik.app"
+FDOWN = "https://fdown.net"
+
 # SOURCE: https://stackoverflow.com/questions/35388332/how-to-download-images-with-aiohttp
-async def download_and_save(url: str):
+async def download_and_save(url: str, dest_override=False):
     # SOURCE: https://github.com/aio-libs/aiohttp/issues/955
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     sslcontext.check_hostname = False
@@ -71,6 +73,8 @@ async def download_and_save(url: str):
     ) as http:
         url_file_api = pathlib.Path(url)
         filename = f"{url_file_api.name}"
+        if dest_override:
+            filename = dest_override
         # breakpoint()
         async with http.request(
             "GET", url, ssl=sslcontext if VERIFY_SSL else None
@@ -159,6 +163,91 @@ async def tiktok_downloader(
             # breakpoint()
 
             filename, size = await download_and_save(source_link)
+
+            # # 6) Adding the current date in front of the lastly downloaded video name
+            # # and writing url to metadata "Comments" part of the downloaded file
+            print("6) Adding date and metadata")
+
+            await stop_session(session)
+    except Exception:
+        try:
+            await stop_session(session)
+        except:
+            pass
+
+async def facebook_downloader(
+    url: str, scraper_service, scraper_browser: Chrome, dest: str
+):
+    # DEMO: https://fb.watch/e8fQAu19R4/
+    try:
+        LOGGER.debug(f"url = {url}")
+
+        session: ArsenicSession
+
+        async with get_session(scraper_service, scraper_browser) as session:
+            # 1) Navigating to FDOWN
+            print("1) Navigating to FDOWN")
+
+            await session.get(f"{FDOWN}")
+
+            # 2) Entering the url under "Please insert a valid video URL"
+            print('2) Entering the url under "Please insert a valid video URL"')
+
+            python_field = await session.get_element(
+                '//*[@class="form-control input-lg"]',
+                selector_type=SelectorType.xpath,
+            )
+
+            await python_field.send_keys(url)
+
+            # 3) Clicking on the "DOWNLOAD" button
+            print('3) Clicking on the "DOWNLOAD" button')
+
+            # /html/body/div[3]/div/div/div/center/form/div/span/button
+
+            submit_url = await session.wait_for_element(
+                50, '//*[@class="btn btn-primary input-lg"]', selector_type=SelectorType.xpath
+            )
+
+            await submit_url.click()
+
+            print("4) Getting source link from video tag")
+
+            source_link: str
+
+            source_element_hd = await session.wait_for_element(
+                50,
+                '//*[@id="hdlink"]',
+                selector_type=SelectorType.xpath,
+            )
+            source_link = await source_element_hd.get_attribute("href")
+
+            # 5) Retrieving video using urllib.request
+            # (I.e. downloading the TikTok post)
+            print("5) Retrieving video using urllib.request")
+            number_of_mp4_files_already_in_DOWNLOAD_DIRECTORY = len(
+                glob.glob1(f"{dest}", "*.mp4")
+            )
+
+            # author_name_encoded = await session.get_element(
+            #     "/html/body/main/section[2]/div/div/article/div[3]/h3",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await author_name_encoded.get_text()
+
+            # full_description_encoded = await session.get_element(
+            #     "/html/body/main/section[2]/div/div/article/div[3]/p[1]/span",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await full_description_encoded.get_text()
+
+            p = pathlib.Path(source_link)
+            dest_override = p.name.split("?")[0]
+
+            # breakpoint()
+            breakpoint()
+
+            filename, size = await download_and_save(source_link, dest_override)
 
             # # 6) Adding the current date in front of the lastly downloaded video name
             # # and writing url to metadata "Comments" part of the downloaded file

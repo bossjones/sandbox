@@ -124,7 +124,7 @@ async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/70
                 "args": [
                     "--ignore-certificate-errors",
                     "--incognito",
-                    "--headless",
+                    # "--headless",
                 ]
             }
         }
@@ -134,8 +134,14 @@ async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/70
     dest = f"{dest_api}"
 
     if "tiktok" in uri.lower():
+        LOGGER.warning("Looks like we are downloading a tiktok!")
         await downloader.tiktok_downloader(
             uri, scraper_service, scraper_browser, dest, dl_link_num=1
+        )
+    elif "https://fb.watch" in uri.lower() or "https://www.facebook.com" in uri.lower() or "https://facebook.com" in uri.lower():
+        LOGGER.warning("Looks like we are downloading a facebook video!")
+        await downloader.facebook_downloader(
+            uri, scraper_service, scraper_browser, dest
         )
     else:
         print("looks like the url you used currently isn't supported")
