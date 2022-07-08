@@ -137,7 +137,11 @@ async def download_and_save(url: str, dest_override=False):
 
 ## TikTok downloader
 async def tiktok_downloader(
-    url: str, scraper_service: Chromedriver, scraper_browser: Chrome, dest: str, dl_link_num: int = 1
+    url: str,
+    scraper_service: Chromedriver,
+    scraper_browser: Chrome,
+    dest: str,
+    dl_link_num: int = 1,
 ):
 
     try:
@@ -215,16 +219,19 @@ async def tiktok_downloader(
         except:
             pass
 
+
 async def facebook_downloader(
     url: str, scraper_service: Chromedriver, scraper_browser: Chrome, dest: str
 ):
     # DEMO: https://fb.watch/e8fQAu19R4/
     # SOURCE: https://github.com/dibasdauliya/youtube-facebook-vids-downloader/blob/f071006d9da3ef5364f587c91b47af27cac3037d/fb_vid.py
-    UA = {'User-Agent': 'Mozilla/5.0 (Linux; Android 11; Redmi Note 9 Pro Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'Referer': 'https://fdown.net/',
-    'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
-    'Cookie': '_ga=GA1.2.2094519438.1640138973; _gid=GA1.2.1078295655.1640138975; _gat_gtag_UA_44090370_1=1'}
+    UA = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 11; Redmi Note 9 Pro Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Referer": "https://fdown.net/",
+        "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Cookie": "_ga=GA1.2.2094519438.1640138973; _gid=GA1.2.1078295655.1640138975; _gat_gtag_UA_44090370_1=1",
+    }
     DOWNLOAD_PARAMS = FB_DOWNLOAD_METHOD["savevideo"]
 
     try:
@@ -236,14 +243,15 @@ async def facebook_downloader(
             # 1) Navigating to downloader website
             print(f"1) Navigating to {DOWNLOAD_PARAMS['url']}")
 
-            await session.get(DOWNLOAD_PARAMS['url'])
+            await session.get(DOWNLOAD_PARAMS["url"])
 
             await asyncio.sleep(30)
 
             # 2) Entering the url under "Please insert a valid video URL"
             print('2) Entering the url under "Please insert a valid video URL"')
 
-            python_field = await session.wait_for_element(50,
+            python_field = await session.wait_for_element(
+                50,
                 DOWNLOAD_PARAMS["python_field"],
                 selector_type=SelectorType.xpath,
             )
@@ -309,6 +317,7 @@ async def facebook_downloader(
             await stop_session(session)
         except:
             pass
+
 
 # async def facebook_downloader(
 #     url: str, scraper_service, scraper_browser: Chrome, dest: str

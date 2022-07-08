@@ -106,7 +106,9 @@ async def example_get_page(uri: str = "https://snaptik.app/"):
         print(await h1.get_text())
 
 
-async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/7094713503696702766\?is_from_webapp\=1\&sender_device\=p"):
+async def aio_scrape(
+    uri: str = "https://www.tiktok.com/@missbricosplay/video/7094713503696702766\?is_from_webapp\=1\&sender_device\=p",
+):
     options, chromeOptions = utils.default_chrome_options()
     # Runs geckodriver and starts a firefox session
     # LOGGER.info(f"binary_location = {driver_options.binary_location}")
@@ -118,6 +120,7 @@ async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/70
     )
     print(chromeOptions)
     # source: https://github.com/cobypress/TrailblazerCommunityWebScraper/blob/59113f05a9c1d977b2bd059d9b9b31c9b0e04946/SalesforceWebScraper/cogs/scraper.py
+    # SOURCE: https://github.com/F4stZ4p/magmachain/blob/acb81ba59ba236ef877f1c6d3e260d864697d959/magmachain.py
     scraper_browser = Chrome(
         **{
             "goog:chromeOptions": {
@@ -140,7 +143,11 @@ async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/70
         await downloader.tiktok_downloader(
             uri, scraper_service, scraper_browser, dest, dl_link_num=1
         )
-    elif "https://fb.watch" in uri.lower() or "https://www.facebook.com" in uri.lower() or "https://facebook.com" in uri.lower():
+    elif (
+        "https://fb.watch" in uri.lower()
+        or "https://www.facebook.com" in uri.lower()
+        or "https://facebook.com" in uri.lower()
+    ):
         LOGGER.warning("Looks like we are downloading a facebook video!")
         await downloader.facebook_downloader(
             uri, scraper_service, scraper_browser, dest
