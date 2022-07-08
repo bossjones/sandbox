@@ -125,6 +125,8 @@ async def aio_scrape(uri: str = "https://www.tiktok.com/@missbricosplay/video/70
                     "--ignore-certificate-errors",
                     "--incognito",
                     # "--headless",
+                    # "--enable-async-event-targeting",
+                    # "--enable-gpu-async-worker-context",
                 ]
             }
         }

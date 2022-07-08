@@ -61,6 +61,46 @@ VERIFY_SSL = False
 
 SNAP_TIK = "https://snaptik.app"
 FDOWN = "https://fdown.net"
+SNAPSAVE = "https://snapsave.app/"
+
+FB_DOWNLOAD_METHOD = {
+    "savevideo": {
+        "url": "https://savevideo.me/",
+        "python_field": '//*[@class="url_input"]',
+        "submit_url": '//*[@class="submit"]',
+        "source_element": '//*[@id="search_results"]/div[1]/p/a',
+    },
+    "fdown": {
+        "url": "https://fdown.net/index.php",
+        "python_field": '//*[@class="form-control input-lg"]',
+        "submit_url": '//*[@class="btn btn-primary input-lg"]',
+        "source_element": '//*[@id="hdlink"]',
+    },
+    "snapsave": {
+        "url": "https://snapsave.app",
+        "python_field": '//*[@class="input input-url"]',
+        "submit_url": '//*[@class="button is-download"]',
+        "source_element": '//*[@id="download-section"]/section/div/div[1]/div[2]/div/table/tbody/tr[1]/td[3]/a',
+    },
+    "bigbangram": {
+        "url": "",
+        "python_field": "",
+        "submit_url": "",
+        "source_element": "",
+    },
+    "toolzu": {
+        "url": "",
+        "python_field": "",
+        "submit_url": "",
+        "source_element": "",
+    },
+    "fdownloader": {
+        "url": "https://fdownloader.net",
+        "python_field": '//*[@id="s_input"]',
+        "submit_url": '//*[@class="btn-red"]',
+        "source_element": '//*[@id="hdlink"]',
+    },
+}
 
 # SOURCE: https://stackoverflow.com/questions/35388332/how-to-download-images-with-aiohttp
 async def download_and_save(url: str, dest_override=False):
@@ -97,7 +137,7 @@ async def download_and_save(url: str, dest_override=False):
 
 ## TikTok downloader
 async def tiktok_downloader(
-    url: str, scraper_service, scraper_browser: Chrome, dest: str, dl_link_num: int = 1
+    url: str, scraper_service: Chromedriver, scraper_browser: Chrome, dest: str, dl_link_num: int = 1
 ):
 
     try:
@@ -176,25 +216,35 @@ async def tiktok_downloader(
             pass
 
 async def facebook_downloader(
-    url: str, scraper_service, scraper_browser: Chrome, dest: str
+    url: str, scraper_service: Chromedriver, scraper_browser: Chrome, dest: str
 ):
     # DEMO: https://fb.watch/e8fQAu19R4/
+    # SOURCE: https://github.com/dibasdauliya/youtube-facebook-vids-downloader/blob/f071006d9da3ef5364f587c91b47af27cac3037d/fb_vid.py
+    UA = {'User-Agent': 'Mozilla/5.0 (Linux; Android 11; Redmi Note 9 Pro Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'Referer': 'https://fdown.net/',
+    'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Cookie': '_ga=GA1.2.2094519438.1640138973; _gid=GA1.2.1078295655.1640138975; _gat_gtag_UA_44090370_1=1'}
+    DOWNLOAD_PARAMS = FB_DOWNLOAD_METHOD["savevideo"]
+
     try:
         LOGGER.debug(f"url = {url}")
 
         session: ArsenicSession
 
         async with get_session(scraper_service, scraper_browser) as session:
-            # 1) Navigating to FDOWN
-            print("1) Navigating to FDOWN")
+            # 1) Navigating to downloader website
+            print(f"1) Navigating to {DOWNLOAD_PARAMS['url']}")
 
-            await session.get(f"{FDOWN}")
+            await session.get(DOWNLOAD_PARAMS['url'])
+
+            await asyncio.sleep(30)
 
             # 2) Entering the url under "Please insert a valid video URL"
             print('2) Entering the url under "Please insert a valid video URL"')
 
-            python_field = await session.get_element(
-                '//*[@class="form-control input-lg"]',
+            python_field = await session.wait_for_element(50,
+                DOWNLOAD_PARAMS["python_field"],
                 selector_type=SelectorType.xpath,
             )
 
@@ -206,7 +256,7 @@ async def facebook_downloader(
             # /html/body/div[3]/div/div/div/center/form/div/span/button
 
             submit_url = await session.wait_for_element(
-                50, '//*[@class="btn btn-primary input-lg"]', selector_type=SelectorType.xpath
+                50, DOWNLOAD_PARAMS["submit_url"], selector_type=SelectorType.xpath
             )
 
             await submit_url.click()
@@ -217,7 +267,7 @@ async def facebook_downloader(
 
             source_element_hd = await session.wait_for_element(
                 50,
-                '//*[@id="hdlink"]',
+                DOWNLOAD_PARAMS["source_element"],
                 selector_type=SelectorType.xpath,
             )
             source_link = await source_element_hd.get_attribute("href")
@@ -259,3 +309,91 @@ async def facebook_downloader(
             await stop_session(session)
         except:
             pass
+
+# async def facebook_downloader(
+#     url: str, scraper_service, scraper_browser: Chrome, dest: str
+# ):
+#     # DEMO: https://fb.watch/e8fQAu19R4/
+#     try:
+#         LOGGER.debug(f"url = {url}")
+
+#         session: ArsenicSession
+
+#         async with get_session(scraper_service, scraper_browser) as session:
+#             # 1) Navigating to SNAPSAVE
+#             print("1) Navigating to SNAPSAVE")
+
+#             await session.get(f"{SNAPSAVE}")
+
+#             # 2) Entering the url under "Please insert a valid video URL"
+#             print('2) Entering the url under "Please insert a valid video URL"')
+
+#             # <input name = "url" class = "input input-url" id = "url" type = "text" placeholder = "Paste video URL Facebook" >
+#             # <button class="button is-download" id="send" type="submit">Download</button>
+
+#             python_field = await session.get_element(
+#                 '//*[@class="button is-download"]',
+#                 selector_type=SelectorType.xpath,
+#             )
+
+#             await python_field.send_keys(url)
+
+#             # 3) Clicking on the "DOWNLOAD" button
+#             print('3) Clicking on the "DOWNLOAD" button')
+
+#             # /html/body/div[3]/div/div/div/center/form/div/span/button
+
+#             submit_url = await session.wait_for_element(
+#                 50, '//*[@class="btn btn-primary input-lg"]', selector_type=SelectorType.xpath
+#             )
+
+#             await submit_url.click()
+
+#             print("4) Getting source link from video tag")
+
+#             source_link: str
+
+#             source_element_hd = await session.wait_for_element(
+#                 50,
+#                 '//*[@id="hdlink"]',
+#                 selector_type=SelectorType.xpath,
+#             )
+#             source_link = await source_element_hd.get_attribute("href")
+
+#             # 5) Retrieving video using urllib.request
+#             # (I.e. downloading the TikTok post)
+#             print("5) Retrieving video using urllib.request")
+#             number_of_mp4_files_already_in_DOWNLOAD_DIRECTORY = len(
+#                 glob.glob1(f"{dest}", "*.mp4")
+#             )
+
+#             # author_name_encoded = await session.get_element(
+#             #     "/html/body/main/section[2]/div/div/article/div[3]/h3",
+#             #     selector_type=SelectorType.xpath,
+#             # )
+#             # await author_name_encoded.get_text()
+
+#             # full_description_encoded = await session.get_element(
+#             #     "/html/body/main/section[2]/div/div/article/div[3]/p[1]/span",
+#             #     selector_type=SelectorType.xpath,
+#             # )
+#             # await full_description_encoded.get_text()
+
+#             p = pathlib.Path(source_link)
+#             dest_override = p.name.split("?")[0]
+
+#             # breakpoint()
+#             breakpoint()
+
+#             filename, size = await download_and_save(source_link, dest_override)
+
+#             # # 6) Adding the current date in front of the lastly downloaded video name
+#             # # and writing url to metadata "Comments" part of the downloaded file
+#             print("6) Adding date and metadata")
+
+#             await stop_session(session)
+#     except Exception:
+#         try:
+#             await stop_session(session)
+#         except:
+#             pass
