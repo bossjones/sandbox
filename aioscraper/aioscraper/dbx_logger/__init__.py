@@ -254,6 +254,38 @@ def get_logger(
     logger.add(
         sys.stdout,
         format=format_record,
+        filter="selenium",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="webdriver_manager",
+        level="ERROR",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="arsenic",
+        level="DEBUG",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
+        filter="aiohttp",
+        level="DEBUG",
+        enqueue=True,
+        diagnose=True,
+    )
+    logger.add(
+        sys.stdout,
+        format=format_record,
         filter="tensorflow",
         level="DEBUG",
         enqueue=True,
@@ -267,14 +299,14 @@ def get_logger(
         enqueue=True,
         diagnose=True,
     )
-    logger.add(
-        sys.stdout,
-        format=format_record,
-        filter="aiohttp",
-        level="ERROR",
-        enqueue=True,
-        diagnose=True,
-    )
+    # logger.add(
+    #     sys.stdout,
+    #     format=format_record,
+    #     filter="aiohttp",
+    #     level="ERROR",
+    #     enqueue=True,
+    #     diagnose=True,
+    # )
 
     logging.basicConfig(handlers=[InterceptHandler()], level=0)
 

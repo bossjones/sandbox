@@ -578,3 +578,7 @@ upgrade-reset-dev-env: pip-tools-upgrade pip-sync install-editable
 
 .PHONY: pip-compile-upgrade-downloaders-and-install
 pip-compile-upgrade-downloaders-and-install: pip-compile-upgrade-downloaders dev
+
+.PHONY: print-certifi
+print-certifi:
+	@${BIN_PYTHON} -m certifi

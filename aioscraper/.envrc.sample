@@ -7,3 +7,9 @@ export DROPBOX_AIOSCRAPER_TOKEN=""
 export DROPBOX_AIOSCRAPER_APP_KEY=""
 export DROPBOX_AIOSCRAPER_APP_SECRET=""
 export DROPBOX_AIOSCRAPER_OAUTH_ACCESS_TOKEN=""
+# SOURCE: https://stackoverflow.com/questions/40684543/how-to-make-python-use-ca-certificates-from-mac-os-truststore
+# SOURCE: https://stackoverflow.com/questions/40684543/how-to-make-python-use-ca-certificates-from-mac-os-truststore/57795811#57795811
+# I think this solution good but not enough for the people using pyenv or direct build of python. After installing certifi, we need to follow stackoverflow.com/a/57795811/7412781
+CERT_PATH=$(make print-certifi)
+export SSL_CERT_FILE=${CERT_PATH}
+export REQUESTS_CA_BUNDLE=${CERT_PATH}

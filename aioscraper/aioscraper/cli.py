@@ -1,12 +1,11 @@
 # SOURCE: https://github.com/tiangolo/typer-cli#user-content-awesome-cli
 import asyncio
 import logging
+import pathlib
 import signal
 # from aioscraper.tweetpik import TweetpikHTTPClient, HTTPException, async_download_file
 import sys
 
-from IPython.core import ultratb
-from IPython.core.debugger import set_trace  # noqa
 # from concurrent.futures import ProcessPoolExecutor
 from arsenic import get_session
 from arsenic.browsers import Chrome, Firefox
@@ -14,6 +13,7 @@ from arsenic.services import Chromedriver, Geckodriver
 import rich
 import snoop
 import typer
+import bpdb
 
 from aioscraper.dbx_logger import (  # noqa: E402
     generate_tree,
@@ -24,10 +24,18 @@ from aioscraper.dbx_logger import (  # noqa: E402
 # from webdriver_manager.chrome import ChromeDriverManager
 # from selenium import webdriver
 from aioscraper.utils import utils
+from aioscraper.scrapers import downloader
+
+############################################
+import sys
+
+from IPython.core import ultratb
+from IPython.core.debugger import set_trace  # noqa
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
 )
+############################################
 
 # https://github.com/whoisandy/k2s3/blob/6e0d24abb837add1d7fcc20619533c603ea76b22/k2s3/cli.py#L114
 
@@ -41,6 +49,12 @@ SELENIUM_LOGGER.setLevel(logging.DEBUG)
 
 WEBDRIVER_MANAGER_LOGGER = logging.getLogger("webdriver_manager")
 WEBDRIVER_MANAGER_LOGGER.setLevel(logging.DEBUG)
+
+ARSENIC_LOGGER = logging.getLogger("arsenic")
+ARSENIC_LOGGER.setLevel(logging.DEBUG)
+
+AIOHTTP_LOGGER = logging.getLogger("aiohttp")
+AIOHTTP_LOGGER.setLevel(logging.DEBUG)
 
 app = typer.Typer(help="Awesome CLI user manager.")
 signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT, signal.SIGQUIT)
@@ -63,13 +77,13 @@ async def shutdown(loop, signal=None):
     loop.stop()
 
 
-async def example_get_page(uri: str = "https://snaptik.app/en"):
+async def example_get_page(uri: str = "https://snaptik.app/"):
     options, chromeOptions = utils.default_chrome_options()
     # Runs geckodriver and starts a firefox session
     # LOGGER.info(f"binary_location = {driver_options.binary_location}")
     # driver_manager = utils.get_chrome_web_driver(options)
     driver_path = utils.get_latest_chrome_driver()
-    scaper_service = Chromedriver(binary=f"{driver_path}")
+    scraper_service = Chromedriver(binary=f"{driver_path}")
     print(
         "chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions"
     )
@@ -86,13 +100,45 @@ async def example_get_page(uri: str = "https://snaptik.app/en"):
             }
         }
     )
-    async with get_session(scaper_service, scraper_browser) as session:
+    async with get_session(scraper_service, scraper_browser) as session:
         # go to example.com
         await session.get(f"{uri}")
         # wait up to 5 seconds to get the h1 element from the page
         h1 = await session.wait_for_element(5, "h1")
         # print the text of the h1 element
         print(await h1.get_text())
+
+async def aio_scrape(uri: str = "https://snaptik.app/"):
+    options, chromeOptions = utils.default_chrome_options()
+    # Runs geckodriver and starts a firefox session
+    # LOGGER.info(f"binary_location = {driver_options.binary_location}")
+    # driver_manager = utils.get_chrome_web_driver(options)
+    driver_path = utils.get_latest_chrome_driver()
+    scraper_service = Chromedriver(binary=f"{driver_path}")
+    print(
+        "chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions chromeOptions"
+    )
+    print(chromeOptions)
+    # source: https://github.com/cobypress/TrailblazerCommunityWebScraper/blob/59113f05a9c1d977b2bd059d9b9b31c9b0e04946/SalesforceWebScraper/cogs/scraper.py
+    scraper_browser = Chrome(
+        **{
+            "goog:chromeOptions": {
+                "args": [
+                    "--ignore-certificate-errors",
+                    "--incognito",
+                    "--ignore-certificate-errors",
+                ]
+            }
+        }
+    )
+
+    dest_api = pathlib.Path("./").resolve()
+    dest = f"{dest_api}"
+
+    await downloader.tiktok_downloader(uri, scraper_service, scraper_browser, dest, dl_link_num=1)
+
+    return dest
+
 
 
 async def aio_get_latest_webdriver():
@@ -140,6 +186,15 @@ def example(tiktok_uri: str):
     """
     typer.echo(f"Running example: {tiktok_uri}")
     res = asyncio.run(example_get_page(uri=tiktok_uri))
+    rich.print(res)
+
+@app.command()
+def scrape(tiktok_uri: str):
+    """
+    Creating screenshot with tiktok_uri.
+    """
+    typer.echo(f"Running scrape: {tiktok_uri}")
+    res = asyncio.run(aio_scrape(uri=tiktok_uri))
     rich.print(res)
 
 

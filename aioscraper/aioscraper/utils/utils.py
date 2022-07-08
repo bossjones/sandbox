@@ -283,21 +283,6 @@ def retrieve_url(lines, number_of_lines, iter):
 
     return url
 
-    ## Writing comment in metadata "Comments" part of file
-    # (in case the operating system on which the program is running is macOS)
-    # def write_metadata_comment(file_path, comment):
-    if platform.system() == "Darwin":
-        applescript.tell.app(
-            "Finder",
-            f'set comment of (POSIX file "{file_path}" as alias) to "{comment}" as Unicode text',
-        )
-    else:
-        print(
-            colored("Error!", "red"),
-            'Writing comment in metadata "Comments" part of file is currently only supported for macOS.',
-        )
-
-
 ## Getting path of lastly downloaded video
 def get_last_vid_path(DOWNLOAD_DIRECTORY):
     list_of_files_in_DOWNLOAD_DIRECTORY = glob.glob(DOWNLOAD_DIRECTORY + "/*")
