@@ -12,6 +12,8 @@ aiodebug==2.3.0
     # via -r requirements.in
 aiodns==3.0.0
     # via -r requirements.in
+aiofile==3.7.4
+    # via -r requirements.in
 aiofiles==0.8.0
     # via -r requirements.in
 aiohttp==3.8.1
@@ -70,6 +72,8 @@ bs4==0.0.1
     # via pyinspect
 build==0.8.0
     # via pip-tools
+caio==0.9.6
+    # via aiofile
 certifi==2022.6.15
     # via
     #   requests
@@ -213,7 +217,7 @@ psutil==5.9.1
     # via memory-profiler
 ptyprocess==0.7.0
     # via pexpect
-pybrowsers==0.4.1
+pybrowsers==0.5.0
     # via webdriver-manager
 pycares==4.2.1
     # via aiodns

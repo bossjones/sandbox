@@ -56,7 +56,7 @@ cwcwidth==0.1.6
     # via
     #   bpython
     #   curtsies
-debugpy==1.6.1
+debugpy==1.6.2
     # via -r requirements-dev.in
 dill==0.3.5.1
     # via pylint

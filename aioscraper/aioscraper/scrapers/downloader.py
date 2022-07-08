@@ -16,6 +16,8 @@ import urllib.request
 from urllib.request import Request, urlopen
 import ssl
 import certifi
+import asyncio
+import aiofile
 
 
 
@@ -68,52 +70,71 @@ sys.excepthook = ultratb.FormattedTB(
 
 LOGGER = get_logger(__name__, provider="Downloader", level=logging.DEBUG)
 
+VERIFY_SSL = False
+
 SNAP_TIK = "https://snaptik.app"
-SSLCONTEXT = ssl.create_default_context(cafile=certifi.where())
-print(f"SSLCONTEXT -> {SSLCONTEXT}")
-rich.inspect(SSLCONTEXT, methods=True)
+# SSLCONTEXT = ssl.create_default_context(cafile=certifi.where())
+# print(f"SSLCONTEXT -> {SSLCONTEXT}")
+# rich.inspect(SSLCONTEXT, methods=True)
 # session = aiohhtp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False))
 # SOURCE: https://stackoverflow.com/questions/35388332/how-to-download-images-with-aiohttp
 async def download_and_save(url: str):
     # SOURCE: https://github.com/aio-libs/aiohttp/issues/955
     sslcontext = ssl.create_default_context(cafile=certifi.where())
+    sslcontext.check_hostname = False
+    sslcontext.verify_mode = ssl.CERT_NONE
+    # ERROR: ValueError: verify_ssl, ssl_context, fingerprint and ssl parameters are mutually exclusive
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=sslcontext if VERIFY_SSL else None)) as http:
     # async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl_context=sslcontext,ssl=False)) as http:
-    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as http:
+    # async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as http:
         # url = "http://host/file.img"
+        # <class 'aiohttp.client.ClientSession'>
         url_file_api = pathlib.Path(url)
         filename = f"{url_file_api.name}"
-        # async with http.request("GET", url, ssl_context=sslcontext, ssl=False) as resp:
-        async with http.request("GET", url, ssl=False) as resp:
+        # breakpoint()
+        async with http.request("GET", url, ssl=sslcontext if VERIFY_SSL else None) as resp:
+            # <class 'aiohttp.client_reqrep.ClientResponse'
+        # async with http.request("GET", url, ssl=False) as resp:
             if resp.status == 200:
-                reader = await resp.multipart()
-
-                # /!\ Don't forget to validate your inputs /!\
-
-                # reader.next() will `yield` the fields of your form
-
-                field = await reader.next()
-                assert field.name == 'name'
-                name = await field.read(decode=True)
-
-                field = await reader.next()
-                assert field.name == 'mp4'
-                filename = field.filename
-                # You cannot rely on Content-Length if transfer is chunked.
+                # SOURCE: https://stackoverflow.com/questions/72006813/python-asyncio-file-write-after-request-getfile-not-working
                 size = 0
-                with open(os.path.join(f"./{filename}"), 'wb') as f:
-                    while True:
-                        chunk = await field.read_chunk()  # 8192 bytes by default.
-                        if not chunk:
-                            break
-                        size += len(chunk)
-                        f.write(chunk)
+                try:
+                    async with aiofile.async_open(filename, "wb+") as afp:
+                        async for chunk in resp.content.iter_chunked(1024 * 512):   # 500 KB
+                            await afp.write(chunk)
+                            size += len(chunk)
+                except asyncio.TimeoutError:
+                    LOGGER.error(f"A timeout ocurred while downloading '{filename}'")
 
-                # # return web.Response(text='{} sized of {} successfully stored'
-                # #                          ''.format(filename, size))
+                # reader = await resp.multipart()
 
-                # f = await aiofiles.open(filename, mode='wb')
-                # await f.write(await resp.read())
-                # await f.close()
+                # # /!\ Don't forget to validate your inputs /!\
+
+                # # reader.next() will `yield` the fields of your form
+
+                # field = await reader.next()
+                # assert field.name == 'name'
+                # name = await field.read(decode=True)
+
+                # field = await reader.next()
+                # assert field.name == 'mp4'
+                # filename = field.filename
+                # # You cannot rely on Content-Length if transfer is chunked.
+                # size = 0
+                # with open(os.path.join(f"./{filename}"), 'wb') as f:
+                #     while True:
+                #         chunk = await field.read_chunk()  # 8192 bytes by default.
+                #         if not chunk:
+                #             break
+                #         size += len(chunk)
+                #         f.write(chunk)
+
+                # # # return web.Response(text='{} sized of {} successfully stored'
+                # # #                          ''.format(filename, size))
+
+                # # f = await aiofiles.open(filename, mode='wb')
+                # # await f.write(await resp.read())
+                # # await f.close()
                 return filename, size
 
 ## TikTok downloader
@@ -214,9 +235,10 @@ async def tiktok_downloader(
             full_description_encoded = await session.get_element("/html/body/main/section[2]/div/div/article/div[3]/p[1]/span", selector_type=SelectorType.xpath)
             full_description = await full_description_encoded.get_text()
 
+            # breakpoint()
+
             filename, size = await download_and_save(source_link)
 
-            breakpoint()
 
             # LOGGER.debug(f"full_description = {full_description}")
             # # Bounding the size of "full_description"
