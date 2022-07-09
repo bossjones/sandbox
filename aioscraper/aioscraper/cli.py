@@ -17,6 +17,8 @@ import bpdb
 import rich
 import snoop
 import typer
+import json
+import aiofiles
 
 from aioscraper.dbx_logger import (  # noqa: E402
     generate_tree,
@@ -105,6 +107,10 @@ async def example_get_page(uri: str = "https://snaptik.app/"):
         # print the text of the h1 element
         print(await h1.get_text())
 
+async def aio_json_loads(uri: str):
+    json_data = json.loads(
+        await (await aiofiles.open(uri, mode='r')).read())
+    return json_data
 
 async def aio_scrape(
     uri: str = "https://www.tiktok.com/@missbricosplay/video/7094713503696702766\?is_from_webapp\=1\&sender_device\=p",
@@ -161,6 +167,10 @@ async def aio_scrape(
 async def aio_get_latest_webdriver():
     utils.get_latest_webdriver()
 
+async def run_aio_json_loads(uri: str):
+    json_data = await aio_json_loads(uri=uri)
+    return json_data
+
 
 @app.command()
 def create(username: str):
@@ -213,6 +223,15 @@ def scrape(tiktok_uri: str):
     """
     typer.echo(f"Running scrape: {tiktok_uri}")
     res = asyncio.run(aio_scrape(uri=tiktok_uri))
+    rich.print(res)
+
+@app.command()
+def read_json(uri: str):
+    """
+    Creating screenshot with run_aio_json_loads.
+    """
+    typer.echo(f"Running json: {uri}")
+    res = asyncio.run(run_aio_json_loads(uri=uri))
     rich.print(res)
 
 
