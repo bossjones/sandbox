@@ -147,7 +147,7 @@ async def aio_scrape(
     if "tiktok" in uri.lower():
         LOGGER.warning("Looks like we are downloading a tiktok!")
         await downloader.tiktok_downloader(
-            uri, scraper_service, scraper_browser, dest, dl_link_num=1
+            uri, scraper_service, scraper_browser, dest, dl_link_num=2
         )
     elif (
         "https://fb.watch" in uri.lower()

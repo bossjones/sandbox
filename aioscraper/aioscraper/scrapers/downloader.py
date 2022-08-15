@@ -48,6 +48,9 @@ from aioscraper.shell import (
     pquery,
 )
 from aioscraper.utils import filenames
+import uuid
+from urllib.parse import urlparse
+from slugify import slugify
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
@@ -179,10 +182,20 @@ async def tiktok_downloader(
             source_link: str
 
             source_element = await session.wait_for_element(
-                10,
-                f"#download-block > div > a:nth-child({dl_link_num})",
+                15,
+                f"#snaptik-video > article > div.snaptik-right > div > a:nth-child({dl_link_num})",
                 selector_type=SelectorType.css_selector,
             )
+
+            # breakpoint()
+            # source_element = await session.wait_for_element(
+            #     15,
+            #     f"//*[@id='snaptik-video']/article/div[2]/div/a[{dl_link_num}]",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
+            # //*[@id="snaptik-video"]/article/div[2]/div/a[{dl_link_num}]
+            #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
             source_link = await source_element.get_attribute("href")
 
             # 5) Retrieving video using urllib.request
@@ -191,22 +204,28 @@ async def tiktok_downloader(
             number_of_mp4_files_already_in_DOWNLOAD_DIRECTORY = len(
                 glob.glob1(f"{dest}", "*.mp4")
             )
+            # # //*[@id="snaptik-video"]/article/div[3]/h3
+            # author_name_encoded = await session.get_element(
+            #     '//*[@id="snaptik-video"]/article/div[3]/h3',
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await author_name_encoded.get_text()
 
-            author_name_encoded = await session.get_element(
-                "/html/body/main/section[2]/div/div/article/div[3]/h3",
-                selector_type=SelectorType.xpath,
-            )
-            await author_name_encoded.get_text()
-
-            full_description_encoded = await session.get_element(
-                "/html/body/main/section[2]/div/div/article/div[3]/p[1]/span",
-                selector_type=SelectorType.xpath,
-            )
-            await full_description_encoded.get_text()
+            # full_description_encoded = await session.get_element(
+            #     "/html/body/main/section[2]/div/div/article/div[3]/p[1]/span",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await full_description_encoded.get_text()
 
             # breakpoint()
 
-            filename, size = await download_and_save(source_link)
+            username = urlparse(f"{url}").path.split("/")[1].replace("@","")
+
+            safe_username = slugify(username)
+
+            dest_filename = f"{safe_username}_{str(uuid.uuid4())}.mp4"
+
+            filename, size = await download_and_save(source_link, dest_filename)
 
             # # 6) Adding the current date in front of the lastly downloaded video name
             # # and writing url to metadata "Comments" part of the downloaded file
@@ -303,7 +322,7 @@ async def facebook_downloader(
             dest_override = p.name.split("?")[0]
 
             # breakpoint()
-            breakpoint()
+            # breakpoint()
 
             filename, size = await download_and_save(source_link, dest_override)
 
