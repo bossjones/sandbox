@@ -51,6 +51,7 @@ from aioscraper.utils import filenames
 import uuid
 from urllib.parse import urlparse
 from slugify import slugify
+import uritools
 
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
@@ -106,7 +107,9 @@ FB_DOWNLOAD_METHOD = {
 }
 
 # SOURCE: https://stackoverflow.com/questions/35388332/how-to-download-images-with-aiohttp
-async def download_and_save(url: str, dest_override=False):
+
+
+async def download_and_save(url: str, dest_override=False, base_authority=""):
     # SOURCE: https://github.com/aio-libs/aiohttp/issues/955
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     sslcontext.check_hostname = False
@@ -116,6 +119,14 @@ async def download_and_save(url: str, dest_override=False):
     ) as http:
         url_file_api = pathlib.Path(url)
         filename = f"{url_file_api.name}"
+
+        uri = uritools.urisplit(url)
+
+        if not uri.authority:
+            rich.print(f"uri.authority = {uri.authority}, manually setting url variable")
+            url = f"{base_authority}/{url}"
+            rich.print(f"url = {url}")
+
         if dest_override:
             filename = dest_override
         # breakpoint()
@@ -150,13 +161,15 @@ async def tiktok_downloader(
     try:
         LOGGER.debug(f"url = {url}")
 
+        base_authority = f"{SNAP_TIK}"
+
         session: ArsenicSession
 
         async with get_session(scraper_service, scraper_browser) as session:
             # 1) Navigating to SNAP_TIK
             print("1) Navigating to SNAP_TIK")
 
-            await session.get(f"{SNAP_TIK}")
+            await session.get(base_authority)
 
             # 2) Entering the url under "Please insert a valid video URL"
             print('2) Entering the url under "Please insert a valid video URL"')
@@ -225,7 +238,11 @@ async def tiktok_downloader(
 
             dest_filename = f"{safe_username}_{str(uuid.uuid4())}.mp4"
 
-            filename, size = await download_and_save(source_link, dest_filename)
+            rich.print(f"dest_filename = {dest_filename}")
+
+            filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
+
+            rich.print(f"filename = {filename}")
 
             # # 6) Adding the current date in front of the lastly downloaded video name
             # # and writing url to metadata "Comments" part of the downloaded file
