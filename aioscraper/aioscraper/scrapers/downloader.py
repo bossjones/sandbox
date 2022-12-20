@@ -53,6 +53,10 @@ from urllib.parse import urlparse
 from slugify import slugify
 import uritools
 
+from rich.console import Console
+
+console = Console()
+
 sys.excepthook = ultratb.FormattedTB(
     mode="Verbose", color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
 )
@@ -129,6 +133,7 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
 
         if dest_override:
             filename = dest_override
+            rich.print(f"filename = {dest_override}")
         # breakpoint()
         async with http.request(
             "GET", url, ssl=sslcontext if VERIFY_SSL else None
@@ -171,11 +176,13 @@ async def tiktok_downloader(
 
             await session.get(base_authority)
 
+            breakpoint()
+
             # 2) Entering the url under "Please insert a valid video URL"
             print('2) Entering the url under "Please insert a valid video URL"')
 
             python_field = await session.get_element(
-                "/html/body/main/section[1]/div[3]/div/div/form/div[2]/input",
+                '//*[@id="url"]',
                 selector_type=SelectorType.xpath,
             )
 
@@ -185,7 +192,7 @@ async def tiktok_downloader(
             print('3) Clicking on the "DOWNLOAD" button')
 
             submit_url = await session.wait_for_element(
-                10, '//*[@id="submiturl"]', selector_type=SelectorType.xpath
+                10, '//*[@id="hero"]/div/div[2]/form/div/div[4]/button', selector_type=SelectorType.xpath
             )
 
             await submit_url.click()
@@ -193,10 +200,12 @@ async def tiktok_downloader(
             print("4) Getting source link from video tag")
 
             source_link: str
+            # #download > div > div > div.col-12.col-md-4.offset-md-2 > div > a.btn.btn-main.active.mb-2
 
             source_element = await session.wait_for_element(
                 15,
-                f"#snaptik-video > article > div.snaptik-right > div > a:nth-child({dl_link_num})",
+                # f"#snaptik-video > article > div.snaptik-right > div > a:nth-child({dl_link_num})",
+                f"#download > div > div > div.col-12.col-md-4.offset-md-2 > div > a:nth-child({dl_link_num})",
                 selector_type=SelectorType.css_selector,
             )
 
@@ -240,7 +249,10 @@ async def tiktok_downloader(
 
             rich.print(f"dest_filename = {dest_filename}")
 
-            filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
+            try:
+                filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
+            except Exception:
+                console.print_exception(show_locals=True)
 
             rich.print(f"filename = {filename}")
 
