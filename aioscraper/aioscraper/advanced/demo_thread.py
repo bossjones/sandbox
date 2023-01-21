@@ -23,6 +23,7 @@ https://realpython.com/python-gil/
 https://wiki.python.org/moin/GlobalInterpreterLock
 """
 import heartrate
+
 heartrate.trace(browser=True)
 
 import time
