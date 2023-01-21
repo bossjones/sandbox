@@ -176,7 +176,7 @@ async def tiktok_downloader(
 
             await session.get(base_authority)
 
-            breakpoint()
+            # breakpoint()
 
             # 2) Entering the url under "Please insert a valid video URL"
             print('2) Entering the url under "Please insert a valid video URL"')
