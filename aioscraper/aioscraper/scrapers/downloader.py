@@ -9,6 +9,7 @@ import glob
 import logging
 import pathlib
 import ssl
+
 # ###############################################################################
 # Catch exceptions and go into ipython/ipdb
 import sys
@@ -23,11 +24,14 @@ from arsenic.browsers import Chrome, Firefox
 from arsenic.constants import SelectorType, WindowType
 from arsenic.services import Chromedriver, Geckodriver
 from arsenic.session import Session as ArsenicSession
+
 # SOURCE: https://github.com/Fogapod/KiwiBot/blob/49743118661abecaab86388cb94ff8a99f9011a8/modules/utils/module_screenshot.py
 from async_timeout import timeout
 import certifi
+
 ## Required packages
 import rich
+
 # -- To work with web pages
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -127,7 +131,9 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
         uri = uritools.urisplit(url)
 
         if not uri.authority:
-            rich.print(f"uri.authority = {uri.authority}, manually setting url variable")
+            rich.print(
+                f"uri.authority = {uri.authority}, manually setting url variable"
+            )
             url = f"{base_authority}/{url}"
             rich.print(f"url = {url}")
 
@@ -192,7 +198,9 @@ async def tiktok_downloader(
             print('3) Clicking on the "DOWNLOAD" button')
 
             submit_url = await session.wait_for_element(
-                10, '//*[@id="hero"]/div/div[2]/form/div/div[4]/button', selector_type=SelectorType.xpath
+                10,
+                '//*[@id="hero"]/div/div[2]/form/div/div[4]/button',
+                selector_type=SelectorType.xpath,
             )
 
             await submit_url.click()
@@ -217,7 +225,7 @@ async def tiktok_downloader(
             # )
             # #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
             # //*[@id="snaptik-video"]/article/div[2]/div/a[{dl_link_num}]
-            #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
+            # snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
             source_link = await source_element.get_attribute("href")
 
             # 5) Retrieving video using urllib.request
@@ -241,7 +249,7 @@ async def tiktok_downloader(
 
             # breakpoint()
 
-            username = urlparse(f"{url}").path.split("/")[1].replace("@","")
+            username = urlparse(f"{url}").path.split("/")[1].replace("@", "")
 
             safe_username = slugify(username)
 
@@ -250,7 +258,11 @@ async def tiktok_downloader(
             rich.print(f"dest_filename = {dest_filename}")
 
             try:
-                filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
+                filename, size = await download_and_save(
+                    source_link,
+                    dest_override=dest_filename,
+                    base_authority=base_authority,
+                )
             except Exception:
                 console.print_exception(show_locals=True)
 

@@ -138,7 +138,9 @@ idna==3.4
     #   jsonschema
     #   requests
 importlib-metadata==6.0.0
-    # via nbconvert
+    # via
+    #   -c requirements.txt
+    #   nbconvert
 invoke==2.0.0
     # via -r requirements-dev.in
 ipykernel==6.20.2
@@ -168,6 +170,7 @@ jedi==0.18.2
     # via ipython
 jinja2==3.1.2
     # via
+    #   -c requirements.txt
     #   jupyter-server
     #   memray
     #   nbclassic
@@ -537,7 +540,9 @@ wrapt==1.14.1
     #   -c requirements.txt
     #   astroid
 zipp==3.11.0
-    # via importlib-metadata
+    # via
+    #   -c requirements.txt
+    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

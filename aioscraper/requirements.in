@@ -82,3 +82,7 @@ selenium
 PyObjC
 Pillow
 aiofile
+# https://github.com/alexmojaki/birdseye
+birdseye
+# https://github.com/alexmojaki/heartrate
+heartrate

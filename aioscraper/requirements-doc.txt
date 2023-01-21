@@ -12,7 +12,9 @@ attrs==22.2.0
 attrs-mate==1.0.2
     # via rstobj
 jinja2==3.1.2
-    # via rstobj
+    # via
+    #   -c requirements.txt
+    #   rstobj
 markupsafe==2.1.2
     # via
     #   -c requirements.txt
