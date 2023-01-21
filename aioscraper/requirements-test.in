@@ -3,12 +3,11 @@
 -c requirements-dev.txt
 pytest
 pytest-cov
-coveralls
 pytest-sugar
 pytest-mock
 pytest-leaks
 pytest-mypy
-pytest-flake8
+# pytest-flake8
 tox-pyenv
 pytest-black
 pytest-watch
@@ -25,4 +24,4 @@ pytest-console-scripts
 types-mock
 pytest-rerunfailures
 python-dotenv>=0.19.2
-tomli==1.2.2
+# tomli==1.2.2

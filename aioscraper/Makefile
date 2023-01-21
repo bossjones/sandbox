@@ -376,7 +376,7 @@ pip-tools-upgrade:
 ifeq (${DETECTED_OS}, Darwin)
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install --upgrade pip setuptools wheel
 	ARCHFLAGS="-arch x86_64" LDFLAGS="-L/usr/local/opt/openssl/lib" CFLAGS="-I/usr/local/opt/openssl/include" pip install pip-tools pipdeptree --upgrade
-	rm -v requirements*.txt
+	rm -v requirements*.txt || true
 	pip-compile --rebuild --output-file requirements.txt requirements.in
 	pip-compile --rebuild --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --rebuild --output-file requirements-test.txt requirements-test.in
@@ -385,7 +385,7 @@ ifeq (${DETECTED_OS}, Darwin)
 else
 	pip install --upgrade pip setuptools wheel
 	pip install pip-tools pipdeptree --upgrade
-	rm -v requirements*.txt
+	rm -v requirements*.txt || true
 	pip-compile --rebuild --output-file requirements.txt requirements.in
 	pip-compile --rebuild --output-file requirements-dev.txt requirements-dev.in
 	pip-compile --rebuild --output-file requirements-test.txt requirements-test.in

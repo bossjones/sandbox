@@ -40,7 +40,7 @@ max_line_length = 200
 
 # 4 spaces indenting
 [*.{json,php,xml}]
-indent_size = 4
+indent_size = 2
 indent_style = space
 insert_final_newline = ignore
 

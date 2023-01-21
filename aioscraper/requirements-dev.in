@@ -2,7 +2,6 @@
 pathlib_mate
 isort
 pdbpp
-black
 pre-commit
 mccabe>=0.6.0,<0.7.0
 # SOURCE: https://github.com/ionelmc/python-lazy-object-proxy
@@ -12,6 +11,7 @@ autopep8
 MonkeyType
 pylint
 restructuredtext_lint
+memray
 
 # NOTE: autoflake removes unused imports and unused variables from Python code. It makes use of pyflakes to do this.
 # SOURCE: https://pypi.org/project/autoflake/
@@ -50,5 +50,9 @@ types-setuptools
 types-mock
 bandit
 types-aiofiles
-tomli==1.2.2
-docutils<0.17
+# tomli==1.2.2
+#  docutils<0.17
+rich[jupyter]
+icecream
+black[jupyter]
+py-spy
