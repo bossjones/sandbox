@@ -86,3 +86,4 @@ aiofile
 birdseye
 # https://github.com/alexmojaki/heartrate
 heartrate
+joblib

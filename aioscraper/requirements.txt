@@ -170,6 +170,8 @@ itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
     # via flask
+joblib==1.2.0
+    # via -r requirements.in
 jsonpickle==3.0.1
     # via gutter
 littleutils==0.2.2

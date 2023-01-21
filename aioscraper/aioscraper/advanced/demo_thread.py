@@ -22,6 +22,9 @@ Here are some resources to learn more about the GIL:
 https://realpython.com/python-gil/
 https://wiki.python.org/moin/GlobalInterpreterLock
 """
+import heartrate
+heartrate.trace(browser=True)
+
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
