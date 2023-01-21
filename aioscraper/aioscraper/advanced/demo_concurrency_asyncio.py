@@ -1,3 +1,4 @@
+# SOURCE: https://builtin.com/data-science/asyncio-python
 import time
 import aiohttp
 from aiohttp import ClientSession
