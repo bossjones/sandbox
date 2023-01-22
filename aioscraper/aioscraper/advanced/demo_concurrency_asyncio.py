@@ -20,6 +20,7 @@ async def scrape_all_titles(movies_list):
         result = await asyncio.gather(*tasks)
     return result
 
+
 async def main(movies_list):
     s = time.perf_counter()
     result = await scrape_all_titles(movies_list)

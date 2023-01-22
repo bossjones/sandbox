@@ -22,6 +22,7 @@ import gc
 import aiorwlock
 import requests
 from tqdm.auto import tqdm
+
 # from tqdm.asyncio import tqdm
 from urllib.request import urlretrieve
 
@@ -30,34 +31,35 @@ VERIFY_SSL = False
 
 PHOTO_OUTPUT_DIRS = [
     {
-        'EXTENSIONS': ['jpg', 'jpeg', 'mov', 'mp4', 'm4v', '3gp'],
-        'PATH': './data/photos',
+        "EXTENSIONS": ["jpg", "jpeg", "mov", "mp4", "m4v", "3gp"],
+        "PATH": "./data/photos",
     },
     {
-        'EXTENSIONS': ['cr2'],
-        'PATH': './data/raw-photos',
+        "EXTENSIONS": ["cr2"],
+        "PATH": "./data/raw-photos",
     },
 ]
+
 
 def determine_destination(fn: str):
     extension = os.path.splitext(fn)[1][1:].lower()
     for output_filter in PHOTO_OUTPUT_DIRS:
-        if extension in output_filter['EXTENSIONS']:
-            return output_filter['PATH']
+        if extension in output_filter["EXTENSIONS"]:
+            return output_filter["PATH"]
     return None
 
 
 def find_new_file_name(path):
-    '''
+    """
     If a file already exists in the same place with the same name, this
     function will find a new name to use, changing the extension to
     '_1.jpg' or similar.
-    '''
+    """
     counter = 1
     fn, extension = os.path.splitext(path)
     attempt = path
     while os.path.exists(attempt):
-        attempt = '{}_{}{}'.format(fn, counter, extension)
+        attempt = "{}_{}{}".format(fn, counter, extension)
         counter += 1
     return attempt
 
@@ -72,10 +74,11 @@ def find_new_file_name(path):
 #     shutil.move(temp_path, destination_path)
 #     return destination_path
 
+
 def handle_download_file(url: str, destination_path: str):
     temp_path = tempfile.mktemp()
     with requests.get(url, stream=True) as r:
-        with open(temp_path, 'wb') as f:
+        with open(temp_path, "wb") as f:
             for chunk in r.iter_content(chunk_size=32768):
                 if chunk:
                     f.write(chunk)
@@ -101,7 +104,9 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
         if not uri.authority:
             await rwlock.reader_lock.acquire()
             try:
-                rich.print(f"uri.authority = {uri.authority}, manually setting url variable")
+                rich.print(
+                    f"uri.authority = {uri.authority}, manually setting url variable"
+                )
             finally:
                 rwlock.reader_lock.release()
             url = f"{base_authority}/{url}"
@@ -142,10 +147,11 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
 
 def md5sum(path):
     hash_md5 = md5()
-    with open(path, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b''):
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
+
 
 #################################################################################################################################3
 # Define functions to download an archived dataset and unpack it
@@ -155,6 +161,7 @@ class TqdmUpTo(tqdm):
             self.total = tsize
         self.update(b * bsize - self.n)
 
+
 def download_url(url: str, filepath: str):
     directory = os.path.dirname(os.path.abspath(filepath))
     os.makedirs(directory, exist_ok=True)
@@ -162,25 +169,39 @@ def download_url(url: str, filepath: str):
         print("Filepath already exists. Skipping download.")
         return
 
-    with TqdmUpTo(unit="B", unit_scale=True, unit_divisor=1024, miniters=1, desc=os.path.basename(filepath)) as t:
+    with TqdmUpTo(
+        unit="B",
+        unit_scale=True,
+        unit_divisor=1024,
+        miniters=1,
+        desc=os.path.basename(filepath),
+    ) as t:
         urlretrieve(url, filename=filepath, reporthook=t.update_to, data=None)
         t.total = t.n
+
+
 #################################################################################################################################3
+
 
 async def go_partial(loop):
     test_images = [
-        ["https://i.imgur.com/kvSAxmy.png", "/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/asyncio_demo.png"]
+        [
+            "https://i.imgur.com/kvSAxmy.png",
+            "/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/asyncio_demo.png",
+        ]
     ]
 
     # handle_download_file_func = functools.partial(handle_download_file, test_images[0][0], test_images[0][1])
-    handle_download_file_func = functools.partial(download_url, test_images[0][0], test_images[0][1])
+    handle_download_file_func = functools.partial(
+        download_url, test_images[0][0], test_images[0][1]
+    )
 
     # 2. Run in a custom thread pool:
     with concurrent.futures.ThreadPoolExecutor() as pool:
-        dest = await loop.run_in_executor(
-            pool, handle_download_file_func)
+        dest = await loop.run_in_executor(pool, handle_download_file_func)
 
     return dest
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
