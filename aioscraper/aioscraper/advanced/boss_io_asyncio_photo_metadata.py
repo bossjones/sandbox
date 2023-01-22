@@ -34,6 +34,29 @@ from urllib.request import urlretrieve
 
 VERIFY_SSL = False
 
+
+# ------------------------------------------------------------------------------
+# SOURCE: https://github.com/dream2globe/CleanCodeInPython/blob/e759773c95e7485f004b629fcf7fb4a662c95794/Ch7-2_ConcurrencyTest.py
+DEFAULT_FMT = "[{elapsed:0.8f}s] {name}({args}, {kwargs}) -> {result}"
+
+BASE_DIR = str(pathlib.Path(__file__).parent.resolve())
+DATA_DIR = str(pathlib.Path(BASE_DIR) / 'data')
+# DEFAULT_DIR = "./data/photos"
+CACHE_DIR = str(pathlib.Path(DATA_DIR) / 'cache')
+MODEL_DIR = str(pathlib.Path(DATA_DIR) / 'models')
+MEDIA_ROOT = str(pathlib.Path(BASE_DIR) / 'data')
+THUMBNAIL_ROOT = str(pathlib.Path(CACHE_DIR) / 'thumbnails')
+
+
+THUMBNAIL_SIZES = [
+    # Width, height, crop method, JPEG quality, whether it should be generated upon upload, force accurate gamma-aware sRGB resizing
+    (256, 256, 'cover', 50, True, True),  # Square thumbnails
+    # We use the largest dimension for both dimensions as they won't crop and some with in portrait mode
+    # (960, 960, 'contain', 75, False, False),  # 960px
+    # (1920, 1920, 'contain', 75, False, False),  # 2k
+    (3840, 3840, 'contain', 75, False, False),  # 4k
+]
+PHOTO_INPUT_DIRS = [str(pathlib.Path(BASE_DIR) / 'photos_to_import')]
 PHOTO_OUTPUT_DIRS = [
     {
         "EXTENSIONS": ["jpg", "jpeg", "mov", "mp4", "m4v", "3gp", "png"],
@@ -44,12 +67,19 @@ PHOTO_OUTPUT_DIRS = [
         "PATH": "./data/raw-photos",
     },
 ]
+ic(BASE_DIR, DATA_DIR, CACHE_DIR, MODEL_DIR, MEDIA_ROOT, THUMBNAIL_ROOT, PHOTO_INPUT_DIRS)
 
-# ------------------------------------------------------------------------------
-# SOURCE: https://github.com/dream2globe/CleanCodeInPython/blob/e759773c95e7485f004b629fcf7fb4a662c95794/Ch7-2_ConcurrencyTest.py
-DEFAULT_FMT = "[{elapsed:0.8f}s] {name}({args}, {kwargs}) -> {result}"
+# ~/dev/bossjones/sandbox/aioscraper/aioscraper/advanced feature-thread-test*
+# ❯ python boss_io_asyncio_photo_metadata.py ./data/photos --urls https://i.imgur.com/kvSAxmy.png
+# ic| BASE_DIR: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced'
+#     DATA_DIR: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/data'
+#     CACHE_DIR: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/data/cache'
+#     MODEL_DIR: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/data/models'
+#     MEDIA_ROOT: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/data'
+#     THUMBNAIL_ROOT: '/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/data/cache/thumbnails'
+#     PHOTO_INPUT_DIRS: ['/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/photos_to_import']
 
-DEFAULT_DIR = "./data/photos"
+# ic| args: Namespace(data='./data/photos', urls=['https://i.imgur.com/kvSAxmy.png'])
 
 
 parser = argparse.ArgumentParser(description="Asyncio io concurrency testing")
@@ -58,8 +88,8 @@ parser.add_argument(
     metavar="DIR",
     # '?'. One argument will be consumed from the command line if possible, and produced as a single item. If no command-line argument is present, the value from default will be produced. Note that for optional arguments, there is an additional case - the option string is present but not followed by a command-line argument. In this case the value from const will be produced. Some examples to illustrate this:
     nargs="?",
-    default=f"{DEFAULT_DIR}",
-    help=f"path to dataset (default: {DEFAULT_DIR})",
+    # default=f"{DEFAULT_DIR}",
+    # help=f"path to dataset (default: {DEFAULT_DIR})",
 )
 parser.add_argument(
     "-u",
