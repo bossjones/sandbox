@@ -45,7 +45,6 @@ PHOTO_OUTPUT_DIRS = [
 # ------------------------------------------------------------------------------
 # SOURCE: https://github.com/dream2globe/CleanCodeInPython/blob/e759773c95e7485f004b629fcf7fb4a662c95794/Ch7-2_ConcurrencyTest.py
 DEFAULT_FMT = "[{elapsed:0.8f}s] {name}({args}, {kwargs}) -> {result}"
-
 def clock(fmt=DEFAULT_FMT):
     def decorate(func):
         @functools.wraps(func)
@@ -65,89 +64,6 @@ def clock(fmt=DEFAULT_FMT):
 
     return decorate  # clock()은 decorate()를 반환한다.
 # ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------
-# NOTE: MOVE THIS TO A FILE UTILITIES LIBRARY
-# ------------------------------------------------------------
-# SOURCE: https://github.com/tgbugs/pyontutils/blob/05dc32b092b015233f4a6cefa6c157577d029a40/ilxutils/tools.py
-def is_file(path: str):
-    """Check if path contains a file
-
-    Args:
-        path (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    if pathlib.Path(path).is_file():
-        return True
-    return False
-
-
-def is_directory(path: str):
-    """Check if path contains a dir
-
-    Args:
-        path (str): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    if pathlib.Path(path).is_dir():
-        return True
-    return False
-
-
-def tilda(obj):
-    """wrapper for linux ~/ shell notation
-
-    Args:
-        obj (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    if isinstance(obj, list):
-        return [
-            str(pathlib.Path(o).expanduser()) if isinstance(o, str) else o for o in obj
-        ]
-    elif isinstance(obj, str):
-        return str(pathlib.Path(obj).expanduser())
-    else:
-        return obj
-
-
-def fix_path(path: str):
-    """Automatically convert path to fully qualifies file uri.
-
-    Args:
-        path (_type_): _description_
-    """
-
-    def __fix_path(path):
-        if not isinstance(path, str):
-            return path
-        elif "~" == path[0]:
-            tilda_fixed_path = tilda(path)
-            if is_file(tilda_fixed_path):
-                return tilda_fixed_path
-            else:
-                exit(path, ": does not exit.")
-        elif is_file(pathlib.Path.home() / path):
-            return str(pathlib.Path().home() / path)
-        elif is_directory(pathlib.Path.home() / path):
-            return str(pathlib.Path().home() / path)
-        else:
-            return path
-
-    if isinstance(path, str):
-        return __fix_path(path)
-    elif isinstance(path, list):
-        return [__fix_path(p) for p in path]
-    else:
-        return path
-
 
 def get_folder_size(filepath: str) -> int:
     """Get size of folder in bytes
