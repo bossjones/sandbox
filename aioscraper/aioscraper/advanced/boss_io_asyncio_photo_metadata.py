@@ -24,6 +24,9 @@ import gc
 import aiorwlock
 import requests
 from tqdm.auto import tqdm
+from icecream import ic
+import argparse
+from typing import List, Union, Optional, Tuple
 
 # from tqdm.asyncio import tqdm
 from urllib.request import urlretrieve
@@ -33,7 +36,7 @@ VERIFY_SSL = False
 
 PHOTO_OUTPUT_DIRS = [
     {
-        "EXTENSIONS": ["jpg", "jpeg", "mov", "mp4", "m4v", "3gp"],
+        "EXTENSIONS": ["jpg", "jpeg", "mov", "mp4", "m4v", "3gp", "png"],
         "PATH": "./data/photos",
     },
     {
@@ -45,6 +48,28 @@ PHOTO_OUTPUT_DIRS = [
 # ------------------------------------------------------------------------------
 # SOURCE: https://github.com/dream2globe/CleanCodeInPython/blob/e759773c95e7485f004b629fcf7fb4a662c95794/Ch7-2_ConcurrencyTest.py
 DEFAULT_FMT = "[{elapsed:0.8f}s] {name}({args}, {kwargs}) -> {result}"
+
+DEFAULT_DIR = "./data/photos"
+
+
+parser = argparse.ArgumentParser(description="Asyncio io concurrency testing")
+parser.add_argument(
+    "data",
+    metavar="DIR",
+    # '?'. One argument will be consumed from the command line if possible, and produced as a single item. If no command-line argument is present, the value from default will be produced. Note that for optional arguments, there is an additional case - the option string is present but not followed by a command-line argument. In this case the value from const will be produced. Some examples to illustrate this:
+    nargs="?",
+    default=f"{DEFAULT_DIR}",
+    help=f"path to dataset (default: {DEFAULT_DIR})",
+)
+parser.add_argument(
+    "-u",
+    "--urls",
+    metavar="URL",
+    nargs="*",
+    help="urls to download. "
+)
+
+
 
 def clock(fmt=DEFAULT_FMT):
     def decorate(func):
@@ -166,9 +191,12 @@ def get_folder_size(filepath: str) -> int:
     return total_size
 
 def determine_destination(fn: str):
+    ic(fn)
     extension = os.path.splitext(fn)[1][1:].lower()
+    ic(extension)
     for output_filter in PHOTO_OUTPUT_DIRS:
         if extension in output_filter["EXTENSIONS"]:
+            ic(output_filter["PATH"])
             return output_filter["PATH"]
     return None
 
@@ -187,6 +215,20 @@ def find_new_file_name(path):
         counter += 1
     return attempt
 
+def get_filename_and_dest_from_url(url: str):
+    """Get filename from URL
+
+    Args:
+        url (str): url string
+
+    Returns:
+        _type_: string, string, string
+    """
+    dest_dir = determine_destination(url)
+    fn = url.split('/')[-1]
+    dest_path = str(pathlib.Path(dest_dir) / fn)
+
+    return dest_dir, fn, dest_path
 
 # def download_file(url, destination_path):
 #     temp_path = tempfile.mktemp()
@@ -307,29 +349,50 @@ def download_url(url: str, filepath: str):
 #################################################################################################################################3
 
 
-async def go_partial(loop):
-    test_images = [
-        [
-            "https://i.imgur.com/kvSAxmy.png",
-            "/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/asyncio_demo.png",
-        ]
-    ]
+async def go_partial(loop, urls: List[str]):
+    # progress bar
+    pbar = tqdm(urls)
 
-    # handle_download_file_func = functools.partial(handle_download_file, test_images[0][0], test_images[0][1])
-    handle_download_file_func = functools.partial(
-        download_url, test_images[0][0], test_images[0][1]
-    )
+    for url in pbar:
+        pbar.set_description("Processing -> %s" % url)
+        test_dest_dir, test_fn, test_dest_path = get_filename_and_dest_from_url(url)
 
-    # 2. Run in a custom thread pool:
-    with concurrent.futures.ThreadPoolExecutor() as pool:
-        dest = await loop.run_in_executor(pool, handle_download_file_func)
+        # handle_download_file_func = functools.partial(handle_download_file, test_images[0][0], test_images[0][1])
+        handle_download_file_func = functools.partial(
+            download_url, url, test_dest_path
+        )
+
+        # Run in a custom thread pool:
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            dest = await loop.run_in_executor(pool, handle_download_file_func)
 
     return dest
+
+def main():
+    args = parser.parse_args()
+    print()
+    ic(args)
+    print()
+    return args
+
 
 
 if __name__ == "__main__":
     start_time = time.time()
+
+    args = main()
+
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(go_partial(loop))
+    loop.run_until_complete(go_partial(loop, args.urls))
+
     duration = time.time() - start_time
     print(f"Downloaded 1 site in {duration} seconds")
+
+
+    # # single_file = "/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/asyncio_demo.png"
+    # dd = determine_destination("https://i.imgur.com/kvSAxmy.png")
+    # alt_file_path = find_new_file_name("/Users/malcolm/dev/bossjones/sandbox/aioscraper/aioscraper/advanced/asyncio_demo.png")
+    # rich.print(f"dd, alt_file_path = {dd}, {alt_file_path}")
+
+    # test_dest_dir, test_fn, test_dest_path = get_filename_and_dest_from_url("https://i.imgur.com/kvSAxmy.png")
+    # ic(test_dest_dir, test_fn, test_dest_path)
