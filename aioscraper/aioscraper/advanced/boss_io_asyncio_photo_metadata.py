@@ -204,6 +204,8 @@ async def go_partial(loop):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     loop = asyncio.get_event_loop()
-
     loop.run_until_complete(go_partial(loop))
+    duration = time.time() - start_time
+    print(f"Downloaded 1 site in {duration} seconds")
