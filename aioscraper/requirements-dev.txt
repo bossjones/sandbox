@@ -124,7 +124,9 @@ gitdb==4.0.10
 gitpython==3.1.30
     # via bandit
 greenlet==2.0.1
-    # via bpython
+    # via
+    #   -c requirements.txt
+    #   bpython
 hunter==3.5.1
     # via -r requirements-dev.in
 icecream==2.1.3
