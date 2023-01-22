@@ -45,6 +45,8 @@ PHOTO_OUTPUT_DIRS = [
 # ------------------------------------------------------------------------------
 # SOURCE: https://github.com/dream2globe/CleanCodeInPython/blob/e759773c95e7485f004b629fcf7fb4a662c95794/Ch7-2_ConcurrencyTest.py
 DEFAULT_FMT = "[{elapsed:0.8f}s] {name}({args}, {kwargs}) -> {result}"
+
+
 def clock(fmt=DEFAULT_FMT):
     def decorate(func):
         @functools.wraps(func)
@@ -63,7 +65,10 @@ def clock(fmt=DEFAULT_FMT):
         return clocked  # decorate()는 clocked()를 반환한다.
 
     return decorate  # clock()은 decorate()를 반환한다.
+
+
 # ------------------------------------------------------------------------------
+
 
 def get_folder_size(filepath: str) -> int:
     """Get size of folder in bytes
@@ -80,6 +85,7 @@ def get_folder_size(filepath: str) -> int:
             total_size += os.path.getsize(os.path.join(root, img))
 
     return total_size
+
 
 def determine_destination(fn: str):
     extension = os.path.splitext(fn)[1][1:].lower()
