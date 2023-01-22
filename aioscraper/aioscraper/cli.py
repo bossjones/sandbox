@@ -110,11 +110,10 @@ async def example_get_page(uri: str = "https://snaptik.app/"):
         # print the text of the h1 element
         print(await h1.get_text())
 
-
 async def aio_json_loads(uri: str):
-    json_data = json.loads(await (await aiofiles.open(uri, mode="r")).read())
+    json_data = json.loads(
+        await (await aiofiles.open(uri, mode='r')).read())
     return json_data
-
 
 async def aio_scrape(
     uri: str = "https://www.tiktok.com/@missbricosplay/video/7094713503696702766\?is_from_webapp\=1\&sender_device\=p",
@@ -160,6 +159,13 @@ async def aio_scrape(
     ):
         LOGGER.warning("Looks like we are downloading a facebook video!")
         await downloader.facebook_downloader(
+            uri, scraper_service, scraper_browser, dest
+        )
+    elif (
+        "instagram" in uri.lower()
+    ):
+        LOGGER.warning("Looks like we are downloading a facebook video!")
+        await downloader.instagram_downloader(
             uri, scraper_service, scraper_browser, dest
         )
     else:

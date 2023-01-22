@@ -72,6 +72,7 @@ LOGGER = get_logger(__name__, provider="Downloader", level=logging.DEBUG)
 VERIFY_SSL = False
 
 SNAP_TIK = "https://snaptik.app"
+IGRAM = "https://igram.io"
 FDOWN = "https://fdown.net"
 SNAPSAVE = "https://snapsave.app/"
 
@@ -131,9 +132,7 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
         uri = uritools.urisplit(url)
 
         if not uri.authority:
-            rich.print(
-                f"uri.authority = {uri.authority}, manually setting url variable"
-            )
+            rich.print(f"uri.authority = {uri.authority}, manually setting url variable")
             url = f"{base_authority}/{url}"
             rich.print(f"url = {url}")
 
@@ -158,6 +157,126 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
                     LOGGER.error(f"A timeout ocurred while downloading '{filename}'")
 
                 return filename, size
+
+
+## TikTok downloader
+async def instagram_downloader(
+    url: str,
+    scraper_service: Chromedriver,
+    scraper_browser: Chrome,
+    dest: str,
+    dl_link_num: int = 1,
+):
+
+    try:
+        LOGGER.debug(f"url = {url}")
+
+        base_authority = f"{IGRAM}"
+
+        session: ArsenicSession
+
+        async with get_session(scraper_service, scraper_browser) as session:
+            # 1) Navigating to IGRAM
+            print("1) Navigating to IGRAM")
+
+            await session.get(base_authority)
+
+            # breakpoint()
+
+            # 2) Entering the url under "Please insert a valid video URL"
+            print('2) Entering the url under "Please insert a valid video URL"')
+
+            python_field = await session.get_element(
+                '//*[@id="url"]',
+                selector_type=SelectorType.xpath,
+            )
+
+            await python_field.send_keys(url)
+
+            # 3) Clicking on the "DOWNLOAD" button
+            print('3) Clicking on the "DOWNLOAD" button')
+
+            submit_url = await session.wait_for_element(
+                10, '//*[@id="submit"]', selector_type=SelectorType.xpath
+            )
+
+            # #submit
+
+            await submit_url.click()
+
+            print("4) Getting source link from video tag")
+
+            source_link: str
+            # #download > div > div > div.col-12.col-md-4.offset-md-2 > div > a.btn.btn-main.active.mb-2
+
+            source_element = await session.wait_for_element(
+                15,
+                # f"#snaptik-video > article > div.snaptik-right > div > a:nth-child({dl_link_num})",
+                f"#download-btn",
+                selector_type=SelectorType.css_selector,
+            )
+
+            #download-btn
+
+            # breakpoint()
+            # source_element = await session.wait_for_element(
+            #     15,
+            #     f"//*[@id='snaptik-video']/article/div[2]/div/a[{dl_link_num}]",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
+            # //*[@id="snaptik-video"]/article/div[2]/div/a[{dl_link_num}]
+            #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
+            source_link = await source_element.get_attribute("href")
+
+            # 5) Retrieving video using urllib.request
+            # (I.e. downloading the TikTok post)
+            print("5) Retrieving video using urllib.request")
+            number_of_mp4_files_already_in_DOWNLOAD_DIRECTORY = len(
+                glob.glob1(f"{dest}", "*.mp4")
+            )
+            # # //*[@id="snaptik-video"]/article/div[3]/h3
+            # author_name_encoded = await session.get_element(
+            #     '//*[@id="snaptik-video"]/article/div[3]/h3',
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await author_name_encoded.get_text()
+
+            # full_description_encoded = await session.get_element(
+            #     "/html/body/main/section[2]/div/div/article/div[3]/p[1]/span",
+            #     selector_type=SelectorType.xpath,
+            # )
+            # await full_description_encoded.get_text()
+
+            # breakpoint()
+
+            # https: // www.instagram.com / p / CmRozBjt4jB/
+
+            # username = urlparse(f"{url}").path.split("/")[1].replace("@","")
+
+            # safe_username = slugify(username)
+
+            dest_filename = f"{str(uuid.uuid4())}.mp4"
+
+            rich.print(f"dest_filename = {dest_filename}")
+
+            try:
+                filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
+            except Exception:
+                console.print_exception(show_locals=True)
+
+            rich.print(f"filename = {filename}")
+
+            # # 6) Adding the current date in front of the lastly downloaded video name
+            # # and writing url to metadata "Comments" part of the downloaded file
+            print("6) Adding date and metadata")
+
+            await stop_session(session)
+    except Exception:
+        try:
+            await stop_session(session)
+        except:
+            pass
 
 
 ## TikTok downloader
@@ -198,9 +317,7 @@ async def tiktok_downloader(
             print('3) Clicking on the "DOWNLOAD" button')
 
             submit_url = await session.wait_for_element(
-                10,
-                '//*[@id="hero"]/div/div[2]/form/div/div[4]/button',
-                selector_type=SelectorType.xpath,
+                10, '//*[@id="hero"]/div/div[2]/form/div/div[4]/button', selector_type=SelectorType.xpath
             )
 
             await submit_url.click()
@@ -225,7 +342,7 @@ async def tiktok_downloader(
             # )
             # #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
             # //*[@id="snaptik-video"]/article/div[2]/div/a[{dl_link_num}]
-            # snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
+            #snaptik-video > article > div.snaptik-right > div > a:nth-child(2)
             source_link = await source_element.get_attribute("href")
 
             # 5) Retrieving video using urllib.request
@@ -249,7 +366,7 @@ async def tiktok_downloader(
 
             # breakpoint()
 
-            username = urlparse(f"{url}").path.split("/")[1].replace("@", "")
+            username = urlparse(f"{url}").path.split("/")[1].replace("@","")
 
             safe_username = slugify(username)
 
@@ -258,11 +375,7 @@ async def tiktok_downloader(
             rich.print(f"dest_filename = {dest_filename}")
 
             try:
-                filename, size = await download_and_save(
-                    source_link,
-                    dest_override=dest_filename,
-                    base_authority=base_authority,
-                )
+                filename, size = await download_and_save(source_link, dest_override=dest_filename, base_authority=base_authority)
             except Exception:
                 console.print_exception(show_locals=True)
 
