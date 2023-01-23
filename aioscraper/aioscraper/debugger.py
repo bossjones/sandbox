@@ -45,6 +45,7 @@ def dump_color(obj):
     from pygments.formatters.terminal256 import (  # pylint: disable=no-name-in-module
         Terminal256Formatter,
     )
+
     # Module name actually exists, but pygments loads things in a strange manner
     from pygments.lexers import Python3Lexer  # pylint: disable=no-name-in-module
 
@@ -85,6 +86,7 @@ def pprint_color(obj):
     from pygments.formatters.terminal256 import (  # pylint: disable=no-name-in-module
         Terminal256Formatter,
     )
+
     # Module name actually exists, but pygments loads things in a strange manner
     from pygments.lexers import PythonLexer  # pylint: disable=no-name-in-module
 

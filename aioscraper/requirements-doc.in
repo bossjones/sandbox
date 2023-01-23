@@ -1,18 +1,18 @@
 -c requirements.txt
-sphinx
+#  sphinx
 
 # Theme
 
-sphinx_rtd_theme
+#  sphinx_rtd_theme
 
 # Extensions
 
 # allow jinja2 template
-sphinx-jinja
+#  sphinx-jinja
 # add copy to clipboard button for code block
-sphinx-copybutton
+#  sphinx-copybutton
 # auto API manual, auto Table of Content
-docfly
+#  docfly
 # generate list table from data
 rstobj
 
@@ -21,4 +21,4 @@ rstobj
 # Markdown to reStructuredText converter
 # SOURCE: https://github.com/miyakogi/m2r
 
-sphinx-rtd-theme==0.5.1
+#  sphinx-rtd-theme==0.5.1

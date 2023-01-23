@@ -3,12 +3,14 @@ import asyncio
 import logging
 import pathlib
 import signal
+
 ############################################
 # from aioscraper.tweetpik import TweetpikHTTPClient, HTTPException, async_download_file
 import sys
 
 from IPython.core import ultratb
 from IPython.core.debugger import set_trace  # noqa
+
 # from concurrent.futures import ProcessPoolExecutor
 from arsenic import get_session
 from arsenic.browsers import Chrome, Firefox
@@ -27,6 +29,7 @@ from aioscraper.dbx_logger import (  # noqa: E402
     intercept_all_loggers,
 )
 from aioscraper.scrapers import downloader
+
 # from webdriver_manager.chrome import ChromeDriverManager
 # from selenium import webdriver
 from aioscraper.utils import utils
@@ -158,6 +161,13 @@ async def aio_scrape(
         await downloader.facebook_downloader(
             uri, scraper_service, scraper_browser, dest
         )
+    elif (
+        "instagram" in uri.lower()
+    ):
+        LOGGER.warning("Looks like we are downloading a facebook video!")
+        await downloader.instagram_downloader(
+            uri, scraper_service, scraper_browser, dest
+        )
     else:
         print("looks like the url you used currently isn't supported")
 
@@ -166,6 +176,7 @@ async def aio_scrape(
 
 async def aio_get_latest_webdriver():
     utils.get_latest_webdriver()
+
 
 async def run_aio_json_loads(uri: str):
     json_data = await aio_json_loads(uri=uri)
@@ -224,6 +235,7 @@ def scrape(tiktok_uri: str):
     typer.echo(f"Running scrape: {tiktok_uri}")
     res = asyncio.run(aio_scrape(uri=tiktok_uri))
     rich.print(res)
+
 
 @app.command()
 def read_json(uri: str):
