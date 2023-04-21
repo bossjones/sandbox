@@ -1,0 +1,7 @@
+# SOURCE: https://github.com/tamasfe/taplo/blob/4890bd426ce432a97596944ca6496979ff757355/site/site/configuration/formatter-options.md
+[[rule]]
+[rule.formatting]
+reorder_keys = true
+indent_tables = true
+reorder_arrays = true
+indent_string = "    "
