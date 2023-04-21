@@ -58,6 +58,7 @@ dependencies = [
     "black",
     "bpython",
     # "codecov==2.1.12",
+    "tensorflow-macos",
     "debugpy",
     "docutils==0.16",
     "fer==22.4.0",

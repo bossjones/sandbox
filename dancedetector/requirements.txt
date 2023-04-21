@@ -8,15 +8,18 @@ absl-py==1.4.0
     # via
     #   mediapipe
     #   tensorboard
+    #   tensorflow-macos
 appdirs==1.4.4
     # via scenedetect
 astroid==2.11.7
     # via pylint
+astunparse==1.6.3
+    # via tensorflow-macos
 async-timeout==4.0.2
     # via redis
 atomicwrites==1.4.1
     # via pathlib-mate
-attrs==22.2.0
+attrs==23.1.0
     # via
     #   mediapipe
     #   pytest
@@ -27,7 +30,7 @@ autopep8==1.6.0
     # via dancedetector (pyproject.toml)
 bandit==1.7.5
     # via dancedetector (pyproject.toml)
-beautifulsoup4==4.12.0
+beautifulsoup4==4.12.2
     # via
     #   bs4
     #   google
@@ -53,7 +56,7 @@ cffi==1.15.1
     # via sounddevice
 cfgv==3.3.1
     # via pre-commit
-chardet==4.0.0
+chardet==5.1.0
     # via mbstrdecoder
 charset-normalizer==3.1.0
     # via requests
@@ -98,7 +101,7 @@ docutils==0.16
     #   restructuredtext-lint
 dominate==2.7.0
     # via pytablewriter
-email-validator==1.3.1
+email-validator==2.0.0.post2
     # via pydantic
 exceptiongroup==1.1.1
     # via pytest
@@ -119,27 +122,37 @@ flake8==4.0.1
     #   dancedetector (pyproject.toml)
     #   pytest-flake8
 flatbuffers==23.3.3
-    # via mediapipe
-fonttools==4.39.2
+    # via
+    #   mediapipe
+    #   tensorflow-macos
+fonttools==4.39.3
     # via matplotlib
 freezegun==1.2.2
     # via dancedetector (pyproject.toml)
+gast==0.4.0
+    # via tensorflow-macos
 gitdb==4.0.10
     # via gitpython
 gitpython==3.1.31
     # via bandit
 google==3.0.0
     # via pyinspect
-google-auth==2.17.1
+google-auth==2.17.3
     # via
     #   google-auth-oauthlib
     #   tensorboard
 google-auth-oauthlib==0.4.6
     # via tensorboard
+google-pasta==0.2.0
+    # via tensorflow-macos
 greenlet==2.0.2
     # via bpython
-grpcio==1.51.3
-    # via tensorboard
+grpcio==1.54.0
+    # via
+    #   tensorboard
+    #   tensorflow-macos
+h5py==3.8.0
+    # via tensorflow-macos
 hunter==3.5.1
     # via dancedetector (pyproject.toml)
 identify==2.5.22
@@ -148,7 +161,7 @@ idna==3.4
     # via
     #   email-validator
     #   requests
-importlib-metadata==6.1.0
+importlib-metadata==6.5.0
     # via markdown
 importlib-resources==5.12.0
     # via matplotlib
@@ -160,23 +173,28 @@ isort==5.12.0
     # via
     #   dancedetector (pyproject.toml)
     #   pylint
+jax==0.4.8
+    # via tensorflow-macos
 keras==2.12.0
     # via
     #   fer
     #   mtcnn
+    #   tensorflow-macos
 kiwisolver==1.4.4
     # via matplotlib
 lazy-object-proxy==1.9.0
     # via
     #   astroid
     #   dancedetector (pyproject.toml)
-levenshtein==0.20.9
+levenshtein==0.21.0
     # via python-levenshtein
+libclang==16.0.0
+    # via tensorflow-macos
 libcst==0.4.9
     # via monkeytype
 logging-tree==1.9
     # via dancedetector (pyproject.toml)
-loguru==0.6.0
+loguru==0.7.0
     # via dancedetector (pyproject.toml)
 lxml==4.9.2
     # via dancedetector (pyproject.toml)
@@ -207,6 +225,8 @@ mdurl==0.1.2
     # via markdown-it-py
 mediapipe==0.9.3.0
     # via dancedetector (pyproject.toml)
+ml-dtypes==0.1.0
+    # via jax
 monkeytype==23.3.0
     # via dancedetector (pyproject.toml)
 mss==6.1.0
@@ -225,18 +245,23 @@ mypy-extensions==1.0.0
     #   typing-inspect
 nodeenv==1.7.0
     # via pre-commit
-numpy==1.24.2
+numpy==1.23.5
     # via
     #   contourpy
     #   dancedetector (pyproject.toml)
+    #   h5py
+    #   jax
     #   matplotlib
     #   mediapipe
+    #   ml-dtypes
     #   opencv-contrib-python
     #   opencv-python
+    #   opt-einsum
     #   pyinspect
     #   scenedetect
     #   scipy
     #   tensorboard
+    #   tensorflow-macos
 oauthlib==3.2.2
     # via requests-oauthlib
 opencv-contrib-python==4.7.0.72
@@ -247,7 +272,11 @@ opencv-python==4.7.0.72
     # via
     #   mtcnn
     #   scenedetect
-packaging==23.0
+opt-einsum==3.3.0
+    # via
+    #   jax
+    #   tensorflow-macos
+packaging==23.1
     # via
     #   black
     #   build
@@ -255,6 +284,7 @@ packaging==23.0
     #   pytest
     #   pytest-rerunfailures
     #   pytest-sugar
+    #   tensorflow-macos
     #   typepy
     #   validate-pyproject
 pathlib-mate==1.2.1
@@ -269,7 +299,7 @@ pdbpp==0.10.3
     # via dancedetector (pyproject.toml)
 pillow==9.5.0
     # via matplotlib
-pip-tools==6.12.3
+pip-tools==6.13.0
     # via dancedetector (pyproject.toml)
 platformdirs==3.2.0
     # via
@@ -286,11 +316,12 @@ protobuf==3.20.3
     # via
     #   mediapipe
     #   tensorboard
-pyasn1==0.4.8
+    #   tensorflow-macos
+pyasn1==0.5.0
     # via
     #   pyasn1-modules
     #   rsa
-pyasn1-modules==0.2.8
+pyasn1-modules==0.3.0
     # via google-auth
 pycodestyle==2.8.0
     # via
@@ -306,7 +337,7 @@ pyflakes==2.4.0
     #   autoflake
     #   dancedetector (pyproject.toml)
     #   flake8
-pygments==2.14.0
+pygments==2.15.1
     # via
     #   bpython
     #   dancedetector (pyproject.toml)
@@ -376,7 +407,7 @@ python-dotenv==1.0.0
     #   dancedetector (pyproject.toml)
     #   pydantic
     #   pytest-dotenv
-python-levenshtein==0.20.9
+python-levenshtein==0.21.0
     # via dancedetector (pyproject.toml)
 python-slugify==8.0.1
     # via dancedetector (pyproject.toml)
@@ -391,7 +422,7 @@ pyyaml==6.0
     #   bandit
     #   libcst
     #   pre-commit
-rapidfuzz==2.14.0
+rapidfuzz==3.0.0
     # via levenshtein
 redis==4.5.1
     # via dancedetector (pyproject.toml)
@@ -407,7 +438,7 @@ requests-oauthlib==1.3.1
     # via google-auth-oauthlib
 restructuredtext-lint==1.4.0
     # via dancedetector (pyproject.toml)
-rich==13.3.3
+rich==13.3.4
     # via
     #   bandit
     #   dancedetector (pyproject.toml)
@@ -422,18 +453,23 @@ ruff==0.0.262
 scenedetect[opencv]==0.6.1
     # via dancedetector (pyproject.toml)
 scipy==1.10.1
-    # via dancedetector (pyproject.toml)
+    # via
+    #   dancedetector (pyproject.toml)
+    #   jax
 six==1.16.0
     # via
+    #   astunparse
     #   blessed
     #   google-auth
+    #   google-pasta
     #   pathlib-mate
     #   python-dateutil
+    #   tensorflow-macos
 smmap==5.0.0
     # via gitdb
 sounddevice==0.4.6
     # via mediapipe
-soupsieve==2.4
+soupsieve==2.4.1
     # via beautifulsoup4
 sourcery==1.2.0
     # via dancedetector (pyproject.toml)
@@ -446,13 +482,21 @@ tcolorpy==0.1.2
 tenacity==8.2.2
     # via dancedetector (pyproject.toml)
 tensorboard==2.12.0
-    # via dancedetector (pyproject.toml)
+    # via
+    #   dancedetector (pyproject.toml)
+    #   tensorflow-macos
 tensorboard-data-server==0.7.0
     # via tensorboard
 tensorboard-plugin-wit==1.8.1
     # via tensorboard
+tensorflow-estimator==2.12.0
+    # via tensorflow-macos
+tensorflow-macos==2.12.0
+    # via dancedetector (pyproject.toml)
 termcolor==2.2.0
-    # via pytest-sugar
+    # via
+    #   pytest-sugar
+    #   tensorflow-macos
 text-unidecode==1.3
     # via python-slugify
 toml==0.10.2
@@ -516,6 +560,7 @@ typing-extensions==4.5.0
     #   mypy
     #   pydantic
     #   pylint
+    #   tensorflow-macos
     #   typing-inspect
 typing-inspect==0.8.0
     # via libcst
@@ -537,18 +582,21 @@ wcwidth==0.2.6
     # via blessed
 webcolors==1.13
     # via dancedetector (pyproject.toml)
-websockets==10.4
+websockets==11.0.2
     # via dancedetector (pyproject.toml)
 werkzeug==2.2.3
     # via tensorboard
 wheel==0.40.0
     # via
+    #   astunparse
     #   pip-tools
     #   tensorboard
 wmctrl==0.4
     # via pdbpp
-wrapt==1.15.0
-    # via astroid
+wrapt==1.14.1
+    # via
+    #   astroid
+    #   tensorflow-macos
 zipp==3.15.0
     # via
     #   importlib-metadata
