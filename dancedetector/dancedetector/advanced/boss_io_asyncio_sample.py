@@ -6,7 +6,7 @@ import concurrent.futures
 
 import asyncio
 import time
-# import aiohttp
+import aiohttp
 import os
 import errno
 from hashlib import md5
@@ -17,11 +17,11 @@ import ssl
 import certifi
 import rich
 import uritools
-# import aiofile
+import aiofile
 import pathlib
 import functools
 import gc
-# import aiorwlock
+import aiorwlock
 import requests
 from tqdm.auto import tqdm
 

@@ -1,22 +1,19 @@
 #!/usr/bin/env python3
 """dancedetector dbx_logger -- Setup loguru logging with stderr and file with click."""
 
-# import collections
-
-# import concurrent.futures
 from datetime import datetime
-# import functools
-# import gc
-# import inspect
+import functools
+import gc
+import inspect
 import logging
 from logging import Logger, LogRecord
-# import os
+import os
 from pathlib import Path
 from pprint import pformat
 
 import sys
 from time import process_time
-# from types import FrameType
+from types import FrameType
 
 from typing import TYPE_CHECKING, Any, Deque, Dict, Optional, Union, cast
 
