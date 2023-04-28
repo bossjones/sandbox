@@ -1,6 +1,18 @@
 import requests
 import multiprocessing
 import time
+import logging
+from loguru import logger
+from dancedetector.dbx_logger import (
+    get_logger,
+    intercept_all_loggers,
+    global_log_config
+)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
 
 session = None
 

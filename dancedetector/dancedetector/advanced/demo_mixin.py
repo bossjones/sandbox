@@ -7,6 +7,17 @@ concrete classes.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import logging
+from dancedetector.dbx_logger import (
+    get_logger,
+    intercept_all_loggers,
+    global_log_config
+)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
 
 
 @dataclass

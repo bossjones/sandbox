@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 # NOTE: 11/19/2021 - still not working 100%. Hangs when finished processing.
-import logging
+# import logging
 import os
 import os.path
 
-from dancedetector.dbx_logger import get_logger, intercept_all_loggers  # noqa: E402
+# from dancedetector.dbx_logger import get_logger, intercept_all_loggers  # noqa: E402
 
-LOGGER = get_logger(__name__, provider="dancedetector", level=logging.DEBUG)
+# LOGGER = get_logger(__name__, provider="dancedetector", level=logging.DEBUG)
 # intercept_all_loggers()
 
 # handler_logger = LOGGER.add("handler")

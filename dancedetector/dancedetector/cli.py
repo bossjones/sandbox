@@ -15,6 +15,7 @@ import typer
 from dancedetector.dbx_logger import (
     get_logger,
     intercept_all_loggers,
+    global_log_config
 )
 
 sys.excepthook = ultratb.FormattedTB(
@@ -24,8 +25,13 @@ sys.excepthook = ultratb.FormattedTB(
 
 # https://github.com/whoisandy/k2s3/blob/6e0d24abb837add1d7fcc20619533c603ea76b22/k2s3/cli.py#L114
 
-LOGGER = get_logger(__name__, provider="CLI", level=logging.DEBUG)
-intercept_all_loggers()
+# LOGGER = get_logger(__name__, provider="CLI", level=logging.DEBUG)
+# intercept_all_loggers()
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
 
 
 CACHE_CTX = {}

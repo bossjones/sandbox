@@ -1,12 +1,12 @@
+#!/usr/bin/env python
 # NOTE: For more examples tqdm + aiofile, search https://github.com/search?l=Python&q=aiofile+tqdm&type=Code
-
 from __future__ import annotations
 
 import concurrent.futures
 
 import asyncio
 import time
-import aiohttp
+# import aiohttp
 import os
 import errno
 from hashlib import md5
@@ -17,16 +17,26 @@ import ssl
 import certifi
 import rich
 import uritools
-import aiofile
+# import aiofile
 import pathlib
 import functools
 import gc
-import aiorwlock
+# import aiorwlock
 import requests
 from tqdm.auto import tqdm
 
-# from tqdm.asyncio import tqdm
 from urllib.request import urlretrieve
+import logging
+from loguru import logger
+from dancedetector.dbx_logger import (
+    global_log_config
+)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
+LOGGER = logger
 
 
 VERIFY_SSL = False
@@ -153,6 +163,7 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
                 rich.print(
                     f"uri.authority = {uri.authority}, manually setting url variable"
                 )
+                LOGGER.debug(f"uri.authority = {uri.authority}, manually setting url variable")
             finally:
                 rwlock.reader_lock.release()
             url = f"{base_authority}/{url}"
@@ -160,6 +171,7 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
             try:
                 # rich.print(f"uri.authority = {uri.authority}, manually setting url variable")
                 rich.print(f"url = {url}")
+                LOGGER.debug(f"url = {url}")
             finally:
                 rwlock.reader_lock.release()
 
@@ -168,6 +180,7 @@ async def download_and_save(url: str, dest_override=False, base_authority=""):
             await rwlock.reader_lock.acquire()
             try:
                 rich.print(f"filename = {dest_override}")
+                LOGGER.debug(f"filename = {dest_override}")
             finally:
                 rwlock.reader_lock.release()
         # breakpoint()
@@ -213,6 +226,7 @@ def download_url(url: str, filepath: str):
     os.makedirs(directory, exist_ok=True)
     if os.path.exists(filepath):
         print("Filepath already exists. Skipping download.")
+        LOGGER.debug("Filepath already exists. Skipping download.")
         return
 
     with TqdmUpTo(
@@ -255,3 +269,4 @@ if __name__ == "__main__":
     loop.run_until_complete(go_partial(loop))
     duration = time.time() - start_time
     print(f"Downloaded 1 site in {duration} seconds")
+    LOGGER.debug(f"Downloaded 1 site in {duration} seconds")

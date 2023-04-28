@@ -22,6 +22,11 @@ pip-compile: pip-tools
 # run pip-complie to generate requirements.txt and force rebuild
 pip-compile-rebuild: pip-tools
 	# rm -v requirements*.txt || true
+	> requirements.txt
+	> requirements-dev.txt
+	> requirements-test.txt
+	> requirements-doc.txt
+	> requirements-experimental.txt
 	pip-compile -v --pip-args "-v" --resolver=backtracking --rebuild --output-file requirements.txt pyproject.toml
 	pip-compile -v --pip-args "-v" --resolver=backtracking --rebuild --output-file requirements-dev.txt --extra dev pyproject.toml
 	pip-compile -v --pip-args "-v" --resolver=backtracking --rebuild --output-file requirements-test.txt --extra tests pyproject.toml

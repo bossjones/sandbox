@@ -29,6 +29,18 @@ heartrate.trace(browser=True)
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+import logging
+from loguru import logger
+from dancedetector.dbx_logger import (
+    get_logger,
+    intercept_all_loggers,
+    global_log_config
+)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
 
 # Module-level constants
 _MULTIPLY_DELAY = 0.01  # delay is long enough for threads to be more efficient

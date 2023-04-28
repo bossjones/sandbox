@@ -3,6 +3,17 @@ import time
 import aiohttp
 from aiohttp import ClientSession
 import asyncio
+import logging
+from dancedetector.dbx_logger import (
+    get_logger,
+    intercept_all_loggers,
+    global_log_config
+)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
 
 
 async def get_html_by_movie_id_new(movie_id, session):

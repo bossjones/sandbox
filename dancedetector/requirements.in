@@ -29,3 +29,4 @@ uritools
 webcolors
 websockets
 tensorboard==2.12.0
+aiohttp

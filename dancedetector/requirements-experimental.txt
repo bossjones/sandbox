@@ -237,9 +237,9 @@ h5py==3.8.0
     # via
     #   dancedetector (pyproject.toml)
     #   tensorflow-macos
-hunter==3.5.1
+hunter==3.6.1
     # via dancedetector (pyproject.toml)
-identify==2.5.22
+identify==2.5.23
     # via
     #   dancedetector (pyproject.toml)
     #   pre-commit
@@ -248,7 +248,7 @@ idna==3.4
     #   dancedetector (pyproject.toml)
     #   email-validator
     #   requests
-importlib-metadata==6.5.0
+importlib-metadata==6.6.0
     # via
     #   dancedetector (pyproject.toml)
     #   markdown
@@ -437,7 +437,7 @@ pillow==9.5.0
     #   matplotlib
 pip-tools==6.13.0
     # via dancedetector (pyproject.toml)
-platformdirs==3.2.0
+platformdirs==3.5.0
     # via
     #   black
     #   dancedetector (pyproject.toml)
@@ -585,7 +585,7 @@ rapidfuzz==3.0.0
     #   levenshtein
 redis==4.5.1
     # via dancedetector (pyproject.toml)
-requests==2.28.2
+requests==2.29.0
     # via
     #   bpython
     #   dancedetector (pyproject.toml)
@@ -599,7 +599,7 @@ requests-oauthlib==1.3.1
     #   google-auth-oauthlib
 restructuredtext-lint==1.4.0
     # via dancedetector (pyproject.toml)
-rich==13.3.4
+rich==13.3.5
     # via
     #   bandit
     #   dancedetector (pyproject.toml)
@@ -611,7 +611,7 @@ rsa==4.9
     # via
     #   dancedetector (pyproject.toml)
     #   google-auth
-ruff==0.0.262
+ruff==0.0.263
     # via dancedetector (pyproject.toml)
 scenedetect[opencv]==0.6.1
     # via dancedetector (pyproject.toml)
@@ -675,7 +675,7 @@ tensorflow-estimator==2.12.0
     #   tensorflow-macos
 tensorflow-macos==2.12.0
     # via dancedetector (pyproject.toml)
-termcolor==2.2.0
+termcolor==2.3.0
     # via
     #   dancedetector (pyproject.toml)
     #   pytest-sugar
@@ -701,7 +701,7 @@ tomli==1.2.2
     #   pyproject-hooks
     #   pytest
     #   validate-pyproject
-tomlkit==0.11.7
+tomlkit==0.11.8
     # via
     #   dancedetector (pyproject.toml)
     #   pylint
@@ -710,7 +710,7 @@ tqdm==4.65.0
     #   dancedetector (pyproject.toml)
     #   fer
     #   scenedetect
-trove-classifiers==2023.4.20
+trove-classifiers==2023.4.25
     # via
     #   dancedetector (pyproject.toml)
     #   validate-pyproject
@@ -736,11 +736,11 @@ types-pyyaml==6.0.12.9
     # via dancedetector (pyproject.toml)
 types-requests==2.28.11.17
     # via dancedetector (pyproject.toml)
-types-setuptools==67.6.0.8
+types-setuptools==67.7.0.0
     # via dancedetector (pyproject.toml)
 types-six==1.16.21.8
     # via dancedetector (pyproject.toml)
-types-urllib3==1.26.25.10
+types-urllib3==1.26.25.11
     # via
     #   dancedetector (pyproject.toml)
     #   types-requests
@@ -769,7 +769,7 @@ urllib3==1.26.15
     #   requests
 validate-pyproject[all]==0.12.2
     # via dancedetector (pyproject.toml)
-virtualenv==20.22.0
+virtualenv==20.23.0
     # via
     #   dancedetector (pyproject.toml)
     #   pre-commit
@@ -787,7 +787,7 @@ webcolors==1.13
     # via dancedetector (pyproject.toml)
 websockets==11.0.2
     # via dancedetector (pyproject.toml)
-werkzeug==2.2.3
+werkzeug==2.3.1
     # via
     #   dancedetector (pyproject.toml)
     #   tensorboard
