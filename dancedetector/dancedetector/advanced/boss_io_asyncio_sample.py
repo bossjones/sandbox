@@ -2,35 +2,30 @@
 # NOTE: For more examples tqdm + aiofile, search https://github.com/search?l=Python&q=aiofile+tqdm&type=Code
 from __future__ import annotations
 
-import concurrent.futures
-
 import asyncio
-import time
-import aiohttp
-import os
-import errno
-from hashlib import md5
-import os
-import shutil
-import tempfile
-import ssl
-import certifi
-import rich
-import uritools
-import aiofile
-import pathlib
+import concurrent.futures
 import functools
-import gc
-import aiorwlock
-import requests
-from tqdm.auto import tqdm
-
-from urllib.request import urlretrieve
+from hashlib import md5
 import logging
+import os
+import pathlib
+import shutil
+import ssl
+import tempfile
+import time
+from urllib.request import urlretrieve
+
+import aiofile
+import aiohttp
+import aiorwlock
+import certifi
 from loguru import logger
-from dancedetector.dbx_logger import (
-    global_log_config
-)
+import requests
+import rich
+from tqdm.auto import tqdm
+import uritools
+
+from dancedetector.dbx_logger import global_log_config
 
 global_log_config(
     log_level=logging.getLevelName("DEBUG"),
@@ -90,7 +85,7 @@ def get_folder_size(filepath: str) -> int:
         int: folder size in bytes
     """
     total_size = 0
-    for root, dirs, files in os.walk(filepath):
+    for root, _dirs, files in os.walk(filepath):
         for img in files:
             total_size += os.path.getsize(os.path.join(root, img))
 

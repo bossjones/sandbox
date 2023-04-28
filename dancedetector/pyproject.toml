@@ -51,6 +51,7 @@ classifiers = [
 # dynamic = ["version", "requires-python", "dependencies", "optional-dependencies"]
 # dynamic = ["version", "dependencies", "optional-dependencies"]
 dependencies = [
+    "joblib",
     "aiorwlock",
     "aiohttp",
     "aiofile",

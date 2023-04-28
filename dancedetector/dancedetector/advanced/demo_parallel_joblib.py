@@ -1,24 +1,24 @@
 # SOURCE: https://builtin.com/data-science/asyncio-python
-import requests
-import time
-from bs4 import BeautifulSoup
-from joblib import Parallel, delayed
 import logging
+import time
+
+from joblib import Parallel, delayed
 from loguru import logger
-from dancedetector.dbx_logger import (
-    get_logger,
-    intercept_all_loggers,
-    global_log_config
-)
+import requests
+
+from dancedetector.dbx_logger import global_log_config
 
 global_log_config(
     log_level=logging.getLevelName("DEBUG"),
     json=False,
 )
+LOGGER = logger
+
 
 
 def get_html_by_movie_id(movie_id):
     url = f"https://www.imdb.com/title/{movie_id}/fullcredits"
+    LOGGER.debug(url)
     response = requests.get(url)
     return response.text
 

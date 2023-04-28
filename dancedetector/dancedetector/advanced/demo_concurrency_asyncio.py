@@ -1,23 +1,24 @@
 # SOURCE: https://builtin.com/data-science/asyncio-python
-import time
-import aiohttp
-from aiohttp import ClientSession
 import asyncio
 import logging
-from dancedetector.dbx_logger import (
-    get_logger,
-    intercept_all_loggers,
-    global_log_config
-)
+import time
+
+from aiohttp import ClientSession
+from loguru import logger
+
+from dancedetector.dbx_logger import global_log_config
 
 global_log_config(
     log_level=logging.getLevelName("DEBUG"),
     json=False,
 )
 
+LOGGER = logger
+
 
 async def get_html_by_movie_id_new(movie_id, session):
     url = f"https://www.imdb.com/title/{movie_id}/fullcredits"
+    LOGGER.debug(url)
     response = await session.request(method="GET", url=url)
     html = await response.text()
     return html
@@ -34,7 +35,7 @@ async def scrape_all_titles(movies_list):
 
 async def main(movies_list):
     s = time.perf_counter()
-    result = await scrape_all_titles(movies_list)
+    await scrape_all_titles(movies_list)
     elapsed = time.perf_counter() - s
     print(f"Executed in {elapsed:0.2f} seconds.")
 
