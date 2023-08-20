@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+# pylint -E --rcfile=./lint-configs-python/python/.pylintrc
+# pylint --disable=all --enable=F,E --rcfile ./lint-configs-python/python/pylintrc dancedetector
+# TODO: Re enable these guys 2/17/2021
+flake8 dancedetector --exclude=dancedetector/db/migrations
+mypy dancedetector
+
+black --check dancedetector --diff
+isort --recursive --check-only dancedetector

@@ -1,0 +1,111 @@
+# https://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+####################################################
+# SOURCE: https://github.com/sumocoders/Framework/blob/master/.editorconfig
+####################################################
+## Newlines section
+
+# Make sure all files use lf as line ending
+[*.{coffee,css,htaccess,html,js,json,md,php,rb,scss,twig,xml,yml}]
+end_of_line = lf
+
+[{.bowerrc,.editorconfig,.gitignore,Capfile,Gemfile,Rakefile,Sumofile}]
+end_of_line = lf
+
+# Make sure we have an empty line at the end
+[*.{coffee,htaccess,html,html.twig,js,md,php}]
+insert_final_newline = true
+
+[{.bowerrc,.editorconfig,.gitignore,Capfile,Gemfile,Rakefile,Sumofile}]
+insert_final_newline = true
+
+## Charset section
+[*.{coffee,css,htaccess,html,js,json,md,php,rb,scss,twig,xml,yml}]
+charset = utf-8
+####################################################
+
+# Docstrings and comments use max_line_length = 79
+[*.py]
+max_line_length = 200
+
+# 4 spaces indenting
+[*.{json,php,xml}]
+indent_size = 4
+indent_style = space
+insert_final_newline = ignore
+
+# 2 spaces indenting
+[*.{coffee,css,html,html.twig,rb,scss,yml,yaml,gemspec}]
+indent_size = 2
+indent_style = space
+
+# Use 4 spaces for the HTML files
+[{.bowerrc,.gitignore,Capfile,Gemfile,Rakefile,rakefile}]
+indent_size = 2
+indent_style = space
+
+# The YAML files contain newlines inconsistently
+[*.{coffee,css,html,html.twig,rb,scss,yml,yaml,gemspec}]
+indent_size = 2
+insert_final_newline = ignore
+indent_style = space
+charset = utf-8
+
+
+# Jinja2 template files
+[*.j2]
+end_of_line = lf
+
+# The YML files contain newlines inconsistently
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_size = 2
+indent_style = tab
+
+# The YML files contain newlines inconsistently
+[*.yml]
+indent_size = 2
+insert_final_newline = ignore
+indent_style = space
+charset = utf-8
+
+
+# # The JSON files contain newlines inconsistently
+# [*.json]
+# indent_size = 2
+# insert_final_newline = ignore
+
+[**/admin/js/vendor/**]
+indent_style = ignore
+indent_size = ignore
+
+# Minified JavaScript files shouldn't be changed
+[**.min.js]
+indent_style = ignore
+insert_final_newline = ignore
+
+# Batch files use tabs for indentation
+[*.bat]
+indent_style = tab
+
+[docs/**.txt]
+max_line_length = 79
+
+# Markdown is fussy about indenting
+[*.md]
+indent_style = space
+indent_size = 4
+
+# Remove empty lines
+[*.{coffee,js,json,php,md,xml,yml,yaml,gemspec}]
+trim_trailing_whitespace = true

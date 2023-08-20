@@ -1,0 +1,40 @@
+-c requirements.txt
+pathlib_mate
+isort
+pdbpp
+black
+pre-commit
+mccabe>=0.6.0,<0.7.0
+lazy-object-proxy
+autopep8==1.6.0
+MonkeyType
+vulture
+freezegun
+hunter
+invoke
+rope==1.1.1
+bpython
+debugpy
+codecov
+types-freezegun
+types-six
+types-pytz
+types-PyYAML
+types-click
+types-colorama
+types-dataclasses
+types-requests
+types-setuptools
+types-mock
+bandit
+tomli==1.2.2
+docutils==0.16
+autoflake==1.4
+pylint==2.14.2
+pycodestyle==2.8.0
+pyflakes==2.4.0
+sourcery
+ruff
+# https://medium.com/jobtome-engineering/improve-productivity-of-python-projects-with-commitizen-678f012f4772
+# commitizen
+validate-pyproject[all]

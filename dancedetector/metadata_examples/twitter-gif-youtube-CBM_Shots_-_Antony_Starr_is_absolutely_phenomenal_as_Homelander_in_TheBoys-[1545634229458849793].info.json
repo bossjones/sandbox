@@ -1,0 +1,97 @@
+{
+    "id": "1545634229458849793",
+    "title": "CBM Shots - Antony Starr is absolutely phenomenal as Homelander in #TheBoys",
+    "description": "Antony Starr is absolutely phenomenal as Homelander in #TheBoys https://t.co/KaKzVh5vQJ",
+    "uploader": "CBM Shots",
+    "timestamp": 1657342891,
+    "uploader_id": "CBMshots",
+    "uploader_url": "https://twitter.com/CBMshots",
+    "like_count": 25736,
+    "repost_count": 2128,
+    "comment_count": 133,
+    "age_limit": 0,
+    "tags": [
+        "TheBoys"
+    ],
+    "formats": [
+        {
+            "url": "https://video.twimg.com/tweet_video/FXMx58lVUAAmtsh.mp4",
+            "format_id": "http",
+            "protocol": "https",
+            "ext": "mp4",
+            "video_ext": "mp4",
+            "audio_ext": "none",
+            "format": "http - unknown",
+            "dynamic_range": "SDR",
+            "http_headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-us,en;q=0.5",
+                "Sec-Fetch-Mode": "navigate"
+            }
+        }
+    ],
+    "subtitles": {},
+    "thumbnails": [
+        {
+            "id": "thumb",
+            "url": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=thumb",
+            "width": 150,
+            "height": 150,
+            "resolution": "150x150"
+        },
+        {
+            "id": "large",
+            "url": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=large",
+            "width": 612,
+            "height": 400,
+            "resolution": "612x400"
+        },
+        {
+            "id": "medium",
+            "url": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=medium",
+            "width": 612,
+            "height": 400,
+            "resolution": "612x400"
+        },
+        {
+            "id": "orig",
+            "url": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=orig",
+            "width": 612,
+            "height": 400,
+            "resolution": "612x400"
+        },
+        {
+            "id": "small",
+            "url": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=small",
+            "width": 612,
+            "height": 400,
+            "resolution": "612x400"
+        }
+    ],
+    "webpage_url": "https://twitter.com/CBMshots/status/1545634229458849793",
+    "webpage_url_basename": "1545634229458849793",
+    "webpage_url_domain": "twitter.com",
+    "extractor": "twitter",
+    "extractor_key": "Twitter",
+    "thumbnail": "https://pbs.twimg.com/tweet_video_thumb/FXMx58lVUAAmtsh.jpg?name=small",
+    "display_id": "1545634229458849793",
+    "fulltitle": "CBM Shots - Antony Starr is absolutely phenomenal as Homelander in #TheBoys",
+    "upload_date": "20220709",
+    "url": "https://video.twimg.com/tweet_video/FXMx58lVUAAmtsh.mp4",
+    "format_id": "http",
+    "protocol": "https",
+    "ext": "mp4",
+    "video_ext": "mp4",
+    "audio_ext": "none",
+    "format": "http - unknown",
+    "dynamic_range": "SDR",
+    "http_headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-us,en;q=0.5",
+        "Sec-Fetch-Mode": "navigate"
+    },
+    "epoch": 1657404263,
+    "_type": "video"
+}
