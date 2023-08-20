@@ -51,6 +51,8 @@ classifiers = [
 # dynamic = ["version", "requires-python", "dependencies", "optional-dependencies"]
 # dynamic = ["version", "dependencies", "optional-dependencies"]
 dependencies = [
+    "Pillow",
+    "transformers[torch]",
     "joblib",
     "aiorwlock",
     "aiohttp",
