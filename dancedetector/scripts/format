@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+isort --recursive  --force-single-line-importsdancedetectorp tests
+autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place dancedetector tests
+black dancedetector tests
+isort --recursive dancedetector tests

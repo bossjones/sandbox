@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+#!/bin/bash
+if [[ "${EUID}" == "0" ]]; then
+   echo "This script must NOT be run as root"
+   exit 1
+fi
+
+sudo apt-get update && \
+    sudo apt-get install -y locales ca-certificates && \
+    sudo apt-get clean && \
+    sudo localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+set +e
+
+export LANG=en_US.UTF-8
+
+export PYENV_ROOT="/.pyenv"
+export PATH="/.pyenv/bin:/.pyenv/shims:$PATH"
+
+export BASHRC_FILE=~vagrant/.bashrc
+
+set -x
+# Edit Config File
+if ! grep -q 'export PYENV_ROOT="/.pyenv"' "${BASHRC_FILE}" ; then\
+    echo 'export PYENV_ROOT="/.pyenv"' >> "${BASHRC_FILE}" ;\
+    export PYENV_ROOT="/.pyenv" ;\
+fi
+if ! grep -q 'export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"' "${BASHRC_FILE}" ; then\
+    echo 'export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"' >> "${BASHRC_FILE}" ;\
+    export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH" ;\
+fi
+if ! grep -q 'eval "$(pyenv init -)"' "${BASHRC_FILE}" ; then\
+    echo 'eval "$(pyenv init -)"' >> "${BASHRC_FILE}" ;\
+    eval "$(pyenv init -)" ;\
+fi
+if ! grep -q 'eval "$(pyenv virtualenv-init -)"' "${BASHRC_FILE}" ; then\
+    echo 'eval "$(pyenv virtualenv-init -)"' >> "${BASHRC_FILE}" ;\
+    eval "$(pyenv virtualenv-init -)" ;\
+fi
+
+cat ${BASHRC_FILE}
+
+set +x
+
+set -e
+sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends git ca-certificates curl && \
+    curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | sudo -i -u vagrant bash && \
+    sudo apt-get clean
+
+sudo chown -Rv vagrant:vagrant ${PYENV_ROOT}
+
+source ${BASHRC_FILE}
+
+set -x;
+sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends \
+        make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+        libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev \
+        libxml2-dev libxmlsec1-dev libffi-dev \
+        ca-certificates && \
+    sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git && \
+    sudo apt-get clean
+set +e
+
+# exec "$SHELL"
+
+set -x;
+pyenv update && \
+            xargs -P 4 -n 1 pyenv install < /python-versions.txt && \
+            pyenv global $(pyenv versions --bare) && \
+            find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rfv '{}' + && \
+            find $PYENV_ROOT/versions -type f '(' -name '*.py[co]' -o -name '*.exe' ')' -exec rm -fv '{}' + && \
+            mv -v -- /python-versions.txt $PYENV_ROOT/version
+
+export PYENV_VERSION=3.7.3
+pip install -U pip setuptools --no-cache-dir && \
+  pip install -U virtualenv pipenv --no-cache-dir && \
+  pip install -U virtualenvwrapper --no-cache-dir
+
+export PYENV_VERSION=3.9.0
+pip install -U pip setuptools --no-cache-dir && \
+  pip install -U virtualenv pipenv --no-cache-dir && \
+  pip install -U virtualenvwrapper --no-cache-dir
+
+
+# install stuff for vim
+# https://github.com/bossjones/python-vimrc
+
+sudo apt-get install -y build-essential cmake python3-dev
+set +x;
+
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ets-labs/python-vimrc/master/setup.sh)"
